@@ -1,24 +1,34 @@
-<!DOCTYP html>
-<html lang="en"
-<head 
-<meta charset="UFT-8">
-<title>Quantum Soft Marketplace</title>
-<link rel ="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        h1>QUANTUM SOFt</h1
-        <p>Future of Engineergin Solutiouns</p>
-    <header>
-    <div> class="search-container">
-          <input type="text" id="searchInput" placeholder="seharch for chips, or code… " onkeyup="filterProducts()">
-      </div> 
-      <div id="market" class="grid">
-        <!-- Products will be injected hre by JavaScript -->
-    </div>
-    <script> src="JavaScript/script.js"></script>
-</body>
-</html> 
+const Products = [
+    {name: "Quantum  Processor V1", category: "Hardware"},
+    {name: "Al Neural Engine", category: "Software"},
+    {name: "Atomic Modeling Kit", category: "Simulation"}
+ ]
+ function renderProducts (Productlist){
+    const market = doucment.getElementById ('market')
+    market.innetHTML = Productlist.map(item => '
+        <div class="card"> 
+        <h3>${item.name}</h3> 
+        <p>Category: ${item.category}</p>
+        <a href="https:// wa.me/905XXXXXXXXX" class="btn-wa"> Contact seller</a>
+    </div> 
+ ').jon('');
+ } 
+ function filterProducts() {
+    let searchTerm = document.gtElementById('searchInput').value.tolowerCase();
+    let filtered = Products.filter(p => p.name.tolowerCase().includes (searchTerm));
+    renderProducts(filtered);
+ }
+ //Initial load
+ renderProducts(Products);
     
+ 
 
 
+
+            
+                
+        
+        
+ 
+    
+  
