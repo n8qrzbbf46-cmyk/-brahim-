@@ -1,0 +1,24 @@
+<!DOCTYP html>
+<html lang="en"
+<head 
+<meta charset="UFT-8">
+<title>Quantum Soft Marketplace</title>
+<link rel ="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        h1>QUANTUM SOFt</h1
+        <p>Future of Engineergin Solutiouns</p>
+    <header>
+    <div> class="search-container">
+          <input type="text" id="searchInput" placeholder="seharch for chips, or code… " onkeyup="filterProducts()">
+      </div> 
+      <div id="market" class="grid">
+        <!-- Products will be injected hre by JavaScript -->
+    </div>
+    <script> src="JavaScript/script.js"></script>
+</body>
+</html> 
+    
+
+
