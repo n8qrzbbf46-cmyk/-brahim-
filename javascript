@@ -1,7 +1,7 @@
 
  let customerProfile = null;
  let ProductsCatalog = [];
- function setPustomerProfile (fullName,  email,  phoneNumber) {
+ function setCustomerProfile (fullName,  email,  phoneNumber) {
    customerProfile = {
       name: fullName,
       email: email,
@@ -35,10 +35,15 @@ function generateWhatsApp0rderUrl(ProductId) {
 
 
 
-            
-                
-        
-        
+    // Call HTML elements by Id 
+   const searchBox = document.gtElementById("searchInput");    // input field
+   const marketDiv = document.gtElementById("market");      // Product container
+   const header = document,gtElementById("header");        // header tag
+
+   // Call CSS classes 
+   const cards = document.querySelectorAll(".cards");      // al product cards 
+   const button = document.querySelectorAll(".btn-wa");   // whatsApp  button
+
  
     
   
