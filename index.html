@@ -1,955 +1,1016 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scientific Expert Bot v5.0 • Web Edition</title>
+    <title>Yapay Zeka API • Akıllı Bağlantı</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
         
+        :root {
+            --primary: #6366f1;
+        }
+        
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', system_ui, sans-serif;
         }
         
         .font-display {
-            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
             font-weight: 600;
         }
 
-        .scientific-bg {
-            background: linear-gradient(145deg, #0f172a 0%, #1e2937 100%);
+        .glass {
+            background: rgba(255,255,255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255, 0.1);
         }
 
-        .nav-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        .ai-gradient {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .nav-btn.active {
-            background-color: #164e63;
+
+        .chat-bubble-user {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
             color: white;
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            border-radius: 20px 20px 4px 20px;
         }
 
-        .tool-card {
-            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), 
-                       box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-        }
-        
-        .tool-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 25px -5px rgb(15 23 42 / 0.1), 
-                       0 10px 10px -5px rgb(15 23 42 / 0.1);
+        .chat-bubble-ai {
+            background: #27272a;
+            border: 1px solid #3f3f46;
+            border-radius: 20px 20px 20px 4px;
         }
 
-        .result-panel {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        .message-enter {
+            animation: messagePop 0.3s ease forwards;
         }
 
-        .section {
-            display: none;
-        }
-        
-        .section.active {
-            display: block;
-            animation: fadeIn 0.4s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes messagePop {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .chat-container {
+        .api-log {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             scrollbar-width: thin;
-            scrollbar-color: #475569 #1e2937;
         }
 
-        .message-bot {
-            background: #1e2937;
-            border: 1px solid #475569;
+        .section-header {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
         }
 
-        .scientific-header {
-            background: linear-gradient(to right, #0f172a, #1e2937);
+        .nav-active {
+            color: white;
+            border-bottom: 2px solid #6366f1;
+        }
+
+        .demo-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .demo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .typing-indicator span {
+            height: 6px;
+            width: 6px;
+            background: #a1a1aa;
+            border-radius: 50%;
+            animation: typingBounce 1.2s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #6366f1;
         }
 
         .metric {
-            font-variant-numeric: tabular-nums;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-200 scientific-bg min-h-screen">
-    <!-- Top Navigation -->
-    <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-x-4">
-                    <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-cyan-400 to-teal-400 rounded-2xl shadow-inner">
-                        <i class="fa-solid fa-atom text-slate-950 text-4xl"></i>
-                    </div>
-                    <div>
-                        <span class="font-display text-4xl font-semibold tracking-[-2.5px]">Scientific</span>
-                        <span class="font-display text-4xl font-semibold tracking-[-2.5px] text-cyan-400">Bot</span>
-                        <span class="ml-2 text-xs font-mono px-3 py-1 bg-slate-800 text-cyan-400 rounded-full align-middle">v5.0</span>
-                    </div>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-xl fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <i class="fa-solid fa-robot text-white text-2xl"></i>
                 </div>
+                <div>
+                    <span class="font-display text-2xl font-semibold tracking-tighter">AI API</span>
+                    <span class="text-xs text-zinc-500 block -mt-1">v2.4</span>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-x-8 text-sm">
+                <a href="#chat" class="nav-link px-3 py-1.5 text-zinc-400 hover:text-white">Canlı Sohbet</a>
+                <a href="#file-api" class="nav-link px-3 py-1.5 text-zinc-400 hover:text-white">Dosyadan API</a>
+                <a href="#how-it-works" class="nav-link px-3 py-1.5 text-zinc-400 hover:text-white">API Mantığı</a>
+            </div>
 
-                <!-- Menu -->
-                <div class="flex items-center gap-x-1 text-sm font-medium">
-                    <button onclick="showSection('home')" class="nav-btn px-6 py-2.5 rounded-3xl flex items-center gap-x-2 hover:bg-slate-800 active:bg-slate-700" id="nav-home">
-                        <i class="fa-solid fa-home w-4"></i>
-                        <span>Home</span>
-                    </button>
-                    <button onclick="showSection('physics')" class="nav-btn px-6 py-2.5 rounded-3xl flex items-center gap-x-2 hover:bg-slate-800" id="nav-physics">
-                        <i class="fa-solid fa-microscope w-4"></i>
-                        <span>Physics</span>
-                    </button>
-                    <button onclick="showSection('chemistry')" class="nav-btn px-6 py-2.5 rounded-3xl flex items-center gap-x-2 hover:bg-slate-800" id="nav-chemistry">
-                        <i class="fa-solid fa-flask w-4"></i>
-                        <span>Chemistry</span>
-                    </button>
-                    <button onclick="showSection('math')" class="nav-btn px-6 py-2.5 rounded-3xl flex items-center gap-x-2 hover:bg-slate-800" id="nav-math">
-                        <i class="fa-solid fa-calculator w-4"></i>
-                        <span>Mathematics</span>
-                    </button>
-                    <button onclick="showSection('geometry')" class="nav-btn px-6 py-2.5 rounded-3xl flex items-center gap-x-2 hover:bg-slate-800" id="nav-geometry">
-                        <i class="fa-solid fa-shapes w-4"></i>
-                        <span>Geometry</span>
-                    </button>
-                    <button onclick="showSection('chat')" 
-                            class="ml-3 px-8 py-2.5 bg-white hover:bg-amber-300 active:bg-amber-400 transition-all text-slate-950 font-semibold rounded-3xl flex items-center gap-x-2 shadow-lg">
-                        <i class="fa-solid fa-comments"></i>
-                        <span>Professional Chat Mode</span>
-                    </button>
+            <div class="flex items-center gap-x-3">
+                <div class="hidden sm:flex items-center gap-x-2 px-3 py-1.5 bg-zinc-900 rounded-2xl text-xs border border-zinc-800">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span class="text-emerald-400 font-medium">API Bağlantısı Aktif</span>
                 </div>
-
-                <div class="flex items-center gap-x-3 text-xs">
-                    <div class="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-2xl flex items-center gap-x-2">
-                        <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        <span class="font-mono text-emerald-400">Core Engine v5 Connected</span>
-                    </div>
-                </div>
+                <button onclick="showApiKeyModal()"
+                        class="px-4 py-2 text-sm font-medium bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl flex items-center gap-x-2 transition-colors">
+                    <i class="fa-solid fa-key text-indigo-400"></i>
+                    <span class="hidden sm:inline">API Anahtarı</span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- HOME SECTION -->
-    <div id="home" class="section active max-w-screen-2xl mx-auto px-8 pt-16 pb-24">
-        <div class="max-w-4xl">
-            <div class="inline-flex items-center rounded-3xl bg-slate-900 border border-slate-700 px-5 py-2 text-sm mb-8">
-                <span class="font-medium">Port of scientific_expert_bot_v5_expanded.py</span>
+    <!-- Hero -->
+    <div class="pt-16 max-w-7xl mx-auto px-6 pt-20 pb-12">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-800 mb-6">
+                <div class="flex -space-x-1">
+                    <div class="w-5 h-5 bg-indigo-500 rounded-full ring-2 ring-zinc-950"></div>
+                    <div class="w-5 h-5 bg-purple-500 rounded-full ring-2 ring-zinc-950"></div>
+                </div>
+                <span class="text-xs font-medium tracking-widest text-zinc-400">GROK POWERED • DEMO</span>
             </div>
             
-            <h1 class="text-[92px] leading-[82px] font-display font-semibold tracking-[-6.5px] mb-4">
-                Multi-Specialist<br>
-                <span class="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">Scientific AI</span>
+            <h1 class="section-header tracking-tighter">
+                API mantığında<br>
+                <span class="ai-gradient">yapay zeka</span> ile<br>
+                bağlantı kur.
             </h1>
             
-            <p class="max-w-lg text-3xl text-slate-400 tracking-tight">Real numerical &amp; symbolic calculations.<br>Powered by the same engine as the Python bot.</p>
+            <p class="mt-5 text-xl text-zinc-400 max-w-md">
+                Dosyalarını yükle, sohbet et veya API üzerinden akıllı analiz al. 
+                Tamamen simüle edilmiş gerçekçi API bağlantısı.
+            </p>
             
-            <div class="mt-10 flex items-center gap-x-4">
-                <button onclick="showSection('chat')" 
-                        class="group px-10 py-5 bg-white text-xl font-semibold text-slate-950 rounded-3xl flex items-center gap-x-4 hover:bg-amber-300 active:scale-[0.985] transition-all">
-                    <span>Start Professional Chat</span>
-                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                </button>
-                
-                <button onclick="showSection('physics')" 
-                        class="px-8 py-5 border border-slate-700 hover:bg-slate-900 text-xl font-medium rounded-3xl flex items-center gap-x-3 transition-colors">
-                    Explore Specialists
-                </button>
+            <div class="flex flex-wrap gap-3 mt-8">
+                <a href="#chat" 
+                   class="inline-flex items-center justify-center gap-x-2 px-8 h-12 bg-white text-zinc-950 font-semibold rounded-3xl hover:bg-zinc-100 transition-all active:scale-[0.985]">
+                    <i class="fa-solid fa-comments mr-2"></i>
+                    Sohbete Başla
+                </a>
+                <a href="#file-api" 
+                   class="inline-flex items-center justify-center gap-x-2 px-8 h-12 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 font-medium rounded-3xl transition-all active:scale-[0.985]">
+                    <i class="fa-solid fa-file-upload mr-2"></i>
+                    Dosya ile API Dene
+                </a>
             </div>
             
-            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                    <div class="text-cyan-400 text-5xl font-semibold">5</div>
-                    <div class="mt-1 text-sm">Specialists</div>
+            <div class="flex items-center gap-x-6 mt-8 text-sm">
+                <div class="flex items-center gap-x-1.5 text-zinc-400">
+                    <i class="fa-solid fa-check text-emerald-500"></i>
+                    <span>Gerçek zamanlı API simülasyonu</span>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                    <div class="text-cyan-400 text-5xl font-semibold">22+</div>
-                    <div class="mt-1 text-sm">Interactive Tools</div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                    <div class="text-cyan-400 text-5xl font-semibold">100%</div>
-                    <div class="mt-1 text-sm">Real Calculations</div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                    <div class="text-cyan-400 text-5xl font-semibold">v5.0</div>
-                    <div class="mt-1 text-sm">Expanded Edition</div>
+                <div class="flex items-center gap-x-1.5 text-zinc-400">
+                    <i class="fa-solid fa-check text-emerald-500"></i>
+                    <span>Dosya analizi desteği</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PHYSICS SECTION -->
-    <div id="physics" class="section max-w-screen-2xl mx-auto px-8 py-10">
-        <div class="flex justify-between items-end mb-8">
-            <div>
-                <h2 class="font-display text-5xl font-semibold tracking-tight">Physics Specialists</h2>
-                <p class="text-slate-400 mt-1">Classical Mechanics • Electromagnetism • Thermodynamics • Quantum</p>
+    <!-- Stats -->
+    <div class="max-w-7xl mx-auto px-6 pb-12">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="glass rounded-3xl p-5">
+                <div class="text-3xl font-semibold text-white">142k</div>
+                <div class="text-sm text-zinc-400 mt-1">API çağrısı (demo)</div>
             </div>
-            <div class="text-xs px-4 py-2 bg-slate-900 border border-slate-700 rounded-2xl font-mono">Powered by CoreScientificEngine + SciPy solve_ivp logic</div>
-        </div>
-
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            
-            <!-- Classical Mechanics - Ideal Projectile -->
-            <div class="tool-card bg-slate-900 border border-slate-700 rounded-3xl p-7">
-                <div class="flex gap-x-4">
-                    <div class="w-12 h-12 flex-shrink-0 bg-orange-400/10 text-orange-400 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-rocket text-3xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold text-xl">Projectile Motion (No Air Drag)</div>
-                        <div class="text-xs text-orange-400/70">Classical Mechanics • Analytical Solution</div>
-                        
-                        <div class="mt-6 grid grid-cols-2 gap-4">
-                            <div>
-                                <div class="text-xs text-slate-400 mb-1.5">Initial Velocity v₀ (m/s)</div>
-                                <input id="proj-v0" type="number" value="50" class="w-full bg-slate-950 border border-slate-700 focus:border-orange-400 rounded-2xl px-4 py-3 text-xl font-mono">
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-400 mb-1.5">Launch Angle (°)</div>
-                                <input id="proj-angle" type="number" value="45" class="w-full bg-slate-950 border border-slate-700 focus:border-orange-400 rounded-2xl px-4 py-3 text-xl font-mono">
-                            </div>
-                        </div>
-                        
-                        <button onclick="calculateProjectileIdeal()" 
-                                class="mt-5 w-full py-4 bg-orange-400 hover:bg-orange-300 active:bg-orange-500 text-slate-950 font-bold rounded-3xl flex items-center justify-center gap-x-3 text-sm tracking-wider">
-                            <i class="fa-solid fa-play"></i>
-                            <span>CALCULATE TRAJECTORY</span>
-                        </button>
-                        
-                        <div id="proj-result" class="mt-5 hidden result-panel p-5 rounded-2xl text-sm"></div>
-                    </div>
-                </div>
+            <div class="glass rounded-3xl p-5">
+                <div class="text-3xl font-semibold text-white">98.7ms</div>
+                <div class="text-sm text-zinc-400 mt-1">Ortalama yanıt süresi</div>
             </div>
-
-            <!-- Projectile with Quadratic Drag -->
-            <div class="tool-card bg-slate-900 border border-slate-700 rounded-3xl p-7">
-                <div class="flex gap-x-4">
-                    <div class="w-12 h-12 flex-shrink-0 bg-sky-400/10 text-sky-400 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-wind text-3xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold text-xl">Projectile with Air Drag</div>
-                        <div class="text-xs text-sky-400/70">Numerical ODE • Euler Integration (SciPy-style)</div>
-                        
-                        <div class="mt-5 grid grid-cols-3 gap-3 text-sm">
-                            <div><input id="drag-v0" value="50" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-3 py-2 text-center"><div class="text-[10px] text-center mt-0.5">v₀ (m/s)</div></div>
-                            <div><input id="drag-angle" value="45" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-3 py-2 text-center"><div class="text-[10px] text-center mt-0.5">Angle (°)</div></div>
-                            <div><input id="drag-mass" value="0.5" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-3 py-2 text-center"><div class="text-[10px] text-center mt-0.5">Mass (kg)</div></div>
-                            <div><input id="drag-cd" value="0.5" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-3 py-2 text-center"><div class="text-[10px] text-center mt-0.5">Cd</div></div>
-                            <div><input id="drag-area" value="0.01" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-3 py-2 text-center"><div class="text-[10px] text-center mt-0.5">Area (m²)</div></div>
-                        </div>
-                        
-                        <button onclick="simulateProjectileWithDrag()" 
-                                class="mt-5 w-full py-4 bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold rounded-3xl flex items-center justify-center gap-x-3 text-sm tracking-wider">
-                            <span>RUN NUMERICAL SIMULATION</span>
-                        </button>
-                        
-                        <canvas id="drag-chart" class="mt-4 w-full rounded-2xl border border-slate-700" height="180"></canvas>
-                        <div id="drag-result" class="mt-3 text-xs result-panel p-3 rounded-2xl hidden"></div>
-                    </div>
-                </div>
+            <div class="glass rounded-3xl p-5">
+                <div class="text-3xl font-semibold text-white">4.9k</div>
+                <div class="text-sm text-zinc-400 mt-1">Dosya analiz edildi</div>
             </div>
-            
-            <!-- Carnot Efficiency -->
-            <div class="tool-card bg-slate-900 border border-slate-700 rounded-3xl p-7">
-                <div class="flex gap-x-4">
-                    <div class="w-12 h-12 flex-shrink-0 bg-red-400/10 text-red-400 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-temperature-high text-3xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold text-xl">Carnot Heat Engine Efficiency</div>
-                        <div class="text-xs text-red-400/70">Thermodynamics • 2nd Law Limit</div>
-                        
-                        <div class="mt-6 grid grid-cols-2 gap-4">
-                            <div>
-                                <div class="text-xs text-slate-400 mb-1">Hot Reservoir T<sub>h</sub> (K)</div>
-                                <input id="carnot-th" type="number" value="800" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-xl font-mono">
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-400 mb-1">Cold Reservoir T<sub>c</sub> (K)</div>
-                                <input id="carnot-tc" type="number" value="300" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-xl font-mono">
-                            </div>
-                        </div>
-                        
-                        <button onclick="calculateCarnot()" class="mt-5 w-full py-4 bg-red-400 hover:bg-red-300 text-slate-950 font-bold rounded-3xl flex items-center justify-center gap-x-3 text-sm">
-                            CALCULATE MAXIMUM EFFICIENCY
-                        </button>
-                        
-                        <div id="carnot-result" class="mt-5 hidden result-panel p-5 rounded-2xl"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quantum Infinite Well -->
-            <div class="tool-card bg-slate-900 border border-slate-700 rounded-3xl p-7">
-                <div class="flex gap-x-4">
-                    <div class="w-12 h-12 flex-shrink-0 bg-violet-400/10 text-violet-400 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-atom text-3xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold text-xl">1D Infinite Potential Well</div>
-                        <div class="text-xs text-violet-400/70">Quantum Mechanics • Energy Levels</div>
-                        
-                        <div class="mt-5 grid grid-cols-3 gap-3">
-                            <div class="col-span-2">
-                                <div class="text-xs text-slate-400 mb-1">Well Width L (m)</div>
-                                <input id="well-l" type="number" value="1e-9" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-2.5 font-mono text-sm">
-                            </div>
-                            <div>
-                                <div class="text-xs text-slate-400 mb-1">Mass m (kg)</div>
-                                <input id="well-m" type="number" value="9.109e-31" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-2.5 font-mono text-sm">
-                            </div>
-                        </div>
-                        
-                        <button onclick="calculateQuantumWell()" class="mt-4 w-full py-3.5 bg-violet-400 hover:bg-violet-300 text-slate-950 font-bold rounded-3xl text-sm flex items-center justify-center gap-x-2">
-                            SHOW FIRST 5 ENERGY LEVELS
-                        </button>
-                        
-                        <div id="well-result" class="mt-4 hidden text-xs result-panel p-4 rounded-2xl"></div>
-                    </div>
-                </div>
+            <div class="glass rounded-3xl p-5">
+                <div class="text-3xl font-semibold text-white">24/7</div>
+                <div class="text-sm text-zinc-400 mt-1">API uptime</div>
             </div>
         </div>
     </div>
 
-    <!-- CHEMISTRY SECTION -->
-    <div id="chemistry" class="section max-w-screen-2xl mx-auto px-8 py-10">
-        <h2 class="font-display text-5xl font-semibold tracking-tight mb-2">Chemistry Specialists</h2>
-        <p class="text-slate-400 mb-8">Molar mass calculator connected to periodic table database from the Python bot</p>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 pb-20">
         
-        <div class="max-w-xl tool-card bg-slate-900 border border-slate-700 rounded-3xl p-8">
-            <div class="font-semibold text-2xl mb-1">Molar Mass Calculator</div>
-            <div class="text-xs text-emerald-400 mb-6">Formula parser • Same logic as calculate_molar_mass() in Python</div>
-            
-            <div class="flex gap-x-3">
-                <input id="chem-formula" type="text" value="C6H12O6" placeholder="e.g. H2O, C6H12O6, NaCl" 
-                       class="flex-1 bg-slate-950 border border-slate-700 focus:border-emerald-400 rounded-3xl px-6 py-4 text-2xl font-mono">
-                <button onclick="calculateMolarMass()" 
-                        class="px-10 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-bold rounded-3xl">CALCULATE</button>
-            </div>
-            
-            <div id="molar-result" class="mt-6 hidden result-panel p-6 rounded-3xl"></div>
-            
-            <div class="mt-8 text-xs text-slate-500">
-                Supported elements: H, He, Li, Be, B, C, N, O, F, Na, Mg, Al, Si, P, S, Cl, K, Ca, Fe, Cu, Zn...
-            </div>
+        <!-- Tabs -->
+        <div class="flex border-b border-zinc-800 mb-6">
+            <button onclick="switchTab(0)" id="tab-0"
+                    class="tab-button px-6 py-3 font-medium border-b-2 border-indigo-500 text-white flex items-center gap-x-2">
+                <i class="fa-solid fa-comments"></i>
+                <span>Canlı Sohbet (API)</span>
+            </button>
+            <button onclick="switchTab(1)" id="tab-1"
+                    class="tab-button px-6 py-3 font-medium text-zinc-400 hover:text-white flex items-center gap-x-2">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Dosyadan AI Analizi</span>
+            </button>
         </div>
-    </div>
 
-    <!-- MATHEMATICS SECTION -->
-    <div id="math" class="section max-w-screen-2xl mx-auto px-8 py-10">
-        <h2 class="font-display text-5xl font-semibold tracking-tight mb-8">Mathematics &amp; Numerical Tools</h2>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- Symbolic Calculus -->
-            <div class="tool-card bg-slate-900 border border-slate-700 rounded-3xl p-7">
-                <div class="font-semibold text-xl mb-1">Symbolic Calculus (math.js + SymPy logic)</div>
-                <div class="text-xs text-amber-400 mb-5">Differentiate • Integrate • Solve</div>
+        <!-- TAB 0: CHAT -->
+        <div id="tab-content-0" class="tab-content">
+            <div class="grid lg:grid-cols-12 gap-6">
                 
-                <div class="mb-4">
-                    <div class="text-xs text-slate-400 mb-1.5">Expression</div>
-                    <input id="math-expr" type="text" value="x^3 + 4*x*sin(x)" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3 font-mono">
+                <!-- Chat Window -->
+                <div class="lg:col-span-7">
+                    <div class="glass rounded-3xl border border-zinc-800 overflow-hidden flex flex-col h-[520px]">
+                        
+                        <!-- Chat Header -->
+                        <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/50">
+                            <div class="flex items-center gap-x-3">
+                                <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-brain text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold">Grok AI Asistan</div>
+                                    <div class="text-xs text-emerald-400 flex items-center gap-x-1">
+                                        <i class="fa-solid fa-circle text-[8px]"></i> 
+                                        API bağlantısı aktif • Grok-3 simülasyonu
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="clearChat()" 
+                                    class="text-xs px-3 py-1.5 hover:bg-zinc-800 rounded-2xl border border-zinc-700 flex items-center gap-x-1.5 text-zinc-400 hover:text-white transition-colors">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                                <span>Temizle</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Messages -->
+                        <div id="chat-messages" 
+                             class="flex-1 p-6 overflow-y-auto space-y-6 bg-zinc-950 custom-scroll">
+                            <!-- Messages populated by JS -->
+                        </div>
+                        
+                        <!-- Input -->
+                        <div class="p-4 border-t border-zinc-800 bg-zinc-900/70">
+                            <div class="flex gap-3">
+                                <input id="chat-input" type="text" 
+                                       class="flex-1 bg-zinc-900 border border-zinc-700 focus:border-indigo-500 outline-none px-5 h-12 rounded-3xl text-sm placeholder:text-zinc-500"
+                                       placeholder="Mesajını yaz... (Örn: Merhaba, hava nasıl?)"
+                                       onkeypress="if (event.key === 'Enter') sendChatMessage()">
+                                <button onclick="sendChatMessage()"
+                                        class="h-12 w-12 flex-shrink-0 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 transition-all rounded-3xl flex items-center justify-center">
+                                    <i class="fa-solid fa-paper-plane text-white"></i>
+                                </button>
+                            </div>
+                            <div class="text-[10px] text-center text-zinc-500 mt-2">Bu demo simülasyondur. Gerçek API için xAI Grok API kullanılır.</div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="flex gap-x-3">
-                    <button onclick="mathDifferentiate()" class="flex-1 py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold rounded-3xl text-sm">DIFFERENTIATE</button>
-                    <button onclick="mathIntegrate()" class="flex-1 py-3 bg-teal-400 hover:bg-teal-300 text-slate-950 font-semibold rounded-3xl text-sm">INTEGRATE</button>
+                <!-- API Log -->
+                <div class="lg:col-span-5">
+                    <div class="glass rounded-3xl border border-zinc-800 h-[520px] flex flex-col">
+                        <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
+                            <div class="flex items-center gap-x-2">
+                                <i class="fa-solid fa-terminal text-indigo-400"></i>
+                                <span class="font-semibold text-sm">API İstek Logu</span>
+                            </div>
+                            <button onclick="clearApiLog()" 
+                                    class="text-xs px-3 py-1 rounded-2xl hover:bg-zinc-800 text-zinc-400">Temizle</button>
+                        </div>
+                        
+                        <div id="api-log" 
+                             class="flex-1 p-4 text-xs overflow-y-auto api-log bg-black/40 space-y-1 text-emerald-300/90 font-mono">
+                            <!-- Populated dynamically -->
+                        </div>
+                        
+                        <div class="px-4 py-3 border-t border-zinc-800 text-[10px] text-zinc-500 flex items-center gap-x-2">
+                            <i class="fa-solid fa-info-circle"></i>
+                            <span>Gerçek zamanlı API çağrı simülasyonu</span>
+                        </div>
+                    </div>
                 </div>
-                
-                <div id="math-result" class="mt-5 result-panel p-5 rounded-2xl text-sm hidden"></div>
-            </div>
-            
-            <!-- Statistics -->
-            <div class="tool-card bg-slate-900 border border-slate-700 rounded-3xl p-7">
-                <div class="font-semibold text-xl mb-1">Descriptive Statistics</div>
-                <div class="text-xs text-teal-400 mb-5">Same as Statistics Specialist in Python bot</div>
-                
-                <div>
-                    <div class="text-xs text-slate-400 mb-1.5">Enter numbers separated by space or comma</div>
-                    <textarea id="stats-data" class="w-full h-20 bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3 font-mono text-sm" placeholder="12 15 18 22 19 25">12 15 18 22 19</textarea>
-                </div>
-                
-                <button onclick="calculateStatistics()" class="mt-4 w-full py-3.5 bg-teal-400 hover:bg-teal-300 text-slate-950 font-bold rounded-3xl text-sm">COMPUTE MEAN • MEDIAN • STD • VARIANCE</button>
-                
-                <div id="stats-result" class="mt-5 result-panel p-5 rounded-2xl text-sm hidden"></div>
             </div>
         </div>
-    </div>
 
-    <!-- GEOMETRY SECTION -->
-    <div id="geometry" class="section max-w-screen-2xl mx-auto px-8 py-10">
-        <h2 class="font-display text-5xl font-semibold tracking-tight mb-8">Geometry Specialist</h2>
-        
-        <div class="max-w-2xl tool-card bg-slate-900 border border-slate-700 rounded-3xl p-8">
-            <div class="font-semibold text-2xl">Triangle Solver (SSS)</div>
-            <div class="text-xs text-cyan-400 mb-6">Heron's formula • Same as Geometry Specialist</div>
-            
-            <div class="grid grid-cols-3 gap-4">
-                <div><div class="text-xs mb-1 text-slate-400">Side a</div><input id="tri-a" value="5" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 font-mono"></div>
-                <div><div class="text-xs mb-1 text-slate-400">Side b</div><input id="tri-b" value="6" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 font-mono"></div>
-                <div><div class="text-xs mb-1 text-slate-400">Side c</div><input id="tri-c" value="7" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 font-mono"></div>
+        <!-- TAB 1: FILE API -->
+        <div id="tab-content-1" class="tab-content hidden">
+            <div class="grid lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-7">
+                    <div class="glass rounded-3xl border border-zinc-800 p-7">
+                        <div class="flex items-center gap-x-3 mb-6">
+                            <div class="w-10 h-10 rounded-2xl bg-purple-600/20 flex items-center justify-center">
+                                <i class="fa-solid fa-file-upload text-purple-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-xl">Dosyadan Yapay Zeka Analizi</h3>
+                                <p class="text-sm text-zinc-400">Dosyayı yükle → API üzerinden Grok modeline gönder → Akıllı analiz al</p>
+                            </div>
+                        </div>
+                        
+                        <!-- File Upload Zone -->
+                        <div id="upload-zone"
+                             class="border-2 border-dashed border-zinc-700 hover:border-indigo-500/70 transition-colors rounded-3xl p-8 text-center cursor-pointer"
+                             onclick="document.getElementById('file-input').click()">
+                            
+                            <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(event)">
+                            
+                            <div class="mx-auto w-14 h-14 rounded-2xl bg-zinc-900 flex items-center justify-center mb-4">
+                                <i class="fa-solid fa-cloud-upload-alt text-3xl text-zinc-400"></i>
+                            </div>
+                            
+                            <div class="font-medium">Dosyayı buraya sürükle veya tıkla</div>
+                            <div class="text-xs text-zinc-500 mt-1">TXT, PDF, JPG, PNG desteklenir (demo)</div>
+                        </div>
+                        
+                        <!-- Preview -->
+                        <div id="file-preview" class="mt-5 min-h-[80px]">
+                            <!-- JS populated -->
+                        </div>
+                        
+                        <button id="analyze-btn" onclick="analyzeWithAPI()" disabled
+                                class="mt-5 w-full h-12 flex items-center justify-center gap-x-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-zinc-700 disabled:to-zinc-700 disabled:text-zinc-400 transition-all font-semibold rounded-3xl text-sm">
+                            <i class="fa-solid fa-magic mr-2"></i>
+                            <span>API ile Analiz Et (Bağlantı Kur)</span>
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <div class="text-[10px] text-zinc-500">API Endpoint: <span class="font-mono text-indigo-400">POST /v1/analyze</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analysis Result -->
+                <div class="lg:col-span-5">
+                    <div class="glass rounded-3xl border border-zinc-800 h-full flex flex-col">
+                        <div class="px-6 py-4 border-b border-zinc-800">
+                            <span class="font-semibold">API Analiz Sonucu</span>
+                        </div>
+                        
+                        <div id="analysis-result" class="flex-1 p-6 text-sm overflow-auto">
+                            <div class="h-full flex flex-col items-center justify-center text-center text-zinc-500">
+                                <i class="fa-solid fa-robot text-4xl mb-3 opacity-30"></i>
+                                <p class="max-w-[200px]">Henüz dosya yüklenmedi.<br>Dosya seç ve "API ile Analiz Et" butonuna bas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <button onclick="solveTriangle()" class="mt-6 w-full py-4 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold rounded-3xl">SOLVE TRIANGLE (Area + Angles)</button>
-            
-            <div id="tri-result" class="mt-6 hidden result-panel p-6 rounded-2xl"></div>
         </div>
-    </div>
 
-    <!-- PROFESSIONAL CHAT MODE -->
-    <div id="chat" class="section max-w-screen-2xl mx-auto px-8 py-10">
-        <div class="max-w-4xl mx-auto">
+        <!-- How it works -->
+        <div id="how-it-works" class="mt-16">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center gap-x-2 bg-slate-900 border border-slate-700 px-5 py-1 rounded-3xl text-sm mb-3">
-                    <i class="fa-solid fa-robot"></i>
-                    <span class="font-semibold">Professional Scientific LLM Assistant v5.0</span>
-                </div>
-                <h2 class="font-display text-5xl font-semibold tracking-tight">Natural Language Chat Mode</h2>
-                <p class="text-slate-400 mt-2">Type questions in plain English. Real calculations powered by the same parsing engine as the Python bot.</p>
+                <span class="px-4 py-1 text-xs tracking-[2px] font-medium bg-zinc-900 border border-zinc-700 rounded-full">TEKNİK DETAY</span>
+                <h2 class="section-header mt-3">API Mantığı Nasıl Çalışır?</h2>
+                <p class="text-zinc-400 mt-2 max-w-md mx-auto">Bu web sitesi, gerçek bir backend API ile nasıl iletişim kuracağını simüle eder.</p>
             </div>
             
-            <div class="bg-slate-900 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
-                <!-- Chat Header -->
-                <div class="px-6 py-4 bg-slate-950 border-b border-slate-700 flex items-center justify-between">
-                    <div class="flex items-center gap-x-3">
-                        <div class="w-9 h-9 bg-gradient-to-br from-cyan-400 to-teal-400 rounded-2xl flex items-center justify-center">
-                            <i class="fa-solid fa-brain text-slate-950"></i>
-                        </div>
-                        <div>
-                            <div class="font-semibold">Scientific AI Assistant</div>
-                            <div class="text-xs text-emerald-400">CoreScientificEngine • Online</div>
-                        </div>
-                    </div>
-                    <button onclick="clearChat()" class="text-xs px-4 py-2 hover:bg-slate-800 rounded-2xl flex items-center gap-x-2">
-                        <i class="fa-solid fa-trash"></i>
-                        <span>Clear</span>
-                    </button>
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="glass rounded-3xl p-6 border border-zinc-800">
+                    <div class="text-indigo-400 mb-4"><i class="fa-solid fa-plug fa-2x"></i></div>
+                    <div class="font-semibold mb-2">1. İstek Oluşturma</div>
+                    <div class="text-sm text-zinc-400">Kullanıcı mesajı veya dosya, JavaScript ile JSON formatına dönüştürülür ve fetch() ile API endpoint'ine POST edilir.</div>
                 </div>
-                
-                <!-- Messages -->
-                <div id="chat-messages" class="h-[420px] overflow-y-auto p-6 space-y-5 chat-container bg-[#0f172a]">
-                    <!-- Messages injected by JS -->
+                <div class="glass rounded-3xl p-6 border border-zinc-800">
+                    <div class="text-indigo-400 mb-4"><i class="fa-solid fa-exchange-alt fa-2x"></i></div>
+                    <div class="font-semibold mb-2">2. Sunucu &amp; Model</div>
+                    <div class="text-sm text-zinc-400">Gerçek hayatta: Node.js/Python backend + Grok / OpenAI / Claude API çağrısı yapılır. JWT veya Bearer token ile kimlik doğrulama.</div>
                 </div>
-                
-                <!-- Input -->
-                <div class="p-4 bg-slate-900 border-t border-slate-700">
-                    <div class="flex gap-x-3">
-                        <input id="chat-input" type="text" placeholder="Ask anything scientific... (e.g. 'projectile v0=50 angle=45' or 'molar mass of C6H12O6')" 
-                               class="flex-1 bg-slate-950 border border-slate-700 focus:border-cyan-400 rounded-3xl px-6 py-4 text-sm"
-                               onkeypress="if (event.key === 'Enter') sendChatMessage()">
-                        <button onclick="sendChatMessage()" 
-                                class="px-8 bg-cyan-400 hover:bg-cyan-300 active:bg-cyan-500 text-slate-950 font-bold rounded-3xl flex items-center justify-center">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div class="text-[10px] text-center text-slate-500 mt-3">Examples: projectile, molar mass of H2SO4, carnot 800 300, differentiate x**2*sin(x), mean of 12 15 18</div>
+                <div class="glass rounded-3xl p-6 border border-zinc-800">
+                    <div class="text-indigo-400 mb-4"><i class="fa-solid fa-reply fa-2x"></i></div>
+                    <div class="font-semibold mb-2">3. Yanıt İşleme</div>
+                    <div class="text-sm text-zinc-400">API'den dönen JSON parse edilir. Mesajlar, analiz sonuçları ve metadata frontend'de render edilir. Hata yönetimi ve loading state gösterilir.</div>
                 </div>
+            </div>
+            
+            <div class="mt-8 p-6 rounded-3xl bg-zinc-900 border border-zinc-800 font-mono text-xs overflow-auto">
+                <div class="text-emerald-400 mb-2">// Gerçek API entegrasyonu örneği (JavaScript)</div>
+                <pre class="text-zinc-300"><code>async function callGrokAPI(userMessage, apiKey) {
+  const res = await fetch("https://api.x.ai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "grok-3-latest",
+      messages: [{ role: "user", content: userMessage }]
+    })
+  });
+  const data = await res.json();
+  return data.choices[0].message.content;
+}</code></pre>
             </div>
         </div>
     </div>
 
-    <!-- ABOUT -->
-    <div id="about" class="section max-w-screen-2xl mx-auto px-8 py-12 text-sm">
-        <div class="max-w-2xl">
-            <h2 class="font-display text-4xl font-semibold mb-6">About This Web Edition</h2>
-            <div class="prose prose-invert text-slate-300">
-                <p>This is the official <strong>Web Edition v5.0</strong> of <code>scientific_expert_bot_v5_expanded.py</code>.</p>
-                <p>All calculation logic, formulas, and educational explanations are directly ported from the Python source files you provided.</p>
-                <ul class="mt-4 space-y-1 text-xs">
-                    <li>• Projectile motion (ideal + quadratic drag with numerical integration)</li>
-                    <li>• Molar mass parser using the same PERIODIC_TABLE</li>
-                    <li>• Carnot efficiency, Quantum well, SUVAT, Elastic collisions</li>
-                    <li>• Symbolic calculus via math.js (mirrors SymPy)</li>
-                    <li>• Professional natural language chat mode with advanced intent parsing</li>
-                </ul>
-                <p class="mt-6 text-xs">Fully self-contained. No backend required. Same scientific integrity as the original Python bot.</p>
-            </div>
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 py-8 text-center text-xs text-zinc-500">
+        <div class="max-w-7xl mx-auto px-6">
+            Bu sayfa tamamen frontend simülasyonudur. Gerçek yapay zeka API'si (xAI Grok, OpenAI vb.) ile tam entegrasyon için backend sunucu gerekir.<br>
+            <span class="text-zinc-600">Made for demo purposes • 2026</span>
         </div>
-    </div>
-
-    <footer class="border-t border-slate-800 py-8 text-center text-xs text-slate-500">
-        Scientific Expert Bot v5.0 Web Edition • Ported from scientific_expert_bot_v5_expanded.py • All calculations are real and educational
     </footer>
 
+    <!-- API Key Modal -->
+    <div id="api-key-modal" onclick="if (event.target.id === 'api-key-modal') hideApiKeyModal()" 
+         class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md mx-4 rounded-3xl p-7 border border-zinc-700">
+            <div class="flex justify-between items-start mb-5">
+                <div>
+                    <div class="font-semibold text-lg">API Anahtarı Ayarları</div>
+                    <div class="text-xs text-zinc-400">Demo için opsiyonel</div>
+                </div>
+                <button onclick="hideApiKeyModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times fa-lg"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-zinc-400 block mb-1.5">xAI Grok API Anahtarı (simüle)</label>
+                    <input id="api-key-input" type="text" value="grok_demo_7f8k2p9qXvL3mN5rT8yU" 
+                           class="w-full bg-zinc-900 border border-zinc-700 focus:border-indigo-500 px-4 h-11 rounded-2xl text-sm font-mono">
+                </div>
+                
+                <div class="text-xs bg-zinc-900 border border-zinc-700 rounded-2xl p-3 text-zinc-400">
+                    Gerçek kullanımda bu alanı kendi API anahtarınla doldur. Demo modunda otomatik olarak simüle edilir.
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveApiKey()" 
+                        class="flex-1 h-11 bg-indigo-600 hover:bg-indigo-500 transition-colors rounded-3xl font-medium">Kaydet ve Kullan</button>
+                <button onclick="hideApiKeyModal()" 
+                        class="flex-1 h-11 border border-zinc-700 hover:bg-zinc-800 transition-colors rounded-3xl font-medium">İptal</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Tailwind script
+        // Tailwind config
         function initializeTailwind() {
-            document.documentElement.style.setProperty('--accent', '#22d3ee');
-        }
-        
-        // Section switching
-        function showSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.documentElement.style.setProperty('--accent', '#6366f1');
             
-            // Show target
-            const target = document.getElementById(section);
-            if (target) target.classList.add('active');
-            
-            // Update nav active state
-            document.querySelectorAll('[id^="nav-"]').forEach(btn => btn.classList.remove('active'));
-            const navBtn = document.getElementById('nav-' + section);
-            if (navBtn) navBtn.classList.add('active');
-            
-            // Special init for chat
-            if (section === 'chat' && document.getElementById('chat-messages').children.length === 0) {
-                addBotMessage("Hello! I'm the Professional Scientific LLM Assistant v5.0. Ask me anything about Physics, Chemistry, Mathematics or Geometry. All calculations are real.");
-            }
-        }
-        
-        // ============ PHYSICS CALCULATIONS ============
-        
-        function calculateProjectileIdeal() {
-            const v0 = parseFloat(document.getElementById('proj-v0').value);
-            const angle = parseFloat(document.getElementById('proj-angle').value);
-            
-            if (!v0 || !angle || angle <= 0 || angle >= 90) {
-                alert("Please enter valid positive v0 and angle between 0-90°");
-                return;
-            }
-            
-            const g = 9.81;
-            const rad = angle * Math.PI / 180;
-            
-            const tFlight = 2 * v0 * Math.sin(rad) / g;
-            const hMax = (v0 * v0 * Math.sin(rad) * Math.sin(rad)) / (2 * g);
-            const range = (v0 * v0 * Math.sin(2 * rad)) / g;
-            
-            const resultDiv = document.getElementById('proj-result');
-            resultDiv.innerHTML = `
-                <div class="font-semibold mb-3 text-orange-400">RESULTS (No Air Resistance)</div>
-                <div class="grid grid-cols-3 gap-4 text-center">
-                    <div><div class="text-xs text-slate-400">Time of Flight</div><div class="text-2xl font-semibold metric">${tFlight.toFixed(3)}</div><div class="text-xs">s</div></div>
-                    <div><div class="text-xs text-slate-400">Maximum Height</div><div class="text-2xl font-semibold metric">${hMax.toFixed(3)}</div><div class="text-xs">m</div></div>
-                    <div><div class="text-xs text-slate-400">Horizontal Range</div><div class="text-2xl font-semibold metric">${range.toFixed(3)}</div><div class="text-xs">m</div></div>
-                </div>
-                <div class="mt-4 text-[10px] text-slate-400">Formulas from Classical Mechanics Specialist • Ideal case (use drag version for realism)</div>
-            `;
-            resultDiv.classList.remove('hidden');
-        }
-        
-        let dragChartInstance = null;
-        
-        function simulateProjectileWithDrag() {
-            const v0 = parseFloat(document.getElementById('drag-v0').value);
-            const angleDeg = parseFloat(document.getElementById('drag-angle').value);
-            const m = parseFloat(document.getElementById('drag-mass').value);
-            const Cd = parseFloat(document.getElementById('drag-cd').value);
-            const A = parseFloat(document.getElementById('drag-area').value);
-            
-            const rho = 1.225; // air density
-            const g = 9.81;
-            const k = 0.5 * Cd * rho * A / m;
-            const theta = angleDeg * Math.PI / 180;
-            
-            let vx = v0 * Math.cos(theta);
-            let vy = v0 * Math.sin(theta);
-            let x = 0, y = 0;
-            const dt = 0.005;
-            const maxTime = 30;
-            
-            const xs = [0];
-            const ys = [0];
-            
-            let t = 0;
-            let landed = false;
-            let landX = 0, landT = 0, maxH = 0;
-            
-            while (t < maxTime && y >= 0) {
-                const speed = Math.sqrt(vx*vx + vy*vy);
-                let ax = 0, ay = -g;
-                
-                if (speed > 1e-6) {
-                    ax = -k * speed * vx;
-                    ay = -g - k * speed * vy;
-                }
-                
-                vx += ax * dt;
-                vy += ay * dt;
-                x += vx * dt;
-                y += vy * dt;
-                
-                xs.push(x);
-                ys.push(Math.max(y, 0));
-                
-                if (y > maxH) maxH = y;
-                
-                if (y <= 0 && !landed && t > 0.1) {
-                    landed = true;
-                    landX = x;
-                    landT = t;
-                }
-                
-                t += dt;
-            }
-            
-            // Display results
-            const resultDiv = document.getElementById('drag-result');
-            resultDiv.innerHTML = `
-                <div class="font-mono text-xs">
-                    <span class="text-sky-400">Range with drag:</span> <span class="font-semibold">${landX.toFixed(2)} m</span><br>
-                    <span class="text-sky-400">Time of flight:</span> <span class="font-semibold">${landT.toFixed(3)} s</span><br>
-                    <span class="text-sky-400">Max height:</span> <span class="font-semibold">${maxH.toFixed(2)} m</span>
-                </div>
-            `;
-            resultDiv.classList.remove('hidden');
-            
-            // Draw chart
-            const ctx = document.getElementById('drag-chart');
-            
-            if (dragChartInstance) dragChartInstance.destroy();
-            
-            dragChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: xs.map((_, i) => i * dt),
-                    datasets: [{
-                        label: 'Trajectory (with drag)',
-                        data: ys,
-                        borderColor: '#38bdf8',
-                        borderWidth: 2.5,
-                        fill: false,
-                        tension: 0.1,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { title: { display: true, text: 'Time (s)', color: '#64748b' }, grid: { color: '#334155' } },
-                        y: { title: { display: true, text: 'Height (m)', color: '#64748b' }, grid: { color: '#334155' } }
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'display': ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif']
+                        }
                     }
                 }
+            };
+        }
+
+        // Tab switching
+        let currentTab = 0;
+        
+        function switchTab(tabIndex) {
+            // Hide all
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-button').forEach(el => {
+                el.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
+                el.classList.add('text-zinc-400');
             });
+            
+            // Show selected
+            document.getElementById(`tab-content-${tabIndex}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabIndex}`);
+            activeBtn.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+            activeBtn.classList.remove('text-zinc-400');
+            
+            currentTab = tabIndex;
         }
+
+        // Chat functionality
+        let chatMessages = [];
         
-        function calculateCarnot() {
-            const Th = parseFloat(document.getElementById('carnot-th').value);
-            const Tc = parseFloat(document.getElementById('carnot-tc').value);
-            
-            if (!Th || !Tc || Th <= Tc) {
-                alert("Th must be greater than Tc and both positive");
-                return;
-            }
-            
-            const eff = (1 - Tc / Th) * 100;
-            
-            const result = document.getElementById('carnot-result');
-            result.innerHTML = `
-                <div class="text-red-400 font-semibold mb-2">CARNOT EFFICIENCY</div>
-                <div class="text-6xl font-semibold metric tracking-tighter">${eff.toFixed(2)}<span class="text-3xl align-super">%</span></div>
-                <div class="mt-3 text-xs">This is the theoretical maximum efficiency between these temperatures.<br>Real engines are always lower.</div>
-            `;
-            result.classList.remove('hidden');
-        }
-        
-        function calculateQuantumWell() {
-            const L = parseFloat(document.getElementById('well-l').value);
-            const m = parseFloat(document.getElementById('well-m').value);
-            
-            const hbar = 1.0545718e-34;
-            const eV = 1.60217662e-19;
-            
-            let html = `<div class="font-semibold text-violet-400 mb-3">Energy Levels (n=1 to 5)</div><div class="space-y-1 text-xs">`;
-            
-            for (let n = 1; n <= 5; n++) {
-                const E_J = (n*n * Math.PI*Math.PI * hbar*hbar) / (2 * m * L*L);
-                const E_eV = E_J / eV;
-                html += `<div class="flex justify-between"><span>n = ${n}</span> <span class="font-mono">${E_eV.toFixed(4)} eV</span></div>`;
-            }
-            
-            html += `</div><div class="mt-3 text-[10px] text-slate-400">E ∝ n² • Ported from Quantum Mechanics Specialist</div>`;
-            
-            const result = document.getElementById('well-result');
-            result.innerHTML = html;
-            result.classList.remove('hidden');
-        }
-        
-        // ============ CHEMISTRY ============
-        const PERIODIC_TABLE = {
-            'H': 1.008, 'He': 4.003, 'Li': 6.941, 'Be': 9.012, 'B': 10.811, 'C': 12.011,
-            'N': 14.007, 'O': 15.999, 'F': 18.998, 'Na': 22.990, 'Mg': 24.305, 'Al': 26.982,
-            'Si': 28.085, 'P': 30.974, 'S': 32.065, 'Cl': 35.453, 'K': 39.098, 'Ca': 40.078,
-            'Fe': 55.845, 'Cu': 63.546, 'Zn': 65.38
-        };
-        
-        function calculateMolarMass() {
-            const formula = document.getElementById('chem-formula').value.trim();
-            const pattern = /([A-Z][a-z]?)(\d*)/g;
-            let match;
-            let total = 0;
-            let breakdown = '';
-            
-            while ((match = pattern.exec(formula)) !== null) {
-                const elem = match[1];
-                const num = match[2] ? parseInt(match[2]) : 1;
-                
-                if (!PERIODIC_TABLE[elem]) {
-                    document.getElementById('molar-result').innerHTML = `<div class="text-red-400">Element ${elem} not in database</div>`;
-                    document.getElementById('molar-result').classList.remove('hidden');
-                    return;
-                }
-                
-                const mass = PERIODIC_TABLE[elem] * num;
-                total += mass;
-                breakdown += `${elem}${num > 1 ? num : ''} × ${PERIODIC_TABLE[elem]} = ${mass.toFixed(3)}<br>`;
-            }
-            
-            const resultDiv = document.getElementById('molar-result');
-            resultDiv.innerHTML = `
-                <div class="font-semibold text-emerald-400">MOLAR MASS OF ${formula}</div>
-                <div class="text-5xl font-semibold my-2 metric">${total.toFixed(4)} <span class="text-xl">g/mol</span></div>
-                <div class="text-xs text-slate-400">${breakdown}</div>
-                <div class="mt-2 text-xs">Calculation identical to Python bot's calculate_molar_mass()</div>
-            `;
-            resultDiv.classList.remove('hidden');
-        }
-        
-        // ============ MATHEMATICS ============
-        function mathDifferentiate() {
-            const exprStr = document.getElementById('math-expr').value;
-            try {
-                const expr = math.parse(exprStr);
-                const derivative = math.derivative(expr, 'x');
-                const simplified = math.simplify(derivative);
-                
-                document.getElementById('math-result').innerHTML = `
-                    <div class="text-amber-400 font-semibold">d/dx (${exprStr})</div>
-                    <div class="mt-2 text-xl font-mono">${simplified.toString()}</div>
-                `;
-                document.getElementById('math-result').classList.remove('hidden');
-            } catch(e) {
-                alert("Could not parse expression. Try format like: x^2 + 3*x*sin(x)");
-            }
-        }
-        
-        function mathIntegrate() {
-            const exprStr = document.getElementById('math-expr').value;
-            try {
-                const expr = math.parse(exprStr);
-                // math.js has limited symbolic integrate, fallback to numeric or note
-                document.getElementById('math-result').innerHTML = `
-                    <div class="text-teal-400 font-semibold">∫ ${exprStr} dx</div>
-                    <div class="mt-2">Symbolic integration limited in browser. Use dedicated tool or Python version for full SymPy support.</div>
-                    <div class="text-xs mt-2 text-slate-400">For polynomials try simple cases or switch to Python bot.</div>
-                `;
-                document.getElementById('math-result').classList.remove('hidden');
-            } catch(e) {
-                alert("Error parsing expression");
-            }
-        }
-        
-        function calculateStatistics() {
-            const input = document.getElementById('stats-data').value.trim();
-            const nums = input.split(/[\s,]+/).map(Number).filter(n => !isNaN(n));
-            
-            if (nums.length < 2) {
-                alert("Please enter at least 2 numbers");
-                return;
-            }
-            
-            const mean = nums.reduce((a,b) => a+b, 0) / nums.length;
-            const sorted = [...nums].sort((a,b) => a-b);
-            const median = sorted.length % 2 === 0 ? 
-                (sorted[sorted.length/2-1] + sorted[sorted.length/2]) / 2 : 
-                sorted[Math.floor(sorted.length/2)];
-            
-            const variance = nums.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (nums.length - 1);
-            const std = Math.sqrt(variance);
-            
-            document.getElementById('stats-result').innerHTML = `
-                <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                    <div>Mean</div><div class="font-mono text-right">${mean.toFixed(6)}</div>
-                    <div>Median</div><div class="font-mono text-right">${median.toFixed(6)}</div>
-                    <div>Std Dev (sample)</div><div class="font-mono text-right">${std.toFixed(6)}</div>
-                    <div>Variance</div><div class="font-mono text-right">${variance.toFixed(6)}</div>
-                </div>
-                <div class="mt-3 text-xs text-teal-300">Ported from Statistics Specialist • ddof=1</div>
-            `;
-            document.getElementById('stats-result').classList.remove('hidden');
-        }
-        
-        // ============ GEOMETRY ============
-        function solveTriangle() {
-            const a = parseFloat(document.getElementById('tri-a').value);
-            const b = parseFloat(document.getElementById('tri-b').value);
-            const c = parseFloat(document.getElementById('tri-c').value);
-            
-            const s = (a + b + c) / 2;
-            const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-            
-            const A = Math.acos((b*b + c*c - a*a) / (2*b*c)) * 180 / Math.PI;
-            const B = Math.acos((a*a + c*c - b*b) / (2*a*c)) * 180 / Math.PI;
-            const C = 180 - A - B;
-            
-            document.getElementById('tri-result').innerHTML = `
-                <div class="font-semibold text-cyan-400 mb-3">SSS TRIANGLE SOLUTION</div>
-                <div class="grid grid-cols-2 gap-y-1 text-sm">
-                    <div>Area</div><div class="font-mono text-right">${area.toFixed(4)}</div>
-                    <div>Angle A</div><div class="font-mono text-right">${A.toFixed(2)}°</div>
-                    <div>Angle B</div><div class="font-mono text-right">${B.toFixed(2)}°</div>
-                    <div>Angle C</div><div class="font-mono text-right">${C.toFixed(2)}°</div>
-                </div>
-                <div class="text-xs mt-3 text-slate-400">Heron's formula • Identical to Geometry Specialist in Python</div>
-            `;
-            document.getElementById('tri-result').classList.remove('hidden');
-        }
-        
-        // ============ PROFESSIONAL CHAT MODE ============
-        let chatHistory = [];
-        
-        function addBotMessage(text) {
+        function addChatMessage(text, isUser) {
             const container = document.getElementById('chat-messages');
-            const msg = document.createElement('div');
-            msg.className = `message-bot p-4 rounded-3xl max-w-[85%] text-sm`;
-            msg.innerHTML = text;
-            container.appendChild(msg);
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} message-enter`;
+            
+            if (isUser) {
+                messageDiv.innerHTML = `
+                    <div class="max-w-[75%]">
+                        <div class="chat-bubble-user px-5 py-3 text-sm shadow-inner">
+                            ${text}
+                        </div>
+                        <div class="text-right text-[10px] text-zinc-500 mt-1 pr-1">Sen • şimdi</div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="max-w-[80%] flex gap-3">
+                        <div class="w-8 h-8 mt-1 flex-shrink-0 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div>
+                            <div class="chat-bubble-ai px-5 py-3 text-sm">
+                                ${text}
+                            </div>
+                            <div class="text-[10px] text-zinc-500 mt-1 pl-1">Grok AI • API</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(messageDiv);
             container.scrollTop = container.scrollHeight;
+            
+            chatMessages.push({text, isUser});
         }
         
-        function addUserMessage(text) {
+        function showTypingIndicator() {
             const container = document.getElementById('chat-messages');
-            const msg = document.createElement('div');
-            msg.className = `bg-cyan-400 text-slate-950 p-4 rounded-3xl max-w-[75%] ml-auto text-sm`;
-            msg.innerHTML = text;
-            container.appendChild(msg);
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = `flex justify-start message-enter`;
+            typingDiv.innerHTML = `
+                <div class="max-w-[80%] flex gap-3">
+                    <div class="w-8 h-8 mt-1 flex-shrink-0 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-robot text-white"></i>
+                    </div>
+                    <div class="chat-bubble-ai px-5 py-3 text-sm flex items-center">
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <span class="ml-3 text-xs text-zinc-400">API yanıtı bekleniyor...</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(typingDiv);
             container.scrollTop = container.scrollHeight;
+            return typingDiv;
+        }
+        
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+        
+        function getAIResponse(userMessage) {
+            const msg = userMessage.toLowerCase().trim();
+            
+            if (msg.includes('merhaba') || msg.includes('selam') || msg.includes('hi')) {
+                return "Merhaba! 👋 Ben Grok tabanlı bir yapay zeka simülasyonuyum. API üzerinden sana yardımcı olmak için buradayım. Bugün nasıl yardımcı olabilirim?";
+            }
+            
+            if (msg.includes('nasılsın') || msg.includes('naber')) {
+                return "Harikayım, teşekkürler! API bağlantım çok stabil. Sen nasılsın? 😊";
+            }
+            
+            if (msg.includes('hava') || msg.includes('bugün')) {
+                return "Hava durumu API'sinden güncel bilgi: İstanbul için 8°C, parçalı bulutlu. Gerçek entegrasyonda OpenWeatherMap veya benzeri API'ler kullanılır.";
+            }
+            
+            if (msg.includes('dosya') || msg.includes('yükle')) {
+                return "Dosya analizi için sağdaki sekmeye geçebilirsin! Orada dosyalarını API mantığıyla Grok modeline gönderip akıllı özet/analiz alabiliyorsun.";
+            }
+            
+            if (msg.includes('api') || msg.includes('bağlantı')) {
+                return "Evet, bu sitedeki tüm işlemler gerçek API çağrılarını simüle eder. İstek logunu sağ tarafta görebilirsin. Gerçek hayatta xAI'nin Grok API'si kullanılır.";
+            }
+            
+            if (msg.includes('kimsin') || msg.includes('sen kim')) {
+                return "Ben xAI tarafından geliştirilen Grok modelinin demo versiyonuyum. Bu web sitesi üzerinden API bağlantısını deneyimlemen için hazırlandı.";
+            }
+            
+            if (msg.includes('teşekkür') || msg.includes('sağ ol')) {
+                return "Rica ederim! 😊 Başka bir sorunun olursa buradayım. API ile her zaman bağlıyım.";
+            }
+            
+            // Default smart response
+            const responses = [
+                `Mesajını anladım: "${userMessage}". Bu demo ortamında Grok modelini simüle ediyorum. Gerçek projende tam API entegrasyonu ile çok daha güçlü yanıtlar alabilirsin.`,
+                `İlginç bir soru! API üzerinden Grok-3 modeline ilettim. Demo modunda detaylı yanıt üretmek için şu an basit bir mantık kullanıyorum. Daha karmaşık projeler için backend + gerçek API anahtarı öneririm.`,
+                `Anladım. Bu mesajı API endpoint'ine gönderdim ve modelden yanıt geldi. Gerçek hayatta bu tür etkileşimler milisaniyeler içinde gerçekleşir.`,
+                `Teşekkürler! Mesajın API loguna kaydedildi. İstersen daha teknik detaylar sorabilirsin (örneğin: model parametreleri, token kullanımı vs.).`
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
         }
         
         function sendChatMessage() {
             const input = document.getElementById('chat-input');
-            const query = input.value.trim();
-            if (!query) return;
+            const text = input.value.trim();
             
-            addUserMessage(query);
+            if (!text) return;
+            
+            // Add user message
+            addChatMessage(text, true);
             input.value = '';
             
-            // Process with same logic as Python professional_chat_mode
+            // Log API request
+            logApiRequest(`POST /v1/chat/completions`, `Mesaj: "${text.substring(0, 45)}${text.length > 45 ? '...' : ''}"`);
+            
+            // Show typing
+            const typingEl = showTypingIndicator();
+            
+            // Simulate API delay + response
             setTimeout(() => {
-                const response = processScientificQuery(query);
-                addBotMessage(response);
-            }, 420);
-        }
-        
-        function processScientificQuery(query) {
-            const q = query.toLowerCase();
-            
-            // Projectile
-            if (q.includes('projectile') || q.includes('launch') || q.includes('thrown')) {
-                const nums = query.match(/-?\d+\.?\d*/g) || [];
-                if (nums.length >= 2) {
-                    const v0 = parseFloat(nums[0]);
-                    const angle = parseFloat(nums[1]);
-                    const g = 9.81;
-                    const rad = angle * Math.PI / 180;
-                    const t = 2 * v0 * Math.sin(rad) / g;
-                    const h = (v0 ** 2 * Math.sin(rad) ** 2) / (2 * g);
-                    const r = (v0 ** 2 * Math.sin(2 * rad)) / g;
-                    
-                    return `【Classical Mechanics - Projectile】<br>
-                    v₀ = ${v0} m/s &nbsp;&nbsp; θ = ${angle}°<br><br>
-                    Time of flight = <b>${t.toFixed(3)} s</b><br>
-                    Max height = <b>${h.toFixed(3)} m</b><br>
-                    Range = <b>${r.toFixed(3)} m</b><br><br>
-                    <span class="text-xs">Note: Ideal case. For drag simulation use Physics → Air Drag tool.</span>`;
-                }
-                return "Please include v0 and angle, e.g. 'projectile v0=50 angle=45'";
-            }
-            
-            // Molar mass
-            if (q.includes('molar mass') || q.includes('molecular weight')) {
-                const match = query.match(/([A-Z][a-z]?\d*)+/);
-                if (match) {
-                    // Reuse the molar mass function logic
-                    const formula = match[0];
-                    // Simplified calculation for chat
-                    let total = 0;
-                    const pattern = /([A-Z][a-z]?)(\d*)/g;
-                    let m;
-                    while ((m = pattern.exec(formula)) !== null) {
-                        const el = m[1];
-                        const n = m[2] ? parseInt(m[2]) : 1;
-                        if (PERIODIC_TABLE[el]) total += PERIODIC_TABLE[el] * n;
-                    }
-                    return `【Chemistry】 Molar mass of <b>${formula}</b> = <b>${total.toFixed(4)} g/mol</b>`;
-                }
-                return "Please specify a formula like 'molar mass of C6H12O6'";
-            }
-            
-            // Carnot
-            if (q.includes('carnot')) {
-                const nums = query.match(/-?\d+\.?\d*/g) || [];
-                if (nums.length >= 2) {
-                    const Th = parseFloat(nums[0]);
-                    const Tc = parseFloat(nums[1]);
-                    const eff = (1 - Tc/Th) * 100;
-                    return `【Thermodynamics】 Carnot efficiency between ${Th} K and ${Tc} K = <b>${eff.toFixed(2)}%</b>`;
-                }
-            }
-            
-            // Statistics
-            if (q.includes('mean') || q.includes('std') || q.includes('statistics')) {
-                const nums = query.match(/-?\d+\.?\d*/g) || [];
-                if (nums.length >= 2) {
-                    const data = nums.map(Number);
-                    const mean = data.reduce((a,b)=>a+b,0) / data.length;
-                    const std = Math.sqrt(data.reduce((s,v)=>s + (v-mean)**2, 0) / (data.length-1));
-                    return `【Statistics】 Mean = <b>${mean.toFixed(4)}</b> &nbsp;&nbsp; Std Dev = <b>${std.toFixed(4)}</b>`;
-                }
-            }
-            
-            // Default professional response
-            return `Thank you for your question.<br><br>
-            I am the Professional Scientific Assistant v5.0.<br>
-            I understood your query but for best results please use specific keywords:<br>
-            <span class="text-xs">• projectile v0=.. angle=..</span><br>
-            <span class="text-xs">• molar mass of H2SO4</span><br>
-            <span class="text-xs">• carnot 800 300</span><br>
-            <span class="text-xs">• differentiate x**2 + sin(x)</span><br><br>
-            Or use the dedicated specialists from the top menu for full interactive tools.`;
+                removeTypingIndicator();
+                
+                const aiReply = getAIResponse(text);
+                addChatMessage(aiReply, false);
+                
+                // Log response
+                logApiRequest(`200 OK`, `Yanıt süresi: ${Math.floor(Math.random() * 800) + 400}ms`);
+            }, 1350);
         }
         
         function clearChat() {
-            document.getElementById('chat-messages').innerHTML = '';
-            addBotMessage("Chat cleared. How can I help you with science today?");
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            chatMessages = [];
+            
+            // Welcome message again
+            setTimeout(() => {
+                addChatMessage("Merhaba! Ben Grok AI. API bağlantısı üzerinden sohbet edelim. Ne sormak istersin?", false);
+            }, 150);
+        }
+        
+        // API Log functions
+        function logApiRequest(action, detail) {
+            const logContainer = document.getElementById('api-log');
+            const time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const entry = document.createElement('div');
+            entry.className = `py-1 px-2 rounded text-emerald-300/90 border-l-2 border-emerald-500/30 pl-3 mb-1 text-[10px] leading-tight`;
+            entry.innerHTML = `
+                <span class="text-emerald-500/70">[${time}]</span> 
+                <span class="font-semibold">${action}</span><br>
+                <span class="text-emerald-400/70">${detail}</span>
+            `;
+            
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Limit log entries
+            while (logContainer.children.length > 12) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+        
+        function clearApiLog() {
+            document.getElementById('api-log').innerHTML = '';
+        }
+        
+        // File handling
+        let currentFile = null;
+        let currentFileContent = null;
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            currentFile = file;
+            currentFileContent = null;
+            
+            const previewContainer = document.getElementById('file-preview');
+            previewContainer.innerHTML = '';
+            previewContainer.className = 'mt-5 p-4 bg-zinc-900/70 border border-zinc-700 rounded-2xl';
+            
+            // File info
+            const infoHTML = `
+                <div class="flex items-start gap-4">
+                    <div class="w-11 h-11 flex-shrink-0 bg-zinc-800 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid ${file.type.startsWith('image/') ? 'fa-image text-purple-400' : file.type.includes('text') ? 'fa-file-alt text-blue-400' : 'fa-file text-zinc-400'} text-2xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-sm truncate">${file.name}</div>
+                        <div class="text-xs text-zinc-400">${(file.size / 1024).toFixed(1)} KB • ${file.type || 'Bilinmeyen tür'}</div>
+                    </div>
+                    <button onclick="removeSelectedFile()" class="text-zinc-400 hover:text-red-400 p-1">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+            `;
+            previewContainer.innerHTML = infoHTML;
+            
+            // Preview content
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'mt-4 rounded-xl max-h-48 w-auto mx-auto border border-zinc-700';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } 
+            else if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentFileContent = e.target.result;
+                    const previewText = document.createElement('div');
+                    previewText.className = 'mt-4 p-3 bg-black/40 rounded-xl text-xs font-mono max-h-28 overflow-auto border border-zinc-700';
+                    previewText.innerHTML = `<div class="text-emerald-300/70 mb-1">Dosya içeriği (ilk 280 karakter):</div>${e.target.result.substring(0, 280).replace(/</g, '&lt;')}${e.target.result.length > 280 ? '...' : ''}`;
+                    previewContainer.appendChild(previewText);
+                };
+                reader.readAsText(file);
+            } 
+            else {
+                // Other file types
+                const note = document.createElement('div');
+                note.className = 'mt-4 text-xs px-3 py-2 bg-zinc-800/70 rounded-2xl text-center text-zinc-400';
+                note.innerHTML = `Bu dosya türü için içerik önizlemesi sınırlıdır.<br>API analizi yine de gerçekleştirilebilir.`;
+                previewContainer.appendChild(note);
+            }
+            
+            // Enable analyze button
+            document.getElementById('analyze-btn').disabled = false;
+            document.getElementById('analyze-btn').classList.remove('disabled:from-zinc-700', 'disabled:to-zinc-700', 'disabled:text-zinc-400');
+        }
+        
+        function removeSelectedFile() {
+            currentFile = null;
+            currentFileContent = null;
+            document.getElementById('file-preview').innerHTML = '';
+            document.getElementById('file-preview').className = 'mt-5 min-h-[80px]';
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('file-input').value = '';
+        }
+        
+        function analyzeWithAPI() {
+            if (!currentFile) return;
+            
+            const resultContainer = document.getElementById('analysis-result');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const logContainer = document.getElementById('api-log');
+            
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> API Bağlantısı Kuruluyor...`;
+            
+            // Initial loading state
+            resultContainer.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center gap-x-3 text-sm">
+                        <div class="animate-spin h-5 w-5 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
+                        <div>
+                            <div class="font-medium">1. Dosya okunuyor ve hazırlanıyor...</div>
+                            <div class="text-xs text-zinc-400">Dosya boyutu: ${(currentFile.size/1024).toFixed(1)} KB</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-x-3 text-sm text-zinc-400">
+                        <div class="animate-spin h-5 w-5 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
+                        <div>2. API endpoint'ine bağlanılıyor (POST /v1/analyze)...</div>
+                    </div>
+                </div>
+            `;
+            
+            // Log the request
+            logApiRequest(`POST /v1/analyze`, `Dosya: ${currentFile.name} | Tür: ${currentFile.type || 'bilinmiyor'}`);
+            
+            setTimeout(() => {
+                // Second phase
+                resultContainer.innerHTML = `
+                    <div class="flex items-center gap-x-3 text-sm">
+                        <div class="animate-spin h-5 w-5 border-2 border-purple-500 border-t-transparent rounded-full"></div>
+                        <div>
+                            <div class="font-medium">3. Grok modeli dosyayı analiz ediyor...</div>
+                            <div class="text-xs text-zinc-400">Model: grok-3-vision (simüle)</div>
+                        </div>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    // Final result
+                    let analysisHTML = '';
+                    const fileName = currentFile.name;
+                    const fileSize = (currentFile.size / 1024).toFixed(1);
+                    
+                    if (currentFile.type.startsWith('image/')) {
+                        analysisHTML = `
+                            <div class="bg-emerald-950/30 border border-emerald-900/60 rounded-2xl p-5">
+                                <div class="flex items-center gap-x-2 text-emerald-400 mb-4">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <span class="font-semibold">Görüntü Analizi Başarılı</span>
+                                </div>
+                                
+                                <div class="space-y-3 text-sm">
+                                    <div><span class="text-zinc-400">Dosya:</span> <span class="font-medium">${fileName}</span></div>
+                                    <div><span class="text-zinc-400">Boyut:</span> ${fileSize} KB</div>
+                                    
+                                    <div class="pt-2 border-t border-emerald-900/50">
+                                        <div class="font-medium mb-1 text-emerald-300">AI Model Çıkarımları:</div>
+                                        <ul class="list-disc pl-5 space-y-1 text-sm">
+                                            <li>Ana renk paleti: Soğuk tonlar (mavi-yeşil)</li>
+                                            <li>İçerik tahmini: Doğa / Peyzaj / Teknoloji</li>
+                                            <li>Duygu analizi: Sakin, modern, ilham verici</li>
+                                            <li>Öneri: Sosyal medya veya sunum görseli olarak uygun</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } 
+                    else if (currentFileContent) {
+                        // Text file with actual content
+                        const wordCount = currentFileContent.split(/\s+/).filter(Boolean).length;
+                        const preview = currentFileContent.substring(0, 160).replace(/\n/g, ' ').trim();
+                        
+                        analysisHTML = `
+                            <div class="bg-emerald-950/30 border border-emerald-900/60 rounded-2xl p-5">
+                                <div class="flex items-center gap-x-2 text-emerald-400 mb-4">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <span class="font-semibold">Metin Dosyası Analizi Başarılı</span>
+                                </div>
+                                
+                                <div class="space-y-3 text-sm">
+                                    <div><span class="text-zinc-400">Dosya:</span> <span class="font-medium">${fileName}</span></div>
+                                    <div><span class="text-zinc-400">Kelime sayısı:</span> <span class="font-semibold">${wordCount}</span></div>
+                                    
+                                    <div class="pt-2 border-t border-emerald-900/50">
+                                        <div class="font-medium mb-1 text-emerald-300">API Özeti:</div>
+                                        <div class="text-xs bg-black/30 p-3 rounded-xl">"${preview}${currentFileContent.length > 160 ? '...' : ''}"</div>
+                                        
+                                        <div class="mt-3 text-xs">
+                                            <span class="text-emerald-400">Grok Yorumu:</span> Bu metin bilgilendirici ve düzenli görünüyor. 
+                                            Ana tema genel amaçlı içerik. Daha derin analiz için gerçek Grok API önerilir.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } 
+                    else {
+                        // Other file types
+                        analysisHTML = `
+                            <div class="bg-emerald-950/30 border border-emerald-900/60 rounded-2xl p-5">
+                                <div class="flex items-center gap-x-2 text-emerald-400 mb-4">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <span class="font-semibold">Dosya API Analizi Tamamlandı</span>
+                                </div>
+                                
+                                <div class="space-y-2.5 text-sm">
+                                    <div><span class="text-zinc-400">Dosya adı:</span> <span class="font-medium">${fileName}</span></div>
+                                    <div><span class="text-zinc-400">Boyut:</span> ${fileSize} KB</div>
+                                    <div><span class="text-zinc-400">Tür:</span> ${currentFile.type || 'Bilinmiyor'}</div>
+                                    
+                                    <div class="pt-3 border-t border-emerald-900/50 text-xs">
+                                        API bağlantısı başarıyla kuruldu. Model dosyayı taradı ve güvenli/işlenebilir olarak işaretledi.<br><br>
+                                        <span class="text-emerald-400">Sonuç:</span> Bu dosya yapay zeka iş akışlarına entegre edilebilir. 
+                                        Gerçek projelerde dosya tipi özelinde (PDF özetleme, görüntü tanıma vs.) özel API'ler kullanılır.
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    resultContainer.innerHTML = analysisHTML;
+                    
+                    // Final log
+                    logApiRequest(`200 OK`, `Analiz tamamlandı • Dosya: ${fileName}`);
+                    
+                    // Re-enable button
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.innerHTML = `<i class="fa-solid fa-magic mr-2"></i> <span>Yeni Analiz Yap</span>`;
+                    
+                    // Bonus: show a toast like message
+                    showToast("API bağlantısı başarılı! Analiz tamamlandı.");
+                    
+                }, 1600);
+            }, 1100);
+        }
+        
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 bg-zinc-900 border border-zinc-700 text-sm rounded-3xl flex items-center gap-x-3 shadow-2xl z-[200]`;
+            toast.innerHTML = `
+                <i class="fa-solid fa-check-circle text-emerald-400"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 250);
+            }, 2800);
+        }
+        
+        // API Key modal
+        function showApiKeyModal() {
+            document.getElementById('api-key-modal').classList.remove('hidden');
+            document.getElementById('api-key-modal').classList.add('flex');
+        }
+        
+        function hideApiKeyModal() {
+            const modal = document.getElementById('api-key-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+        
+        function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (key) {
+                localStorage.setItem('demo_api_key', key);
+                hideApiKeyModal();
+                showToast("API anahtarı kaydedildi (demo modunda aktif).");
+                
+                // Update status indicator
+                const statusEls = document.querySelectorAll('.fa-circle');
+                if (statusEls.length > 0) {
+                    statusEls[0].classList.add('text-emerald-400');
+                }
+            }
         }
         
         // Initialize everything
-        function initializeApp() {
+        function initializeWebsite() {
             initializeTailwind();
             
-            // Show home by default
-            document.getElementById('home').classList.add('active');
-            document.getElementById('nav-home').classList.add('active');
+            // Initial welcome message in chat
+            const chatContainer = document.getElementById('chat-messages');
+            setTimeout(() => {
+                addChatMessage("Merhaba! Ben Grok AI. API bağlantısı üzerinden sohbet edelim. Ne sormak istersin?", false);
+                
+                // Initial log entries
+                const log = document.getElementById('api-log');
+                log.innerHTML = `
+                    <div class="py-1 px-2 text-emerald-300/70 text-[10px]">[${new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}] Sistem: Demo API sunucusu başlatıldı</div>
+                    <div class="py-1 px-2 text-emerald-300/70 text-[10px]">[${new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}] Model: grok-3-latest yüklendi</div>
+                `;
+            }, 600);
             
-            // Keyboard support for chat
-            const chatInput = document.getElementById('chat-input');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') sendChatMessage();
-                });
+            // Make upload zone support drag and drop
+            const uploadZone = document.getElementById('upload-zone');
+            
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadZone.style.borderColor = '#6366f1';
+                uploadZone.style.background = 'rgba(63, 66, 250, 0.05)';
+            });
+            
+            uploadZone.addEventListener('dragleave', function() {
+                uploadZone.style.borderColor = '';
+                uploadZone.style.background = '';
+            });
+            
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadZone.style.borderColor = '';
+                uploadZone.style.background = '';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    const fakeEvent = { target: { files: e.dataTransfer.files } };
+                    handleFileSelect(fakeEvent);
+                }
+            });
+            
+            // Keyboard shortcut hint
+            document.getElementById('chat-input').addEventListener('focus', function() {
+                if (!document.getElementById('chat-messages').children.length) {
+                    // already has message
+                }
+            });
+            
+            // Load saved API key if exists
+            const savedKey = localStorage.getItem('demo_api_key');
+            if (savedKey) {
+                document.getElementById('api-key-input').value = savedKey;
             }
             
-            // Easter egg / version info
-            console.log('%c[Scientific Bot v5.0 Web] Fully initialized. All calculations ported from Python source.', 'color:#64748b');
+            // Demo: prefill a file hint (optional)
+            // console.log('%c[Yapay Zeka API Web Sitesi] Demo hazır. Dosya yükleyip analiz edebilirsin.', 'color:#52525b');
+            
+            // Make sure first tab is active
+            document.getElementById('tab-0').classList.add('border-b-2', 'border-indigo-500', 'text-white');
+            document.getElementById('tab-0').classList.remove('text-zinc-400');
         }
         
-        // Boot
-        window.onload = initializeApp;
+        // Boot the website
+        window.onload = initializeWebsite;
+        
+        // Easter egg: type "grok" in chat for fun
+        document.addEventListener('keydown', function(e) {
+            if (e.key.toLowerCase() === '/' && document.activeElement.id === 'chat-input') {
+                // future: command mode
+            }
+        });
     </script>
 </body>
 </html>
