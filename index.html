@@ -209,7 +209,7 @@
                                     <i class="fa-solid fa-paper-plane text-white"></i>
                                 </button>
                             </div>
-                            <div class="text-[10px] text-center text-zinc-500 mt-2">Gerçek Gemini 1.5 Flash • İbrahim Ascı</div>
+                            <div class="text-[10px] text-center text-emerald-400/70 mt-2">Gerçek Gemini 1.5 Flash • İbrahim Ascı • GitHub Pages için güvenli</div>
                         </div>
                     </div>
                 </div>
@@ -239,6 +239,19 @@
                                     <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                                     <span class="font-medium text-emerald-400">Bağlantı Aktif</span>
                                 </div>
+                            </div>
+
+                            <!-- API Key Input (Güvenli Yöntem) -->
+                            <div class="bg-zinc-900/70 rounded-2xl p-4">
+                                <div class="text-emerald-400 text-xs mb-2">GEMINI API ANAHTARI</div>
+                                <div class="flex gap-2">
+                                    <input id="api-key-input" type="password" 
+                                           class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-mono"
+                                           placeholder="AIzaSy...">
+                                    <button onclick="saveApiKey()" 
+                                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-medium">Kaydet</button>
+                                </div>
+                                <div class="text-[10px] text-zinc-500 mt-1">Key localStorage'da saklanır. GitHub Pages için güvenli.</div>
                             </div>
                         </div>
                         
@@ -363,16 +376,37 @@
         }
 
         // ========== GERÇEK GEMINI CHAT ==========
-        const GEMINI_API_KEY = "AIzaSyDFaR5DaODYZZSgQ5_-MBbt-ga88IF-imc";
+        // API Key localStorage'dan alınır (güvenli yöntem)
+
+        function getGeminiKey() {
+            return localStorage.getItem('gemini_api_key') || '';
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('api-key-input');
+            const key = input.value.trim();
+            if (!key) {
+                alert("Lütfen API anahtarını gir!");
+                return;
+            }
+            localStorage.setItem('gemini_api_key', key);
+            alert("API anahtarı kaydedildi! Artık sohbet ve video çalışacak.");
+            input.value = '';
+        }
 
         async function callGemini(message) {
+            const apiKey = getGeminiKey();
+            if (!apiKey) {
+                return "⚠️ Lütfen önce sağ taraftaki alandan Gemini API anahtarını gir ve kaydet.";
+            }
+
             const systemPrompt = `Sen Quantum AL'sin. İbrahim Ascı tarafından geliştirilen, Gemini 1.5 Flash ile güçlendirilmiş profesyonel bir AI asistanısın. 
 Kullanıcı Türkçe soruyor. Türkçe, net, samimi ve yardımcı cevap ver. 
 Matematik, fizik, kimya problemlerini adım adım çöz. 
 Gerekirse emoji kullan. Kısa ve anlaşılır ol.`;
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                const res = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey)}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -392,8 +426,8 @@ Gerekirse emoji kullan. Kısa ve anlaşılır ol.`;
                 let reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Şu anda yanıt veremiyorum.";
                 return reply.trim();
             } catch (e) {
-                console.error(e);
-                return "Üzgünüm, Gemini bağlantısında bir sorun oluştu. Lütfen tekrar dene.";
+                console.error("Gemini bağlantı hatası:", e);
+                return "⚠️ Bağlantı hatası: Tarayıcı Gemini API'sine erişimi engelliyor olabilir. Lütfen dosyayı VS Code Live Server ile aç veya 'python -m http.server' komutuyla çalıştır.";
             }
         }
 
@@ -477,6 +511,12 @@ Gerekirse emoji kullan. Kısa ve anlaşılır ol.`;
 
         // ========== VIDEO STORYBOARD (Gemini) ==========
         async function generateVideoStoryboard() {
+            const apiKey = getGeminiKey();
+            if (!apiKey) {
+                alert("Lütfen önce sağ taraftaki alandan Gemini API anahtarını gir ve kaydet.");
+                return;
+            }
+
             const prompt = document.getElementById('video-prompt').value.trim();
             if (!prompt) {
                 alert("Lütfen bir video konsepti yaz!");
@@ -520,7 +560,7 @@ SADECE JSON döndür:
             const full = `${system}\n\nVideo fikri: ${prompt}`;
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                const res = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey)}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -538,7 +578,17 @@ SADECE JSON döndür:
 
                 renderVideoResult(parsed, duration, style, content);
             } catch (e) {
-                content.innerHTML = `<div class="text-red-400 p-4">Gemini bağlantı hatası oluştu. Lütfen tekrar dene.</div>`;
+                console.error("Video Gemini hatası:", e);
+                content.innerHTML = `
+                    <div class="text-red-400 p-4">
+                        ⚠️ Bağlantı hatası oluştu.<br><br>
+                        <strong>Olası nedenler:</strong><br>
+                        • Dosyayı doğrudan açtığın için tarayıcı engelliyor (CORS)<br>
+                        • API key geçersiz veya kota doldu<br><br>
+                        <strong>Çözüm:</strong> VS Code'ta "Live Server" uzantısıyla aç veya terminalde şu komutu çalıştır:<br>
+                        <code class="bg-black px-2 py-1 rounded">python -m http.server 8000</code>
+                    </div>
+                `;
             }
         }
 
