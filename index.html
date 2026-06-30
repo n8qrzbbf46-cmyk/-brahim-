@@ -6,6 +6,11 @@
     <title>Dünya Sanayi Sitesi | Güvenli Sanayi E-Ticaret Platformu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Firebase SDKs for cloud database, storage and authentication -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap');
         
@@ -15,16 +20,14 @@
         
         body {
             font-family: 'Inter', system_ui, sans-serif;
+            background-color: #f8fafc;
+            color: #1e2937;
         }
         
         .logo-font {
             font-family: 'Inter', system_ui, sans-serif;
             font-weight: 700;
             letter-spacing: -0.025em;
-        }
-
-        .industrial-gradient {
-            background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
         }
 
         .section-header {
@@ -41,6 +44,8 @@
 
         .company-card, .product-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: white;
+            border: 1px solid #e2e8f0;
         }
         
         .company-card:hover, .product-card:hover {
@@ -74,7 +79,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(30, 58, 95, 0.92) 0%, rgba(15, 39, 68, 0.88) 100%);
+            background: linear-gradient(135deg, rgba(10, 15, 26, 0.88) 0%, rgba(15, 23, 42, 0.92) 100%);
         }
 
         .stat-number {
@@ -86,7 +91,7 @@
         }
         
         .nav-link:hover {
-            color: #f59e0b;
+            color: #22d3ee;
         }
 
         .product-img {
@@ -94,7 +99,7 @@
         }
         
         .product-card:hover .product-img {
-            transform: scale(1.05);
+            transform: scale(1.04);
         }
 
         .info-row {
@@ -102,7 +107,7 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.5rem 0;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid #1f2937;
         }
 
         .info-row:last-child {
@@ -113,8 +118,13 @@
             animation: slideUp 0.3s ease forwards;
         }
 
-        .industrial-icon {
-            color: #f59e0b;
+        .tech-accent {
+            color: #22d3ee;
+        }
+
+        .glass {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
         }
     </style>
 </head>
@@ -125,12 +135,12 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center gap-x-3">
-                    <div class="w-11 h-11 bg-amber-500 rounded-2xl flex items-center justify-center shadow-inner">
+                    <div class="w-11 h-11 bg-cyan-500 rounded-2xl flex items-center justify-center shadow-inner">
                         <i class="fa-solid fa-industry text-white text-3xl"></i>
                     </div>
                     <div>
                         <span class="logo-font text-2xl font-bold tracking-tighter text-slate-900">Dünya Sanayi</span>
-                        <span class="logo-font text-2xl font-bold tracking-tighter text-amber-500">Sitesi</span>
+                        <span class="logo-font text-2xl font-bold tracking-tighter text-cyan-400">Sitesi</span>
                     </div>
                 </div>
 
@@ -165,7 +175,7 @@
                 </div>
                 
                 <h1 class="text-6xl md:text-7xl font-bold tracking-tighter leading-none mb-6">
-                    Sanayinin<br>güvenilir<br><span class="text-amber-400">dijital pazaryeri</span>
+                    Sanayinin<br>güvenilir<br><span class="text-cyan-400">dijital pazaryeri</span>
                 </h1>
                 
                 <p class="max-w-lg text-xl text-white/90 mb-8">
@@ -175,7 +185,7 @@
                 
                 <div class="flex flex-col sm:flex-row gap-4">
                     <button onclick="showRegisterModal()" 
-                            class="px-8 py-4 bg-amber-500 hover:bg-amber-600 transition-colors text-white font-semibold rounded-3xl flex items-center justify-center gap-x-3 text-lg shadow-lg shadow-amber-500/30">
+                            class="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 transition-colors text-white font-semibold rounded-3xl flex items-center justify-center gap-x-3 text-lg shadow-lg shadow-amber-500/30">
                         <i class="fa-solid fa-user-plus"></i>
                         <span>Hemen Kayıt Ol</span>
                     </button>
@@ -233,7 +243,7 @@
     <!-- Why Us / Features -->
     <section class="max-w-6xl mx-auto px-6 pt-16 pb-12">
         <div class="text-center mb-10">
-            <span class="text-amber-500 font-semibold tracking-widest text-sm">NEDEN DÜNYA SANAYİ SİTESİ?</span>
+            <span class="text-cyan-400 font-semibold tracking-widest text-sm">NEDEN DÜNYA SANAYİ SİTESİ?</span>
             <h2 class="section-header mt-2">Güvenli ticaretin yeni standardı</h2>
         </div>
         
@@ -276,7 +286,7 @@
     <section class="bg-white border-y border-slate-100 py-12">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-10">
-                <span class="text-amber-500 font-semibold tracking-widest text-sm">SÜREÇ</span>
+                <span class="text-cyan-400 font-semibold tracking-widest text-sm">SÜREÇ</span>
                 <h2 class="section-header mt-1">Nasıl çalışıyor?</h2>
             </div>
             
@@ -305,11 +315,63 @@
         </div>
     </section>
 
+    <!-- Rehberlik & Danışma Bölümü -->
+    <section class="bg-white border-y border-slate-100 py-14">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-x-2 bg-amber-100 text-amber-700 px-4 py-1 rounded-3xl text-sm font-medium mb-4">
+                <i class="fa-solid fa-handshake"></i>
+                <span>REHBERLİK &amp; DANIŞMA</span>
+            </div>
+            
+            <h2 class="section-header mb-4">Biz sadece bir pazaryeri değiliz</h2>
+            <p class="max-w-2xl mx-auto text-lg text-slate-600 mb-6">
+                Diğer büyük dev sitelerden (Amazon, Alibaba vb.) fiyat araştırması yapma hakkı da tanıyoruz. 
+                Çünkü biz <strong>Dünya Sanayi Sitesi</strong>’yiz. Amacımız sanayicilerin birbirine rehberlik etmesini sağlamak.
+            </p>
+            
+            <div class="grid md:grid-cols-3 gap-6 text-left max-w-4xl mx-auto mb-8">
+                <div class="bg-slate-50 p-5 rounded-2xl">
+                    <div class="font-semibold mb-2 flex items-center gap-x-2"><i class="fa-solid fa-bullhorn text-amber-500"></i> Pazarlama &amp; Görünürlük</div>
+                    <p class="text-sm text-slate-600">Firmalar kendi ürünlerini sergileyip, sanayi camiasında tanınırlığını artırabilir.</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-2xl">
+                    <div class="font-semibold mb-2 flex items-center gap-x-2"><i class="fa-solid fa-cogs text-amber-500"></i> Parça &amp; Tedarik Danışmanlığı</div>
+                    <p class="text-sm text-slate-600">Diğer sanayicilerle WhatsApp üzerinden parça, malzeme ve tedarik konularında direkt danışabilirsiniz.</p>
+                </div>
+                <div class="bg-slate-50 p-5 rounded-2xl">
+                    <div class="font-semibold mb-2 flex items-center gap-x-2"><i class="fa-solid fa-wallet text-amber-500"></i> Ödeme (WhatsApp)</div>
+                    <p class="text-sm text-slate-600">Ödemeler WhatsApp üzerinden karşılıklı anlaşmayla yapılır. Platform olarak ödeme sorunuyla uğraşmıyoruz, güvenliğe odaklanıyoruz.</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="document.getElementById('marketplace').scrollIntoView({ behavior: 'smooth' }); showTab('companies')" 
+                        class="px-8 py-4 bg-slate-900 hover:bg-black text-white font-semibold rounded-3xl flex items-center justify-center gap-x-3 text-lg">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Diğer Sanayicilerle WhatsApp’tan Danış</span>
+                </button>
+                
+                <a href="#safety" 
+                   class="px-8 py-4 border border-slate-300 hover:bg-slate-50 font-semibold rounded-3xl flex items-center justify-center gap-x-3 text-lg">
+                    <span>Güvenlik Kurallarını Oku</span>
+                </a>
+            </div>
+            
+            <p class="mt-6 text-sm text-slate-500">
+                Firmalar sekmesinden istediğin sanayiciyi bul, WhatsApp’ı tıkla ve doğrudan danış. Ödemeler karşılıklı güvenle WhatsApp üzerinden yapılır.
+            </p>
+            
+            <div class="mt-4 text-xs text-slate-400">
+                Şikayet / Rapor için: <a href="mailto:destek@dunyasanayi.com" class="text-amber-600 hover:underline">destek@dunyasanayi.com</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Marketplace Section -->
     <section id="marketplace" class="max-w-7xl mx-auto px-6 pt-14 pb-16">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-8 gap-y-4">
             <div>
-                <span class="text-amber-500 font-semibold tracking-widest text-sm">PAZARYERİ</span>
+                <span class="text-cyan-400 font-semibold tracking-widest text-sm">PAZARYERİ</span>
                 <h2 class="section-header">Aktif firmalar ve ürünler</h2>
             </div>
             
@@ -392,7 +454,40 @@
     <footer class="bg-white border-t border-slate-100 py-8">
         <div class="max-w-6xl mx-auto px-6 text-center text-xs text-slate-500">
             <p>© 2026 Dünya Sanayi Sitesi — Tüm hakları saklıdır. Bu platform <strong>İbrahim Aşçı</strong> tarafından güvenli B2B sanayi ticareti amacıyla geliştirilmiştir.</p>
-            <p class="mt-1">Veriler tarayıcınızda JSON formatında (localStorage) saklanır. Gerçek sunucu bağlantısı için backend entegrasyonu gereklidir.</p>
+            
+            <!-- Büyük Platform Linkleri - KOCAMAN ve GÖRÜNÜR -->
+            <div class="mt-4 pt-4 border-t border-slate-200">
+                <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm font-medium">
+                    <span class="text-slate-500">Büyük B2B Platformlar:</span>
+                    <a href="https://business.amazon.com/" target="_blank" 
+                       class="px-4 py-1.5 bg-white border border-slate-300 hover:border-amber-500 hover:text-amber-600 rounded-2xl transition-all flex items-center gap-x-2 text-slate-700">
+                        <i class="fa-brands fa-amazon"></i>
+                        <span>Amazon Business</span>
+                    </a>
+                    <a href="https://www.alibaba.com/" target="_blank" 
+                       class="px-4 py-1.5 bg-white border border-slate-300 hover:border-amber-500 hover:text-amber-600 rounded-2xl transition-all flex items-center gap-x-2 text-slate-700">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>Alibaba.com</span>
+                    </a>
+                    <a href="https://www.made-in-china.com/" target="_blank" 
+                       class="px-4 py-1.5 bg-white border border-slate-300 hover:border-amber-500 hover:text-amber-600 rounded-2xl transition-all flex items-center gap-x-2 text-slate-700">
+                        <i class="fa-solid fa-industry"></i>
+                        <span>Made-in-China</span>
+                    </a>
+                    <a href="https://www.ec21.com/" target="_blank" 
+                       class="px-4 py-1.5 bg-white border border-slate-300 hover:border-amber-500 hover:text-amber-600 rounded-2xl transition-all flex items-center gap-x-2 text-slate-700">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>EC21</span>
+                    </a>
+                    <a href="https://www.thomasnet.com/" target="_blank" 
+                       class="px-4 py-1.5 bg-white border border-slate-300 hover:border-amber-500 hover:text-amber-600 rounded-2xl transition-all flex items-center gap-x-2 text-slate-700">
+                        <i class="fa-solid fa-industry"></i>
+                        <span>ThomasNet</span>
+                    </a>
+                </div>
+            </div>
+            
+            <p class="mt-2 text-[10px]">Verileriniz güvenli Firebase bulutunda saklanır (kalıcı ve silinmez).</p>
         </div>
     </footer>
 
@@ -464,6 +559,10 @@
                     <input type="url" id="reg-website" placeholder="https://sirketiniz.com" class="w-full border border-slate-300 focus:border-amber-400 px-4 py-2.5 rounded-2xl outline-none">
                 </div>
                 <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">E-posta (Alışveriş &amp; Giriş için) *</label>
+                    <input type="email" id="reg-email" required placeholder="ornek@sirket.com" class="w-full border border-slate-300 focus:border-amber-400 px-4 py-2.5 rounded-2xl outline-none">
+                </div>
+                <div>
                     <label class="block text-xs font-medium text-slate-500 mb-1">WhatsApp Numarası *</label>
                     <input type="tel" id="reg-whatsapp" required placeholder="+90 532 123 4567" class="w-full border border-slate-300 focus:border-amber-400 px-4 py-2.5 rounded-2xl outline-none">
                 </div>
@@ -529,7 +628,7 @@
                 </div>
                 <div class="flex items-center gap-x-3">
                     <button onclick="hideProfileModal()" class="px-5 py-2 text-sm rounded-2xl border hover:bg-slate-100">Kapat</button>
-                    <button id="profile-action-btn" onclick="" class="hidden px-5 py-2 bg-amber-500 text-white text-sm font-semibold rounded-2xl"></button>
+                    <button id="profile-action-btn" onclick="" class="hidden px-5 py-2 bg-cyan-500 text-white text-sm font-semibold rounded-2xl"></button>
                 </div>
             </div>
             
@@ -604,31 +703,65 @@
     <script>
         // Tailwind script
         function initializeTailwind() {
-            document.documentElement.style.setProperty('--accent', '#f59e0b');
+            document.documentElement.style.setProperty('--accent', '#22d3ee');
         }
 
-        // Data management - JSON via localStorage
+        // ==================== FIREBASE CLOUD SYSTEM ====================
+        // Config from your Firebase project "sanayi-7bd20"
+        const firebaseConfig = {
+            apiKey: "AIzaSyDWpYMyJoRQvUweWl6o4_-sn2jqiClpoo0",
+            authDomain: "sanayi-7bd20.firebaseapp.com",
+            projectId: "sanayi-7bd20",
+            storageBucket: "sanayi-7bd20.firebasestorage.app",
+            messagingSenderId: "153370233792",
+            appId: "1:153370233792:web:0cf8f429afeb6f896ad625",
+            measurementId: "G-YG3WVZVN0C"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const auth = firebase.auth();
+
+        // Data management - now powered by Firebase Firestore + Storage
         let users = [];
         let currentUser = null;
 
-        function loadData() {
-            const savedUsers = localStorage.getItem('sanayi_users');
-            if (savedUsers) {
-                users = JSON.parse(savedUsers);
-            }
-            
-            const savedCurrent = localStorage.getItem('sanayi_currentUser');
-            if (savedCurrent) {
-                currentUser = JSON.parse(savedCurrent);
+        async function loadData() {
+            try {
+                // Load all users from Firestore
+                const snapshot = await db.collection('users').get();
+                users = [];
+                snapshot.forEach(doc => {
+                    users.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Restore current user from localStorage if exists
+                const savedCurrent = localStorage.getItem('sanayi_currentUser');
+                if (savedCurrent) {
+                    const parsed = JSON.parse(savedCurrent);
+                    // Verify still exists in Firestore
+                    const exists = users.find(u => u.id === parsed.id);
+                    if (exists) currentUser = exists;
+                }
+            } catch (error) {
+                console.error("Firebase yükleme hatası:", error);
+                showToast("Bulut bağlantısı kurulamadı. Lütfen interneti kontrol et.", 'error');
             }
             
             updateStats();
             updateNav();
         }
 
-        function saveUsers() {
-            localStorage.setItem('sanayi_users', JSON.stringify(users));
-            updateStats();
+        async function saveUserToFirestore(user) {
+            try {
+                await db.collection('users').doc(user.id).set(user);
+                updateStats();
+            } catch (error) {
+                console.error("Firestore kaydetme hatası:", error);
+                showToast("Veri buluta kaydedilemedi!", 'error');
+            }
         }
 
         function setCurrentUser(user) {
@@ -780,7 +913,7 @@
             if (toRender.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full py-16 text-center">
-                        <div class="mx-auto w-16 h-16 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center mb-4">
+                        <div class="mx-auto w-16 h-16 bg-amber-100 text-cyan-400 rounded-3xl flex items-center justify-center mb-4">
                             <i class="fa-solid fa-users text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold text-slate-700 mb-2">Henüz hiç firma kaydı yok</h3>
@@ -888,7 +1021,7 @@
             if (toRender.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full py-16 text-center">
-                        <div class="mx-auto w-16 h-16 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center mb-4">
+                        <div class="mx-auto w-16 h-16 bg-amber-100 text-cyan-400 rounded-3xl flex items-center justify-center mb-4">
                             <i class="fa-solid fa-boxes text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold text-slate-700 mb-2">Henüz ürün ilanı yok</h3>
@@ -997,11 +1130,21 @@
         }
 
         // Register new user
-        function registerUser(e) {
+        async function registerUser(e) {
             e.preventDefault();
             
+            const phone = document.getElementById('reg-phone').value.trim();
+            const cleanPhone = phone.replace(/\D/g, '');
+            
+            // Check duplicate in current list
+            const exists = users.find(u => u.phone === phone || u.company.toLowerCase() === document.getElementById('reg-company').value.trim().toLowerCase());
+            if (exists) {
+                showToast('Bu telefon veya şirket adı zaten kayıtlı!', 'error');
+                return;
+            }
+            
             const newUser = {
-                id: Date.now(),
+                id: cleanPhone, // Use cleaned phone as Firestore doc ID
                 name: document.getElementById('reg-name').value.trim(),
                 surname: document.getElementById('reg-surname').value.trim(),
                 company: document.getElementById('reg-company').value.trim(),
@@ -1010,40 +1153,37 @@
                 country: document.getElementById('reg-country').value.trim(),
                 city: document.getElementById('reg-city').value.trim(),
                 industrial_site: document.getElementById('reg-industrial').value.trim(),
-                phone: document.getElementById('reg-phone').value.trim(),
+                phone: phone,
                 industrial_id: document.getElementById('reg-industrial-id').value.trim(),
                 tradesman_id: document.getElementById('reg-tradesman-id').value.trim(),
                 website: document.getElementById('reg-website').value.trim(),
+                email: document.getElementById('reg-email').value.trim(),
                 whatsapp: document.getElementById('reg-whatsapp').value.trim(),
                 products: [],
                 createdAt: new Date().toISOString()
             };
             
-            // Simple duplicate check
-            const exists = users.find(u => u.phone === newUser.phone || u.company.toLowerCase() === newUser.company.toLowerCase());
-            if (exists) {
-                showToast('Bu telefon veya şirket adı zaten kayıtlı!', 'error');
-                return;
+            try {
+                // Save to Firestore (bulut)
+                await db.collection('users').doc(newUser.id).set(newUser);
+                
+                users.push(newUser);
+                setCurrentUser(newUser);
+                
+                hideRegisterModal();
+                document.getElementById('register-form').reset();
+                
+                showToast('Kayıt başarılı! Veriler buluta kaydedildi.', 'success');
+                
+                setTimeout(() => {
+                    showProfileModal(newUser.id);
+                    renderCompanies();
+                    renderProducts();
+                }, 600);
+            } catch (error) {
+                console.error("Kayıt hatası:", error);
+                showToast("Kayıt sırasında hata oluştu. Lütfen tekrar deneyin.", 'error');
             }
-            
-            users.push(newUser);
-            saveUsers();
-            
-            setCurrentUser(newUser);
-            
-            hideRegisterModal();
-            
-            // Clear form
-            document.getElementById('register-form').reset();
-            
-            showToast('Kayıt başarılı! Hoş geldiniz.', 'success');
-            
-            // Show profile immediately
-            setTimeout(() => {
-                showProfileModal(newUser.id);
-                renderCompanies();
-                renderProducts();
-            }, 600);
         }
 
         function showRegisterModal() {
@@ -1146,7 +1286,7 @@
                 productsHTML = `<div class="mt-8"><div class="flex items-center justify-between mb-4"><h4 class="font-semibold">Ürün Kataloğu (${user.products.length})</h4>`;
                 
                 if (isOwnProfile) {
-                    productsHTML += `<button onclick="hideProfileModal(); showAddProductModal()" class="text-xs px-4 py-1.5 bg-amber-500 text-white rounded-2xl flex items-center gap-x-1"><i class="fa-solid fa-plus text-xs"></i> <span>Yeni Ürün</span></button>`;
+                    productsHTML += `<button onclick="hideProfileModal(); showAddProductModal()" class="text-xs px-4 py-1.5 bg-cyan-500 text-white rounded-2xl flex items-center gap-x-1"><i class="fa-solid fa-plus text-xs"></i> <span>Yeni Ürün</span></button>`;
                 }
                 productsHTML += `</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
                 
@@ -1319,7 +1459,7 @@
             currentProductImageBase64 = null;
         }
         
-        function addProduct(e) {
+        async function addProduct(e) {
             e.preventDefault();
             
             if (!currentUser || !currentProductImageBase64) {
@@ -1330,41 +1470,55 @@
             const userIndex = users.findIndex(u => u.id === currentUser.id);
             if (userIndex === -1) return;
             
-            const newProduct = {
-                id: Date.now(),
-                name: document.getElementById('prod-name').value.trim(),
-                desc: document.getElementById('prod-desc').value.trim(),
-                price: document.getElementById('prod-price').value || null,
-                image: currentProductImageBase64,
-                video: document.getElementById('prod-video').value.trim(),
-                category: document.getElementById('prod-category').value.trim() || 'Genel'
-            };
+            showToast('Fotoğraf buluta yükleniyor...', 'info');
             
-            if (!users[userIndex].products) users[userIndex].products = [];
-            users[userIndex].products.push(newProduct);
-            
-            // Update currentUser reference
-            currentUser = users[userIndex];
-            localStorage.setItem('sanayi_currentUser', JSON.stringify(currentUser));
-            
-            saveUsers();
-            
-            hideAddProductModal();
-            
-            showToast('Ürün başarıyla eklendi!', 'success');
-            
-            // Refresh views
-            renderCompanies();
-            renderProducts();
-            
-            // If profile modal open, refresh it
-            setTimeout(() => {
-                const profileModal = document.getElementById('profile-modal');
-                if (!profileModal.classList.contains('hidden')) {
-                    hideProfileModal();
-                    showProfileModal(currentUser.id);
-                }
-            }, 500);
+            try {
+                // Upload image to Firebase Storage
+                const storageRef = storage.ref(`products/${currentUser.id}/${Date.now()}`);
+                const snapshot = await storageRef.putString(currentProductImageBase64, 'data_url');
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                
+                const newProduct = {
+                    id: Date.now(),
+                    name: document.getElementById('prod-name').value.trim(),
+                    desc: document.getElementById('prod-desc').value.trim(),
+                    price: document.getElementById('prod-price').value || null,
+                    image: downloadURL, // Real URL from Firebase Storage
+                    video: document.getElementById('prod-video').value.trim(),
+                    category: document.getElementById('prod-category').value.trim() || 'Genel'
+                };
+                
+                if (!users[userIndex].products) users[userIndex].products = [];
+                users[userIndex].products.push(newProduct);
+                
+                // Update currentUser
+                currentUser = users[userIndex];
+                localStorage.setItem('sanayi_currentUser', JSON.stringify(currentUser));
+                
+                // Save updated user to Firestore
+                await db.collection('users').doc(currentUser.id).update({
+                    products: currentUser.products
+                });
+                
+                hideAddProductModal();
+                
+                showToast('Ürün buluta başarıyla eklendi!', 'success');
+                
+                // Refresh views
+                renderCompanies();
+                renderProducts();
+                
+                setTimeout(() => {
+                    const profileModal = document.getElementById('profile-modal');
+                    if (!profileModal.classList.contains('hidden')) {
+                        hideProfileModal();
+                        showProfileModal(currentUser.id);
+                    }
+                }, 500);
+            } catch (error) {
+                console.error("Ürün ekleme hatası:", error);
+                showToast("Ürün eklenirken hata oluştu!", 'error');
+            }
         }
 
         // WhatsApp contact helper
@@ -1394,9 +1548,9 @@
         }
 
         // Initialize everything
-        function initializeApp() {
+        async function initializeApp() {
             initializeTailwind();
-            loadData();
+            await loadData();
             
             // Initial renders
             renderCompanies();
