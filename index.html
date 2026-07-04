@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00f0ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kuantum Store">
+    <title>Kuantum Store • Yazılım Pazarı</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- 
+      FIREBASE SDK (CDN) 
+      Gerçek yayında GitHub Actions Secrets ile enjekte et!
+    -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #00f0ff;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .quantum-bg {
+            background: 
+                radial-gradient(circle at 25% 15%, rgba(0, 240, 255, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 75% 85%, rgba(167, 139, 250, 0.05) 0%, transparent 55%),
+                radial-gradient(circle at center, #0a0a1f 0%, #05050f 100%);
+        }
+
+        .neon-cyan {
+            color: #00f0ff;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.7), 0 0 40px rgba(0, 240, 255, 0.3);
+        }
+
+        .neon-purple {
+            color: #a78bfa;
+            text-shadow: 0 0 20px rgba(167, 139, 250, 0.7), 0 0 40px rgba(167, 139, 250, 0.3);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .category-chip {
+            transition: all 0.2s ease;
+        }
+        
+        .category-chip.active {
+            background-color: #00f0ff;
+            color: #0a0a1f;
+            border-color: #00f0ff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .section-header {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(to right, #00f0ff, transparent);
+            border-radius: 3px;
+        }
+
+        .modal {
+            animation: modalPop 0.3s ease forwards;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .nav-active {
+            color: #00f0ff;
+            position: relative;
+        }
+        
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00f0ff;
+        }
+
+        .quantum-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: #00f0ff;
+            box-shadow: 0 0 15px #00f0ff;
+            animation: quantumFloat 15s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .product-grid {
+            scrollbar-width: thin;
+            scrollbar-color: #334155 #1e2937;
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .marketplace-grid {
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .app-store-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .app-store-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .detail-modal {
+            animation: modalPop 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .screenshot {
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-[#05050f] text-white quantum-bg">
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 border-b border-white/10 bg-[#05050f]/95 backdrop-blur-xl">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="px-8 py-5 flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#00f0ff] via-[#a78bfa] to-[#00f0ff] flex items-center justify-center shadow-lg shadow-[#00f0ff]/30">
+                        <i class="fa-solid fa-atom text-[#05050f] text-3xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-semibold tracking-tighter">Kuantum</span>
+                        <span class="font-display text-3xl font-semibold tracking-tighter bg-gradient-to-r from-[#00f0ff] to-[#a78bfa] bg-clip-text text-transparent">Store</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                    <a href="#kesfet" class="hover:text-[#00f0ff] transition-colors">Keşfet</a>
+                    <a href="#kategoriler" class="hover:text-[#00f0ff] transition-colors">Kategoriler</a>
+                    <a href="#nasil-calisir" class="hover:text-[#00f0ff] transition-colors">Nasıl Çalışır</a>
+                    <a href="#guvenlik" class="hover:text-[#00f0ff] transition-colors">Güvenlik</a>
+                </div>
+
+                <div class="flex items-center gap-x-4">
+                    <!-- Language Switcher -->
+                    <div class="flex items-center gap-1 bg-white/5 rounded-2xl p-1 border border-white/10 overflow-x-auto max-w-[320px] md:max-w-none">
+                        <button onclick="switchLanguage('tr')" id="lang-tr"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all active-lang bg-white text-[#05050f]">TR</button>
+                        <button onclick="switchLanguage('en')" id="lang-en"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">EN</button>
+                        <button onclick="switchLanguage('fr')" id="lang-fr"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">FR</button>
+                        <button onclick="switchLanguage('de')" id="lang-de"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">DE</button>
+                        <button onclick="switchLanguage('ru')" id="lang-ru"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">RU</button>
+                        <button onclick="switchLanguage('it')" id="lang-it"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">IT</button>
+                        <button onclick="switchLanguage('ar')" id="lang-ar"
+                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">AR</button>
+                    </div>
+
+                    <!-- User / Login -->
+                    <div id="user-section" class="flex items-center gap-x-3">
+                        <button onclick="showLoginModal()" 
+                                class="flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-all">
+                            <i class="fa-solid fa-user mr-2"></i>
+                            <span data-i18n="login">Giriş Yap</span>
+                        </button>
+                    </div>
+
+                    <!-- Add Product Button -->
+                    <button onclick="showAddProductModal()"
+                            class="hidden md:flex items-center gap-x-2 bg-[#00f0ff] hover:bg-[#00d4e6] transition-all text-[#05050f] px-6 py-2.5 rounded-2xl text-sm font-bold shadow-lg shadow-[#00f0ff]/30">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        <span data-i18n="addProduct">Ürün Ekle</span>
+                    </button>
+
+                    <!-- Mobile Menu -->
+                    <button class="md:hidden w-10 h-10 flex items-center justify-center text-xl" onclick="toggleMobileMenu()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative pt-16 pb-20 px-6 max-w-screen-2xl mx-auto">
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
+                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold tracking-[2px] text-emerald-400">ULUSLARARASI • GÜVENLİ • ŞİFRELİ</span>
+            </div>
+
+            <h1 class="font-display text-7xl md:text-8xl leading-[0.95] tracking-tighter font-semibold mb-4">
+                <span data-i18n="heroTitle1">Yazılımın</span><br>
+                <span class="bg-gradient-to-r from-[#00f0ff] via-[#a78bfa] to-[#00f0ff] bg-clip-text text-transparent">Geleceği</span><br>
+                <span data-i18n="heroTitle2">Burada Başlıyor</span>
+            </h1>
+            
+            <p class="max-w-xl mx-auto text-xl text-white/70 mb-10" data-i18n="heroSubtitle">
+                Şifreli ZIP dosyaları, YouTube doğrulaması ve WhatsApp ödemesiyle 
+                dünyanın en güvenli yazılım pazarı.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button onclick="document.getElementById('kesfet').scrollIntoView({ behavior: 'smooth' })" 
+                        class="group px-9 py-4 bg-white text-[#05050f] font-bold rounded-3xl flex items-center justify-center gap-x-3 text-lg hover:bg-[#00f0ff] transition-all shadow-xl">
+                    <span data-i18n="exploreBtn">Keşfetmeye Başla</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                
+                <button onclick="showAddProductModal()" 
+                        class="px-9 py-4 border border-white/30 hover:bg-white/5 font-semibold rounded-3xl flex items-center justify-center gap-x-3 text-lg transition-all">
+                    <i class="fa-solid fa-upload mr-2"></i>
+                    <span data-i18n="sellBtn">Ürün Sat</span>
+                </button>
+            </div>
+
+            <!-- Trust indicators -->
+            <div class="mt-16 flex flex-wrap justify-center gap-x-10 gap-y-4 text-sm">
+                <div class="flex items-center gap-x-2 text-white/60">
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                    <span>256-bit Şifreleme</span>
+                </div>
+                <div class="flex items-center gap-x-2 text-white/60">
+                    <i class="fa-solid fa-globe text-[#00f0ff]"></i>
+                    <span>47 Ülke • 12 Dil</span>
+                </div>
+                <div class="flex items-center gap-x-2 text-white/60">
+                    <i class="fa-solid fa-check-double text-purple-400"></i>
+                    <span>YouTube + GitHub Doğrulaması</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quantum particles background -->
+        <div id="particles" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+    </header>
+
+    <!-- SEARCH + FILTER -->
+    <div id="kesfet" class="max-w-screen-2xl mx-auto px-8 pt-8">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-y-4 mb-8">
+            <div>
+                <h2 class="font-display text-5xl tracking-tighter font-semibold section-header" data-i18n="discoverTitle">Pazarı Keşfet</h2>
+                <p class="text-white/60 mt-2" data-i18n="discoverSubtitle">Binlerce kaliteli yazılımı ara, incele ve satın al</p>
+            </div>
+            
+            <!-- Search -->
+            <div class="relative w-full lg:w-96">
+                <i class="fa-solid fa-search absolute left-5 top-4 text-white/40"></i>
+                <input id="search-input" 
+                       onkeyup="filterProducts()"
+                       type="text" 
+                       class="w-full bg-white/5 border border-white/10 focus:border-[#00f0ff]/60 transition-all pl-12 pr-5 py-3.5 rounded-3xl text-white placeholder:text-white/40 focus:outline-none"
+                       placeholder="Ürün, kategori veya satıcı ara...">
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <div id="kategoriler" class="flex flex-wrap gap-2 mb-8">
+            <button onclick="filterByCategory('all')" class="category-chip active px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 bg-white/5 flex items-center gap-x-2" data-category="all">
+                <i class="fa-solid fa-th-large"></i>
+                <span data-i18n="catAll">Tümü</span>
+            </button>
+            <button onclick="filterByCategory('simulation')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="simulation">
+                <i class="fa-solid fa-flask"></i>
+                <span>Simülasyon</span>
+            </button>
+            <button onclick="filterByCategory('office')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="office">
+                <i class="fa-solid fa-file-word"></i>
+                <span>Ofis Programları</span>
+            </button>
+            <button onclick="filterByCategory('ai-ml')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="ai-ml">
+                <i class="fa-solid fa-robot"></i>
+                <span data-i18n="catAI">AI &amp; ML</span>
+            </button>
+            <button onclick="filterByCategory('security')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="security">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span data-i18n="catSecurity">Güvenlik</span>
+            </button>
+            <button onclick="filterByCategory('productivity')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="productivity">
+                <i class="fa-solid fa-tasks"></i>
+                <span data-i18n="catProductivity">Verimlilik</span>
+            </button>
+            <button onclick="filterByCategory('development')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="development">
+                <i class="fa-solid fa-code"></i>
+                <span data-i18n="catDev">Geliştirme</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- PRODUCTS GRID (App Store tarzı) -->
+    <div class="max-w-screen-2xl mx-auto px-8 pb-16">
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 product-grid">
+            <!-- Populated by JavaScript - App Store style cards -->
+        </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div id="nasil-calisir" class="max-w-screen-2xl mx-auto px-8 py-16 border-t border-white/10">
+        <div class="max-w-3xl mx-auto text-center mb-12">
+            <h2 class="font-display text-5xl tracking-tighter font-semibold mb-3" data-i18n="howTitle">Kuantum Store Nasıl Çalışır?</h2>
+            <p class="text-white/70 text-lg" data-i18n="howSubtitle">Güvenlik odaklı, basit ve etkili dijital ürün satışı</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div class="glass rounded-3xl p-8">
+                <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#00f0ff]/10 text-[#00f0ff] mb-6">
+                    <i class="fa-solid fa-upload text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-2xl mb-3">1. Ürününü Yükle</h3>
+                <p class="text-white/70">Yazılımını şifreli ZIP olarak GitHub reposuna yükle. YouTube'da tanıtım videosu yayınla ve linkleri forma ekle.</p>
+            </div>
+            <div class="glass rounded-3xl p-8">
+                <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-6">
+                    <i class="fa-solid fa-search text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-2xl mb-3">2. Satın Al</h3>
+                <p class="text-white/70">Alıcı ürünü bulur, WhatsApp üzerinden IBAN ile ödeme yapar. Onay sonrası şifreyi alır.</p>
+            </div>
+            <div class="glass rounded-3xl p-8">
+                <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 mb-6">
+                    <i class="fa-solid fa-key text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-2xl mb-3">3. İndir &amp; Kullan</h3>
+                <p class="text-white/70">Şifreyi girip ZIP'i aç. GitHub linki üzerinden dosya her zaman erişilebilir kalır.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECURITY SECTION -->
+    <div id="guvenlik" class="max-w-screen-2xl mx-auto px-8 py-16 bg-white/5 border-y border-white/10">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="flex-1">
+                    <div class="inline px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold tracking-widest mb-4">GÜVENLİK ÖNCELİĞİMİZ</div>
+                    <h2 class="font-display text-5xl tracking-tighter font-semibold leading-none mb-6">Çok Katmanlı<br>Güvenlik Sistemi</h2>
+                    
+                    <div class="space-y-6 text-white/80">
+                        <div class="flex gap-4">
+                            <i class="fa-solid fa-phone text-[#00f0ff] mt-1 w-5"></i>
+                            <div>
+                                <div class="font-semibold">Çoklu Giriş Doğrulama</div>
+                                <div class="text-sm">Telefon + E-posta + Sanal Şirket Markası + Kimlik Numarası</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <i class="fa-solid fa-lock text-[#00f0ff] mt-1 w-5"></i>
+                            <div>
+                                <div class="font-semibold">Şifreli ZIP + Manuel Şifre</div>
+                                <div class="text-sm">Dosyalar GitHub'da şifreli. Ödeme onayı sonrası WhatsApp'tan şifre verilir.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <i class="fa-brands fa-youtube text-[#00f0ff] mt-1 w-5"></i>
+                            <div>
+                                <div class="font-semibold">YouTube Video Zorunluluğu</div>
+                                <div class="text-sm">Her ürün için tanıtım videosu şart. Kalite ve şeffaflık sağlar.</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <i class="fa-brands fa-github text-[#00f0ff] mt-1 w-5"></i>
+                            <div>
+                                <div class="font-semibold">GitHub + Firebase Entegrasyonu</div>
+                                <div class="text-sm">API anahtarları GitHub Actions Secrets'ta saklanır. Kod içinde hiçbir yerde yazılmaz.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 glass rounded-3xl p-9">
+                    <h4 class="font-semibold mb-6 flex items-center gap-x-2">
+                        <i class="fa-solid fa-shield-halved"></i> 
+                        <span>Neden Bu Yöntem?</span>
+                    </h4>
+                    <ul class="space-y-4 text-sm text-white/80">
+                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Korsan paylaşımı büyük ölçüde önlenir</li>
+                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Ödeme onayı manuel kontrol ile güvenli</li>
+                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Satıcılar kendi GitHub'larında tam kontrol sahibi</li>
+                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Uluslararası ödemelerde esneklik (WhatsApp + IBAN)</li>
+                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Firebase ile gerçek zamanlı veri + güvenli auth</li>
+                    </ul>
+                    <div class="mt-8 text-xs bg-black/30 p-3 rounded-2xl border border-white/10">
+                        <strong>Not:</strong> Bu sistem özellikle bağımsız geliştiriciler ve küçük ekipler için tasarlanmıştır.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="max-w-screen-2xl mx-auto px-8 pt-16 pb-10 text-white/60 text-sm">
+        <div class="flex flex-col md:flex-row justify-between gap-y-8">
+            <div>
+                <div class="flex items-center gap-x-3 mb-3">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#00f0ff] to-[#a78bfa] flex items-center justify-center">
+                        <i class="fa-solid fa-atom text-[#05050f]"></i>
+                    </div>
+                    <span class="font-display text-white text-2xl font-semibold tracking-tighter">Kuantum Store</span>
+                </div>
+                <p class="max-w-xs">Geleceğin yazılım pazarı. Güvenli, şeffaf ve geliştirici odaklı.</p>
+                <div class="mt-4 text-xs">© 2026 Kuantum Store • Tüm hakları saklıdır</div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-8 text-sm">
+                <div>
+                    <div class="font-semibold text-white mb-3">Platform</div>
+                    <div class="space-y-1.5">
+                        <div>Keşfet</div>
+                        <div>Satıcı Ol</div>
+                        <div>API (Yakında)</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="font-semibold text-white mb-3">Destek</div>
+                    <div class="space-y-1.5">
+                        <div>SSS</div>
+                        <div>İletişim</div>
+                        <div>Güvenlik Politikası</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="font-semibold text-white mb-3">Yasal</div>
+                    <div class="space-y-1.5">
+                        <div>Kullanım Şartları</div>
+                        <div>Gizlilik</div>
+                        <div>DMCA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geliştirici Kaynakları - Python & C++ Kütüphaneleri -->
+        <div class="mt-10 pt-8 border-t border-white/10">
+            <div class="text-center mb-6">
+                <h4 class="font-semibold text-white text-lg mb-1">Geliştirici Kaynakları</h4>
+                <p class="text-white/50 text-xs">Popüler kütüphaneler ve resmi dokümantasyonlar</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 text-sm max-w-5xl mx-auto">
+                <!-- Python -->
+                <div>
+                    <div class="font-semibold text-[#00f0ff] mb-2 flex items-center gap-x-2">
+                        <i class="fa-brands fa-python"></i>
+                        <span>Python Kütüphaneleri</span>
+                    </div>
+                    <div class="space-y-1 text-white/70 text-xs">
+                        <a href="https://numpy.org/" target="_blank" class="block hover:text-white">NumPy - Bilimsel Hesaplama</a>
+                        <a href="https://pandas.pydata.org/" target="_blank" class="block hover:text-white">Pandas - Veri Analizi</a>
+                        <a href="https://www.tensorflow.org/" target="_blank" class="block hover:text-white">TensorFlow - Makine Öğrenimi</a>
+                        <a href="https://pytorch.org/" target="_blank" class="block hover:text-white">PyTorch - Derin Öğrenme</a>
+                        <a href="https://www.djangoproject.com/" target="_blank" class="block hover:text-white">Django - Web Framework</a>
+                    </div>
+                </div>
+
+                <!-- C++ -->
+                <div>
+                    <div class="font-semibold text-[#a78bfa] mb-2 flex items-center gap-x-2">
+                        <i class="fa-solid fa-code"></i>
+                        <span>C++ Kütüphaneleri</span>
+                    </div>
+                    <div class="space-y-1 text-white/70 text-xs">
+                        <a href="https://www.boost.org/" target="_blank" class="block hover:text-white">Boost - Genel Amaçlı</a>
+                        <a href="https://www.qt.io/" target="_blank" class="block hover:text-white">Qt - GUI & Cross-Platform</a>
+                        <a href="https://www.sfml-dev.org/" target="_blank" class="block hover:text-white">SFML - Oyun & Multimedya</a>
+                        <a href="https://eigen.tuxfamily.org/" target="_blank" class="block hover:text-white">Eigen - Lineer Cebir</a>
+                        <a href="https://opencv.org/" target="_blank" class="block hover:text-white">OpenCV - Görüntü İşleme</a>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="font-semibold text-white mb-2">Diğer Faydalı Linkler</div>
+                    <div class="space-y-1 text-white/70 text-xs">
+                        <a href="https://docs.python.org/3/" target="_blank" class="block hover:text-white">Python Resmi Dokümantasyon</a>
+                        <a href="https://en.cppreference.com/" target="_blank" class="block hover:text-white">C++ Reference</a>
+                        <a href="https://pypi.org/" target="_blank" class="block hover:text-white">PyPI - Python Paket İndeksi</a>
+                        <a href="https://github.com/" target="_blank" class="block hover:text-white">GitHub - Kod Depolama</a>
+                    </div>
+                </div>
+
+                <div class="text-xs text-white/60">
+                    <div class="font-semibold text-white mb-2">Kurucu & İletişim</div>
+                    <div class="mb-1"><strong>Geliştirici:</strong> İbrahim Aşçı</div>
+                    <a href="https://wa.me/905537725748" target="_blank" 
+                       class="flex items-center gap-x-2 text-emerald-400 hover:text-emerald-300 font-medium">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span>+90 553 772 57 48</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-10 pt-8 border-t border-white/10 text-xs flex flex-col md:flex-row gap-y-2 justify-between items-center">
+            <div>Firebase + GitHub Actions ile güçlendirilmiştir • Gerçek zamanlı veri ve güvenli kimlik doğrulama</div>
+            <div class="flex items-center gap-x-4">
+                <span>TR • EN • DE • ES • FR • RU • ZH</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" onclick="if (event.target.id === 'login-modal') hideLoginModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md rounded-3xl p-8 modal">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-display text-3xl font-semibold" data-i18n="loginTitle">Giriş Yap</h3>
+                <button onclick="hideLoginModal()" class="text-2xl leading-none text-white/50 hover:text-white">×</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Telefon Numarası</label>
+                    <input id="login-phone" type="tel" value="+90 555 123 4567" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">E-posta Adresi</label>
+                    <input id="login-email" type="email" value="developer@kuantum.dev" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Sanal Şirket Markası</label>
+                    <input id="login-brand" type="text" value="Kuantum Labs" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Kimlik Numarası / Vergi No</label>
+                    <input id="login-id" type="text" value="12345678901" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                </div>
+            </div>
+            
+            <div class="mt-7 flex gap-3">
+                <button onclick="performLogin()" 
+                        class="flex-1 py-4 bg-[#00f0ff] hover:bg-white transition-all text-[#05050f] font-bold rounded-2xl">
+                    Giriş Yap
+                </button>
+                <button onclick="hideLoginModal()" 
+                        class="flex-1 py-4 border border-white/30 hover:bg-white/5 rounded-2xl font-medium">
+                    İptal
+                </button>
+            </div>
+            
+            <p class="text-center text-[10px] text-white/40 mt-5">Bu bilgiler sadece doğrulama için kullanılır. Gerçek platformda Firebase Auth + KYC entegrasyonu yapılacaktır.</p>
+        </div>
+    </div>
+
+    <!-- ADD PRODUCT MODAL -->
+    <div id="add-product-modal" onclick="if (event.target.id === 'add-product-modal') hideAddProductModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-2xl rounded-3xl p-8 modal max-h-[90vh] overflow-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-display text-3xl font-semibold">Yeni Ürün Ekle</h3>
+                <button onclick="hideAddProductModal()" class="text-2xl text-white/50 hover:text-white">×</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                <div class="md:col-span-2">
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Ürün Adı *</label>
+                    <input id="product-name" type="text" placeholder="QuantumAI Pro v4.2" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                </div>
+                
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Kategori *</label>
+                    <select id="product-category" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                        <option value="simulation">Simülasyon Programları</option>
+                        <option value="office">Ofis Programları</option>
+                        <option value="ai-ml">AI &amp; Makine Öğrenimi</option>
+                        <option value="security">Güvenlik &amp; Şifreleme</option>
+                        <option value="productivity">Verimlilik Araçları</option>
+                        <option value="development">Geliştirme Araçları</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Fiyat (USD) *</label>
+                    <input id="product-price" type="number" step="0.01" value="49.99" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                </div>
+                
+                <div class="md:col-span-2">
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">Kısa Açıklama *</label>
+                    <textarea id="product-desc" rows="2" placeholder="Kısa ve etkileyici açıklama..." class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none"></textarea>
+                </div>
+                
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">YouTube Video Linki * (Zorunlu)</label>
+                    <input id="product-yt" type="url" placeholder="https://youtube.com/watch?v=..." class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                    <p class="text-[10px] text-white/40 mt-1">Her ürün için kaliteli tanıtım videosu şarttır.</p>
+                </div>
+                
+                <div>
+                    <label class="text-xs font-medium text-white/60 block mb-1.5">GitHub Şifreli ZIP Linki *</label>
+                    <input id="product-github" type="url" placeholder="https://github.com/kullanici/repo/releases/download/..." class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
+                    <p class="text-[10px] text-white/40 mt-1">Dosya şifreli ZIP olmalı. Şifre ödeme sonrası verilir.</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex gap-3">
+                <button onclick="addNewProduct()" class="flex-1 py-4 bg-[#00f0ff] hover:bg-white text-[#05050f] font-bold rounded-2xl transition-all">
+                    <i class="fa-solid fa-check mr-2"></i> Ürünü Yayınla
+                </button>
+                <button onclick="hideAddProductModal()" class="flex-1 py-4 border border-white/30 hover:bg-white/5 rounded-2xl font-medium">
+                    İptal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div id="payment-modal" onclick="if (event.target.id === 'payment-modal') hidePaymentModal()" class="hidden fixed inset-0 bg-black/80 backdrop-blur-2xl z-[110] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-lg rounded-3xl p-8 modal">
+            <div class="flex justify-between mb-5">
+                <div>
+                    <h3 class="font-display text-2xl font-semibold">Ödeme Onayı</h3>
+                    <p class="text-emerald-400 text-sm">Güvenli WhatsApp + IBAN</p>
+                </div>
+                <button onclick="hidePaymentModal()" class="text-2xl text-white/40">×</button>
+            </div>
+            
+            <div id="payment-product-info" class="mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <div class="font-medium mb-2 flex items-center gap-x-2">
+                        <i class="fa-brands fa-whatsapp text-emerald-400"></i> 
+                        <span>Ödeme Yöntemi</span>
+                    </div>
+                    <div class="pl-6 text-white/80">
+                        WhatsApp üzerinden iletişime geçin veya IBAN'a havale/EFT yapın.
+                    </div>
+                </div>
+                
+                <div class="pl-6">
+                    <div class="text-xs text-white/50">IBAN (Örnek)</div>
+                    <div class="font-mono text-base tracking-wider">TR12 3456 7890 1234 5678 9012 34</div>
+                    <div class="text-xs text-white/50 mt-1">Alıcı: Kuantum Store Teknoloji A.Ş. (Sanal)</div>
+                </div>
+                
+                <div class="pl-6">
+                    <div class="text-xs text-white/50">WhatsApp</div>
+                    <a href="https://wa.me/905551234567?text=Merhaba%2C%20Kuantum%20Store%27dan%20ürün%20satın%20almak%20istiyorum." target="_blank"
+                       class="inline-flex items-center gap-x-2 text-emerald-400 hover:text-emerald-300 font-medium">
+                        <i class="fa-brands fa-whatsapp"></i> +90 555 123 45 67 ile iletişime geç
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-black/40 border border-white/10 rounded-2xl p-5 text-xs leading-relaxed">
+                <strong>Önemli:</strong> Ödemeyi yaptıktan sonra WhatsApp'tan dekont + ürün adını gönderin. 
+                Onaylandıktan sonra <span class="font-mono text-[#00f0ff]">şifreyi</span> WhatsApp üzerinden alacaksınız. 
+                Şifreyi aldıktan sonra GitHub linkinden şifreli ZIP'i indirip açabilirsiniz.
+            </div>
+            
+            <div class="mt-6 flex gap-3">
+                <button onclick="simulatePaymentConfirmation()" 
+                        class="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 transition-all text-white font-bold rounded-2xl flex items-center justify-center gap-x-2">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span>Ödemeyi Simüle Et</span>
+                </button>
+                <button onclick="hidePaymentModal()" class="flex-1 py-4 border border-white/30 rounded-2xl">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div id="video-modal" onclick="if (event.target.id === 'video-modal') hideVideoModal()" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="w-full max-w-4xl">
+            <div class="flex justify-end mb-3">
+                <button onclick="hideVideoModal()" class="text-white/60 hover:text-white text-3xl">×</button>
+            </div>
+            <div id="video-container" class="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                <!-- YouTube iframe injected here -->
+            </div>
+            <p class="text-center text-xs text-white/50 mt-3">YouTube videosu • Ürün kalitesini doğrulamak için zorunludur</p>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL (App Store tarzı profesyonel detay sayfası) -->
+    <div id="product-detail-modal" onclick="if (event.target.id === 'product-detail-modal') hideProductDetailModal()" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl z-[130] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-4xl rounded-3xl overflow-hidden modal max-h-[92vh] overflow-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-8 py-5 border-b border-white/10 sticky top-0 bg-[#05050f]/95 z-10">
+                <div class="flex items-center gap-x-4">
+                    <div id="detail-icon" class="w-14 h-14 rounded-2xl flex items-center justify-center text-4xl shadow-lg"></div>
+                    <div>
+                        <h2 id="detail-name" class="font-display text-3xl font-semibold"></h2>
+                        <p id="detail-seller" class="text-white/60"></p>
+                    </div>
+                </div>
+                <button onclick="hideProductDetailModal()" class="text-3xl text-white/50 hover:text-white">×</button>
+            </div>
+
+            <div class="p-8 grid md:grid-cols-5 gap-8">
+                <!-- Sol taraf: İkon + Fiyat + Buton -->
+                <div class="md:col-span-2">
+                    <div id="detail-big-icon" class="w-full aspect-square max-w-[280px] mx-auto rounded-3xl flex items-center justify-center text-[120px] shadow-2xl mb-6"></div>
+                    
+                    <div class="text-center mb-6">
+                        <div id="detail-price" class="text-5xl font-bold tracking-tighter mb-1"></div>
+                        <div class="text-emerald-400 text-sm">Tek seferlik lisans • Ömür boyu erişim</div>
+                    </div>
+
+                    <button id="detail-buy-btn" 
+                            class="w-full py-4 bg-[#00f0ff] hover:bg-white active:bg-[#00d4e6] transition-all text-[#05050f] text-lg font-bold rounded-2xl flex items-center justify-center gap-x-2 shadow-lg">
+                        <i class="fa-solid fa-download"></i>
+                        <span>İndir / Satın Al</span>
+                    </button>
+                    
+                    <div class="mt-4 text-center">
+                        <div class="flex items-center justify-center gap-x-2 text-xs text-white/50">
+                            <i class="fa-solid fa-check-circle text-emerald-400"></i>
+                            <span>Doğrulanmış Satıcı</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ taraf: Açıklama + Video + GitHub -->
+                <div class="md:col-span-3">
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-lg mb-2 text-white/90">Açıklama</h4>
+                        <p id="detail-desc" class="text-white/80 leading-relaxed"></p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-sm mb-2 text-white/70">Kategori</h4>
+                            <div id="detail-category" class="px-4 py-2 bg-white/5 rounded-2xl text-sm inline-block"></div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm mb-2 text-white/70">Eklenme Tarihi</h4>
+                            <div id="detail-date" class="text-sm text-white/80"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="watchYouTubeFromDetail()" 
+                                class="flex-1 flex items-center justify-center gap-x-2 py-3 border border-white/20 hover:bg-white/5 rounded-2xl text-sm font-medium transition-colors">
+                            <i class="fa-brands fa-youtube text-red-500"></i>
+                            <span>Tanıtım Videosu</span>
+                        </button>
+                        
+                        <button onclick="openGitHubFromDetail()" 
+                                class="flex-1 flex items-center justify-center gap-x-2 py-3 border border-white/20 hover:bg-white/5 rounded-2xl text-sm font-medium transition-colors">
+                            <i class="fa-brands fa-github"></i>
+                            <span>GitHub</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#00f0ff');
+        }
+
+        // Translations
+        const translations = {
+            tr: {
+                login: "Giriş Yap",
+                addProduct: "Ürün Ekle",
+                heroTitle1: "Yazılımın",
+                heroTitle2: "Burada Başlıyor",
+                heroSubtitle: "Şifreli ZIP dosyaları, YouTube doğrulaması ve WhatsApp ödemesiyle dünyanın en güvenli yazılım pazarı.",
+                exploreBtn: "Keşfetmeye Başla",
+                sellBtn: "Ürün Sat",
+                statProducts: "Yazılım Ürünü",
+                statSellers: "Satıcı",
+                statDownloads: "İndirme",
+                statCountries: "Ülke",
+                discoverTitle: "Pazarı Keşfet",
+                discoverSubtitle: "Binlerce kaliteli yazılımı ara, incele ve satın al",
+                catAll: "Tümü",
+                catAI: "AI & ML",
+                catSecurity: "Güvenlik",
+                catProductivity: "Verimlilik",
+                catDev: "Geliştirme",
+                catGames: "Oyunlar",
+                catEducation: "Eğitim",
+                howTitle: "Kuantum Store Nasıl Çalışır?",
+                howSubtitle: "Güvenlik odaklı, basit ve etkili dijital ürün satışı",
+                loginTitle: "Giriş Yap"
+            },
+            en: {
+                login: "Login",
+                addProduct: "Add Product",
+                heroTitle1: "The Future of",
+                heroTitle2: "Software Starts Here",
+                heroSubtitle: "Encrypted ZIP files, YouTube verification and WhatsApp payments — the world's most secure software marketplace.",
+                exploreBtn: "Start Exploring",
+                sellBtn: "Sell Product",
+                statProducts: "Software Products",
+                statSellers: "Sellers",
+                statDownloads: "Downloads",
+                statCountries: "Countries",
+                discoverTitle: "Explore the Marketplace",
+                discoverSubtitle: "Search, review and purchase thousands of quality software",
+                catAll: "All",
+                catAI: "AI & ML",
+                catSecurity: "Security",
+                catProductivity: "Productivity",
+                catDev: "Development",
+                catGames: "Games",
+                catEducation: "Education",
+                howTitle: "How Kuantum Store Works",
+                howSubtitle: "Security-first, simple and effective digital product sales",
+                loginTitle: "Sign In"
+            },
+            fr: {
+                login: "Connexion",
+                addProduct: "Ajouter un Produit",
+                heroTitle1: "L'Avenir du",
+                heroTitle2: "Logiciel Commence Ici",
+                heroSubtitle: "Fichiers ZIP chiffrés, vérification YouTube et paiements WhatsApp — la marketplace de logiciels la plus sécurisée au monde.",
+                exploreBtn: "Commencer à Explorer",
+                sellBtn: "Vendre un Produit",
+                discoverTitle: "Explorer le Marché",
+                discoverSubtitle: "Rechercher, examiner et acheter des milliers de logiciels de qualité",
+                catAll: "Tout",
+                catAI: "IA & ML",
+                catSecurity: "Sécurité",
+                catProductivity: "Productivité",
+                catDev: "Développement",
+                howTitle: "Comment Fonctionne Kuantum Store ?",
+                howSubtitle: "Axé sur la sécurité, simple et efficace pour la vente de produits numériques",
+                loginTitle: "Se Connecter"
+            },
+            de: {
+                login: "Anmelden",
+                addProduct: "Produkt Hinzufügen",
+                heroTitle1: "Die Zukunft der",
+                heroTitle2: "Software Beginnt Hier",
+                heroSubtitle: "Verschlüsselte ZIP-Dateien, YouTube-Verifizierung und WhatsApp-Zahlungen — der sicherste Software-Marktplatz der Welt.",
+                exploreBtn: "Jetzt Entdecken",
+                sellBtn: "Produkt Verkaufen",
+                discoverTitle: "Marktplatz Erkunden",
+                discoverSubtitle: "Tausende qualitativ hochwertige Software suchen, prüfen und kaufen",
+                catAll: "Alle",
+                catAI: "KI & ML",
+                catSecurity: "Sicherheit",
+                catProductivity: "Produktivität",
+                catDev: "Entwicklung",
+                howTitle: "Wie Funktioniert Kuantum Store?",
+                howSubtitle: "Sicherheitsfokussiert, einfach und effektiv für digitale Produktverkäufe",
+                loginTitle: "Anmelden"
+            },
+            ru: {
+                login: "Войти",
+                addProduct: "Добавить Продукт",
+                heroTitle1: "Будущее",
+                heroTitle2: "ПО Начинается Здесь",
+                heroSubtitle: "Зашифрованные ZIP-файлы, верификация YouTube и оплата через WhatsApp — самая безопасная площадка для продажи ПО в мире.",
+                exploreBtn: "Начать Исследовать",
+                sellBtn: "Продать Продукт",
+                discoverTitle: "Исследовать Маркетплейс",
+                discoverSubtitle: "Ищите, изучайте и покупайте тысячи качественных программ",
+                catAll: "Все",
+                catAI: "ИИ & ML",
+                catSecurity: "Безопасность",
+                catProductivity: "Продуктивность",
+                catDev: "Разработка",
+                howTitle: "Как Работает Kuantum Store?",
+                howSubtitle: "С фокусом на безопасность, просто и эффективно для продажи цифровых продуктов",
+                loginTitle: "Войти"
+            },
+            it: {
+                login: "Accedi",
+                addProduct: "Aggiungi Prodotto",
+                heroTitle1: "Il Futuro del",
+                heroTitle2: "Software Inizia Qui",
+                heroSubtitle: "File ZIP crittografati, verifica YouTube e pagamenti WhatsApp — il marketplace di software più sicuro al mondo.",
+                exploreBtn: "Inizia a Esplorare",
+                sellBtn: "Vendi un Prodotto",
+                discoverTitle: "Esplora il Mercato",
+                discoverSubtitle: "Cerca, esamina e acquista migliaia di software di qualità",
+                catAll: "Tutti",
+                catAI: "IA & ML",
+                catSecurity: "Sicurezza",
+                catProductivity: "Produttività",
+                catDev: "Sviluppo",
+                howTitle: "Come Funziona Kuantum Store?",
+                howSubtitle: "Focalizzato sulla sicurezza, semplice ed efficace per la vendita di prodotti digitali",
+                loginTitle: "Accedi"
+            },
+            ar: {
+                login: "تسجيل الدخول",
+                addProduct: "إضافة منتج",
+                heroTitle1: "مستقبل",
+                heroTitle2: "البرمجيات يبدأ هنا",
+                heroSubtitle: "ملفات ZIP مشفرة، تحقق من يوتيوب ومدفوعات واتساب — أكثر أسواق البرمجيات أمانًا في العالم.",
+                exploreBtn: "ابدأ الاستكشاف",
+                sellBtn: "بيع منتج",
+                discoverTitle: "استكشف السوق",
+                discoverSubtitle: "ابحث واستعرض واشترِ آلاف البرامج عالية الجودة",
+                catAll: "الكل",
+                catAI: "الذكاء الاصطناعي",
+                catSecurity: "الأمان",
+                catProductivity: "الإنتاجية",
+                catDev: "التطوير",
+                howTitle: "كيف يعمل Kuantum Store؟",
+                howSubtitle: "يركز على الأمان، بسيط وفعال لبيع المنتجات الرقمية",
+                loginTitle: "تسجيل الدخول"
+            }
+        };
+
+        let currentLang = 'tr';
+        let products = [];
+        let currentFilter = 'all';
+        let loggedInUser = null;
+
+        // FIREBASE CONFIG - Gerçek değerler (senin dunya-65219 projen)
+        let firebaseApp = null;
+        let db = null;
+        let auth = null;
+
+        function initFirebase() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyA6yQ6_TWFvmjkFTEOwWQMaQpDChoiP6wVw",
+                authDomain: "dunya-65219.firebaseapp.com",
+                projectId: "dunya-65219",
+                storageBucket: "dunya-65219.firebasestorage.app",
+                messagingSenderId: "706850743459",
+                appId: "1:706850743459:web:1c2b8bfed3c69c2f3a4b16",
+                measurementId: "G-G11P4XLPCD"
+            };
+
+            try {
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                    auth = firebase.auth();
+                    db = firebase.firestore();
+                    console.log("%c[Firebase] Gerçek proje bağlandı (dunya-65219)", "color:#22c55e");
+                }
+            } catch (e) {
+                console.warn("[Firebase] Bağlanamadı, localStorage kullanılacak:", e.message);
+            }
+        }
+
+        async function saveUserToFirebase(userData) {
+            if (!db) return;
+            try {
+                await db.collection("users").doc(userData.email).set({
+                    ...userData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    platform: "Kuantum Store"
+                }, { merge: true });
+            } catch (err) {
+                console.error("Firestore kullanıcı hatası:", err);
+            }
+        }
+
+        async function saveProductToFirebase(productData) {
+            if (!db) return productData.id;
+            try {
+                const docRef = await db.collection("products").add({
+                    ...productData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return docRef.id;
+            } catch (err) {
+                console.error("Firestore ürün hatası:", err);
+                return productData.id;
+            }
+        }
+
+        function getInitialProducts() {
+            // Gerçek ürünler Firestore veya localStorage üzerinden yönetilecek.
+            return [];
+        }
+
+        // Render products - APP STORE TARZI (kare ikon + İndir butonu)
+        function renderProducts(filteredProducts) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center">
+                        <i class="fa-solid fa-search text-5xl text-white/20 mb-4"></i>
+                        <p class="text-white/60">Henüz ürün bulunmuyor. İlk ürünü ekleyerek başlayın.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.className = `app-store-card glass rounded-3xl overflow-hidden border border-white/10 hover:border-[#00f0ff]/40 transition-all cursor-pointer`;
+                card.dataset.category = product.category;
+                card.dataset.id = product.id;
+                card.onclick = () => openProductDetail(product.id);
+
+                const categoryLabel = getCategoryLabel(product.category);
+                const iconClass = product.icon || 'fa-cube';
+
+                card.innerHTML = `
+                    <div class="p-4 flex gap-4 items-center">
+                        <!-- App Icon (App Store tarzı kare yuvarlak ikon) -->
+                        <div class="w-16 h-16 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[#00f0ff] via-[#a78bfa] to-[#00f0ff] flex items-center justify-center shadow-lg shadow-[#00f0ff]/30">
+                            <i class="fa-solid ${iconClass} text-[#05050f] text-4xl"></i>
+                        </div>
+                        
+                        <!-- Bilgi Alanı -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <h3 class="font-display text-xl font-semibold tracking-tight truncate">${product.name}</h3>
+                            </div>
+                            
+                            <p class="text-white/60 text-xs mb-1">${product.seller} • ${categoryLabel}</p>
+                            
+                            <p class="text-white/70 text-sm line-clamp-2 pr-2">${product.desc}</p>
+                        </div>
+                        
+                        <!-- Sağ Taraf: Fiyat + İndir Butonu (App Store tarzı) -->
+                        <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                            <div class="text-right">
+                                <div class="text-2xl font-bold tracking-tighter">$${product.price}</div>
+                            </div>
+                            
+                            <button onclick="buyProduct(${product.id}); event.stopImmediatePropagation();" 
+                                    class="px-5 py-1.5 bg-white hover:bg-[#00f0ff] active:bg-[#00d4e6] transition-all text-[#05050f] text-sm font-bold rounded-full shadow flex items-center gap-x-1.5">
+                                <i class="fa-solid fa-download text-xs"></i>
+                                <span>İndir</span>
+                            </button>
+                            
+                            <div class="flex gap-1 mt-1">
+                                <button onclick="watchYouTube('${product.yt}', '${product.name}'); event.stopImmediatePropagation();" 
+                                        class="text-white/50 hover:text-white p-1 text-xs">
+                                    <i class="fa-brands fa-youtube"></i>
+                                </button>
+                                <button onclick="openGitHub('${product.github}'); event.stopImmediatePropagation();" 
+                                        class="text-white/50 hover:text-white p-1 text-xs">
+                                    <i class="fa-brands fa-github"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function getCategoryLabel(cat) {
+            const labels = {
+                'simulation': 'Simülasyon',
+                'office': 'Ofis',
+                'ai-ml': 'AI & ML',
+                'security': 'Güvenlik',
+                'productivity': 'Verimlilik',
+                'development': 'Geliştirme'
+            };
+            return labels[cat] || cat;
+        }
+
+        // Filter functions
+        function filterProducts() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const gridItems = document.querySelectorAll('#products-grid > div');
+
+            gridItems.forEach(card => {
+                const name = card.querySelector('h3').textContent.toLowerCase();
+                const desc = card.querySelector('p').textContent.toLowerCase();
+                const seller = card.querySelector('.font-medium') ? card.querySelector('.font-medium').textContent.toLowerCase() : '';
+                const category = card.dataset.category;
+
+                const matchesSearch = name.includes(searchTerm) || desc.includes(searchTerm) || seller.includes(searchTerm);
+                const matchesCategory = currentFilter === 'all' || category === currentFilter;
+
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByCategory(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.remove('active', 'bg-[#00f0ff]', 'text-[#05050f]');
+                chip.classList.add('border-white/20', 'hover:bg-white/5');
+                
+                if (chip.dataset.category === category) {
+                    chip.classList.add('active', 'bg-[#00f0ff]', 'text-[#05050f]');
+                    chip.classList.remove('border-white/20', 'hover:bg-white/5');
+                }
+            });
+
+            filterProducts();
+        }
+
+        // Language switch
+        function switchLanguage(lang) {
+            currentLang = lang;
+            
+            const langCodes = ['tr', 'en', 'fr', 'de', 'ru', 'it', 'ar'];
+            langCodes.forEach(code => {
+                const btn = document.getElementById('lang-' + code);
+                if (btn) {
+                    const isActive = lang === code;
+                    btn.classList.toggle('active-lang', isActive);
+                    btn.classList.toggle('bg-white', isActive);
+                    btn.classList.toggle('text-[#05050f]', isActive);
+                    btn.classList.toggle('text-white/70', !isActive);
+                }
+            });
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = lang;
+            }
+
+            const searchInput = document.getElementById('search-input');
+            const placeholders = {
+                'en': "Search products, categories or sellers...",
+                'fr': "Rechercher produits, catégories ou vendeurs...",
+                'de': "Produkte, Kategorien oder Verkäufer suchen...",
+                'ru': "Поиск товаров, категорий veya продавцов...",
+                'it': "Cerca prodotti, categorie o venditori...",
+                'ar': "ابحث عن المنتجات أو الفئات أو البائعين...",
+                'tr': "Ürün, kategori veya satıcı ara..."
+            };
+            searchInput.placeholder = placeholders[lang] || "Ürün, kategori veya satıcı ara...";
+        }
+
+        // Modals
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+        }
+
+        function hideLoginModal() {
+            document.getElementById('login-modal').classList.remove('flex');
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+
+        function performLogin() {
+            const phone = document.getElementById('login-phone').value;
+            const email = document.getElementById('login-email').value;
+            const brand = document.getElementById('login-brand').value;
+            const idNum = document.getElementById('login-id').value;
+
+            if (!phone || !email || !brand || !idNum) {
+                alert("Lütfen tüm alanları doldurun!");
+                return;
+            }
+
+            loggedInUser = { phone, email, brand, idNum };
+            saveUserToFirebase(loggedInUser);
+            
+            const userSection = document.getElementById('user-section');
+            userSection.innerHTML = `
+                <div class="flex items-center gap-x-3 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+                    <div class="w-8 h-8 bg-gradient-to-br from-[#00f0ff] to-purple-400 rounded-full flex items-center justify-center text-xs font-bold text-[#05050f]">
+                        ${brand.substring(0,2).toUpperCase()}
+                    </div>
+                    <div class="text-sm">
+                        <div class="font-semibold">${brand}</div>
+                        <div class="text-[10px] text-white/50 -mt-0.5">${phone}</div>
+                    </div>
+                    <button onclick="logout()" class="ml-2 text-xs px-3 py-1 rounded-xl border border-white/20 hover:bg-red-500/10 hover:text-red-400 transition-colors">Çıkış</button>
+                </div>
+            `;
+            
+            hideLoginModal();
+            showToast(`Hoş geldin, ${brand}! Firebase'e kaydedildi.`);
+        }
+
+        function logout() {
+            loggedInUser = null;
+            const userSection = document.getElementById('user-section');
+            userSection.innerHTML = `
+                <button onclick="showLoginModal()" class="flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-user mr-2"></i>
+                    <span data-i18n="login">Giriş Yap</span>
+                </button>
+            `;
+        }
+
+        function showAddProductModal() {
+            if (!loggedInUser) {
+                showToast("Ürün eklemek için önce giriş yapmalısın!", true);
+                showLoginModal();
+                return;
+            }
+            document.getElementById('add-product-modal').classList.remove('hidden');
+            document.getElementById('add-product-modal').classList.add('flex');
+        }
+
+        function hideAddProductModal() {
+            document.getElementById('add-product-modal').classList.remove('flex');
+            document.getElementById('add-product-modal').classList.add('hidden');
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('product-name').value.trim();
+            const category = document.getElementById('product-category').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            const desc = document.getElementById('product-desc').value.trim();
+            const yt = document.getElementById('product-yt').value.trim();
+            const github = document.getElementById('product-github').value.trim();
+
+            if (!name || !desc || !yt || !github || !price) {
+                alert("Lütfen zorunlu alanları (*) doldurun!");
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(),
+                name,
+                desc,
+                price,
+                category,
+                yt,
+                github,
+                seller: loggedInUser ? loggedInUser.brand : "Bilinmeyen Satıcı",
+                addedDate: new Date().toISOString().split('T')[0],
+                icon: "fa-cube"
+            };
+
+            saveProductToFirebase(newProduct).then(firebaseId => {
+                if (firebaseId && firebaseId !== newProduct.id) newProduct.firebaseId = firebaseId;
+            });
+
+            products.unshift(newProduct);
+            saveProductsToLocal();
+            hideAddProductModal();
+            
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-desc').value = '';
+            document.getElementById('product-yt').value = '';
+            document.getElementById('product-github').value = '';
+
+            applyCurrentFilters();
+            showToast("Ürün Firebase + localStorage'a kaydedildi! 🎉");
+        }
+
+        function applyCurrentFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            let filtered = products;
+
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(p => p.category === currentFilter);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.desc.toLowerCase().includes(searchTerm) || 
+                    (p.seller && p.seller.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            renderProducts(filtered);
+        }
+
+        let currentProductForPayment = null;
+
+        function buyProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentProductForPayment = product;
+
+            const infoDiv = document.getElementById('payment-product-info');
+            infoDiv.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-semibold text-lg">${product.name}</div>
+                        <div class="text-xs text-white/50">${product.seller}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-mono text-3xl font-bold tracking-tighter">$${product.price}</div>
+                        <div class="text-emerald-400 text-xs">Tek seferlik lisans</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('payment-modal').classList.remove('hidden');
+            document.getElementById('payment-modal').classList.add('flex');
+        }
+
+        function hidePaymentModal() {
+            document.getElementById('payment-modal').classList.remove('flex');
+            document.getElementById('payment-modal').classList.add('hidden');
+            currentProductForPayment = null;
+        }
+
+        function simulatePaymentConfirmation() {
+            if (!currentProductForPayment) return;
+
+            const modalContent = document.getElementById('payment-modal');
+            
+            modalContent.innerHTML = `
+                <div class="glass w-full max-w-lg rounded-3xl p-8 modal text-center">
+                    <div class="mx-auto w-20 h-20 flex items-center justify-center bg-emerald-500/10 text-emerald-400 rounded-full mb-6">
+                        <i class="fa-solid fa-check-double text-5xl"></i>
+                    </div>
+                    
+                    <h3 class="text-3xl font-semibold mb-2">Ödeme Onaylandı!</h3>
+                    <p class="text-white/70 mb-8">Teşekkürler! Şifre WhatsApp üzerinden gönderildi.</p>
+                    
+                    <div class="bg-black/40 border border-white/10 p-6 rounded-2xl mb-6 text-left">
+                        <div class="flex justify-between text-sm mb-4">
+                            <div>Ürün</div>
+                            <div class="font-semibold">${currentProductForPayment.name}</div>
+                        </div>
+                        <div class="flex justify-between text-sm mb-4">
+                            <div>Şifre</div>
+                            <div class="font-mono text-[#00f0ff] font-bold tracking-[3px]">${generateFakePassword()}</div>
+                        </div>
+                        <div class="text-xs text-white/50">Bu şifreyi kullanarak GitHub'dan indirdiğin ZIP dosyasını açabilirsin.</div>
+                    </div>
+                    
+                    <button onclick="finishPurchase()" class="w-full py-4 bg-white text-[#05050f] font-bold rounded-2xl">Anladım, İndirmeye Git</button>
+                </div>
+            `;
+        }
+
+        function generateFakePassword() {
+            return 'KUANTUM-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now().toString().slice(-4);
+        }
+
+        function finishPurchase() {
+            if (currentProductForPayment) {
+                window.open(currentProductForPayment.github, '_blank');
+            }
+            hidePaymentModal();
+            showToast("İndirme başlatıldı! Şifreyi not etmeyi unutma.");
+        }
+
+        function watchYouTube(ytLink, productName) {
+            const modal = document.getElementById('video-modal');
+            const container = document.getElementById('video-container');
+            
+            container.innerHTML = `
+                <iframe width="100%" height="100%" 
+                        src="${ytLink}" 
+                        title="${productName} - Tanıtım Videosu" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen></iframe>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideVideoModal() {
+            const modal = document.getElementById('video-modal');
+            const container = document.getElementById('video-container');
+            container.innerHTML = '';
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function openGitHub(githubLink) {
+            window.open(githubLink, '_blank');
+        }
+
+        // === YENİ: Profesyonel Ürün Detay Modal ===
+        let currentDetailProduct = null;
+
+        function openProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentDetailProduct = product;
+
+            // İkon
+            const iconEl = document.getElementById('detail-icon');
+            const bigIconEl = document.getElementById('detail-big-icon');
+            const iconClass = product.icon || 'fa-cube';
+            
+            iconEl.innerHTML = `<i class="fa-solid ${iconClass} text-[#05050f] text-4xl"></i>`;
+            iconEl.style.background = 'linear-gradient(to bottom right, #00f0ff, #a78bfa, #00f0ff)';
+            
+            bigIconEl.innerHTML = `<i class="fa-solid ${iconClass} text-[#05050f]" style="font-size: 120px;"></i>`;
+            bigIconEl.style.background = 'linear-gradient(to bottom right, #00f0ff, #a78bfa, #00f0ff)';
+
+            // Metinler
+            document.getElementById('detail-name').textContent = product.name;
+            document.getElementById('detail-seller').textContent = product.seller + ' • Doğrulanmış';
+            document.getElementById('detail-desc').textContent = product.desc;
+            document.getElementById('detail-price').textContent = '$' + product.price;
+            document.getElementById('detail-category').textContent = getCategoryLabel(product.category);
+            document.getElementById('detail-date').textContent = product.addedDate || '2026';
+
+            // Satın al butonu
+            const buyBtn = document.getElementById('detail-buy-btn');
+            buyBtn.onclick = () => {
+                hideProductDetailModal();
+                setTimeout(() => buyProduct(productId), 300);
+            };
+
+            // Modal göster
+            const modal = document.getElementById('product-detail-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideProductDetailModal() {
+            const modal = document.getElementById('product-detail-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            currentDetailProduct = null;
+        }
+
+        function watchYouTubeFromDetail() {
+            if (currentDetailProduct) {
+                hideProductDetailModal();
+                setTimeout(() => {
+                    watchYouTube(currentDetailProduct.yt, currentDetailProduct.name);
+                }, 300);
+            }
+        }
+
+        function openGitHubFromDetail() {
+            if (currentDetailProduct) {
+                window.open(currentDetailProduct.github, '_blank');
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-x-3 z-[200] ${isError ? 'bg-red-500/90' : 'bg-emerald-600/90'} text-white text-sm font-medium`;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        function saveProductsToLocal() {
+            localStorage.setItem('kuantum_products', JSON.stringify(products));
+        }
+
+        function loadProductsFromLocal() {
+            const saved = localStorage.getItem('kuantum_products');
+            if (saved) {
+                products = JSON.parse(saved);
+            } else {
+                products = getInitialProducts();
+                saveProductsToLocal();
+            }
+        }
+
+        function createQuantumParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#00f0ff', '#a78bfa', '#67e8f9', '#ffffff'];
+            
+            // Daha lüks yıldız efekti (daha fazla ve parlak parçacık)
+            for (let i = 0; i < 65; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'quantum-particle';
+                
+                const size = Math.random() * 3.5 + 1.5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.opacity = Math.random() * 0.85 + 0.35;
+                particle.style.boxShadow = `0 0 ${Math.random() * 12 + 6}px currentColor`;
+                
+                const duration = Math.random() * 32 + 22;
+                particle.style.animation = `quantumFloat ${duration}s infinite ease-in-out`;
+                particle.style.animationDelay = `-${Math.random() * 32}s`;
+                
+                container.appendChild(particle);
+            }
+            
+            // Merkezi parlak "gezegen" efekti (lüks uzay hissi)
+            const planet = document.createElement('div');
+            planet.style.position = 'absolute';
+            planet.style.left = '68%';
+            planet.style.top = '22%';
+            planet.style.width = '180px';
+            planet.style.height = '180px';
+            planet.style.borderRadius = '50%';
+            planet.style.background = 'radial-gradient(circle at 35% 35%, #a78bfa, #4c1d95, transparent)';
+            planet.style.opacity = '0.12';
+            planet.style.boxShadow = '0 0 120px rgba(167, 139, 250, 0.4), inset 40px 30px 60px rgba(255,255,255,0.15)';
+            planet.style.pointerEvents = 'none';
+            container.appendChild(planet);
+            
+            if (!document.getElementById('quantum-style')) {
+                const style = document.createElement('style');
+                style.id = 'quantum-style';
+                style.innerHTML = `
+                    @keyframes quantumFloat {
+                        0%, 100% { transform: translate(0, 0) scale(1); }
+                        25% { transform: translate(22px, -28px) scale(1.15); }
+                        50% { transform: translate(-12px, 18px) scale(0.85); }
+                        75% { transform: translate(28px, 12px) scale(1.08); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function initializePlatform() {
+            initializeTailwind();
+            initFirebase();
+            loadProductsFromLocal();
+            renderProducts(products);
+            createQuantumParticles();
+            
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterProducts);
+            
+            document.getElementById('lang-tr').classList.add('bg-white', 'text-[#05050f]');
+            document.getElementById('lang-tr').classList.remove('text-white/70');
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "/" && document.activeElement.tagName === "BODY") {
+                    e.preventDefault();
+                    document.getElementById('search-input').focus();
+                }
+            });
+            
+            console.log('%c[Kuantum Store] Güncellenmiş App Store tarzı versiyon yüklendi!', 'color:#22c55e');
+        }
+
+        function toggleMobileMenu() {
+            const nav = document.querySelector('nav');
+            nav.classList.toggle('bg-[#05050f]');
+            alert("Mobil menü: Keşfet, Kategoriler, Nasıl Çalışır, Güvenlik");
+        }
+
+        window.onload = initializePlatform;
+    </script>
+</body>
+</html>
