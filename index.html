@@ -3,1610 +3,1428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#00f0ff">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Kuantum Store">
-    <title>Kuantum Store • Yazılım Pazarı</title>
-    <link rel="manifest" href="manifest.json">
+    <title>MühendisX Ultimate • Tek Dosya • Profesyonel Mühendislik</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- 
-      FIREBASE SDK (CDN) 
-      Gerçek yayında GitHub Actions Secrets ile enjekte et!
-    -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        
-        :root {
-            --primary: #00f0ff;
-        }
-        
-        body {
-            font-family: 'Inter', system_ui, sans-serif;
-        }
-        
-        .font-display {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-weight: 600;
-        }
-
-        .quantum-bg {
-            background: 
-                radial-gradient(circle at 25% 15%, rgba(0, 240, 255, 0.07) 0%, transparent 45%),
-                radial-gradient(circle at 75% 85%, rgba(167, 139, 250, 0.05) 0%, transparent 55%),
-                radial-gradient(circle at center, #0a0a1f 0%, #05050f 100%);
-        }
-
-        .neon-cyan {
-            color: #00f0ff;
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.7), 0 0 40px rgba(0, 240, 255, 0.3);
-        }
-
-        .neon-purple {
-            color: #a78bfa;
-            text-shadow: 0 0 20px rgba(167, 139, 250, 0.7), 0 0 40px rgba(167, 139, 250, 0.3);
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .product-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-
-        .category-chip {
-            transition: all 0.2s ease;
-        }
-        
-        .category-chip.active {
-            background-color: #00f0ff;
-            color: #0a0a1f;
-            border-color: #00f0ff;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-        }
-
-        .section-header {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-header::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 60%;
-            height: 3px;
-            background: linear-gradient(to right, #00f0ff, transparent);
-            border-radius: 3px;
-        }
-
-        .modal {
-            animation: modalPop 0.3s ease forwards;
-        }
-
-        @keyframes modalPop {
-            from {
-                opacity: 0;
-                transform: scale(0.8) translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .nav-active {
-            color: #00f0ff;
-            position: relative;
-        }
-        
-        .nav-active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: #00f0ff;
-        }
-
-        .quantum-particle {
-            position: absolute;
-            border-radius: 50%;
-            background: #00f0ff;
-            box-shadow: 0 0 15px #00f0ff;
-            animation: quantumFloat 15s infinite ease-in-out;
-            pointer-events: none;
-        }
-
-        .product-grid {
-            scrollbar-width: thin;
-            scrollbar-color: #334155 #1e2937;
-        }
-
-        .stat-number {
-            font-variant-numeric: tabular-nums;
-        }
-
-        .marketplace-grid {
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-
-        .app-store-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .app-store-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-        }
-
-        .detail-modal {
-            animation: modalPop 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        .screenshot {
-            transition: transform 0.3s ease;
-        }
-        
-        .screenshot:hover {
-            transform: scale(1.02);
-        }
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
+        .tech-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-item { transition: all 0.2s ease; }
+        .nav-item.active { background-color: #27251f; color: white; border-radius: 0.5rem; }
+        .modern-input { background: #27251f; border: 1px solid #3f3f46; }
+        .modern-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .calc-button { background: linear-gradient(to right, #6366f1, #4f46e5); }
+        .mini-card { transition: transform 0.2s ease; }
+        .mini-card:hover { transform: translateY(-3px); }
+        .result-box { background: #18181b; border: 1px solid #3f3f46; }
+        .math-result { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        .periodic-element { transition: all 0.2s ease; cursor: pointer; }
+        .periodic-element:hover { transform: scale(1.08); z-index: 10; }
+        .specialist-card { transition: all 0.2s ease; }
+        .specialist-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .section-header { font-size: 1.1rem; letter-spacing: -.025em; }
     </style>
 </head>
-<body class="bg-[#05050f] text-white quantum-bg">
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50 border-b border-white/10 bg-[#05050f]/95 backdrop-blur-xl">
-        <div class="max-w-screen-2xl mx-auto">
-            <div class="px-8 py-5 flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center gap-x-3">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#00f0ff] via-[#a78bfa] to-[#00f0ff] flex items-center justify-center shadow-lg shadow-[#00f0ff]/30">
-                        <i class="fa-solid fa-atom text-[#05050f] text-3xl"></i>
-                    </div>
-                    <div>
-                        <span class="font-display text-3xl font-semibold tracking-tighter">Kuantum</span>
-                        <span class="font-display text-3xl font-semibold tracking-tighter bg-gradient-to-r from-[#00f0ff] to-[#a78bfa] bg-clip-text text-transparent">Store</span>
-                    </div>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-lg sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-x-3">
+                <div class="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-rocket text-white text-3xl"></i>
                 </div>
-
-                <!-- Desktop Nav -->
-                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                    <a href="#kesfet" class="hover:text-[#00f0ff] transition-colors">Keşfet</a>
-                    <a href="#kategoriler" class="hover:text-[#00f0ff] transition-colors">Kategoriler</a>
-                    <a href="#nasil-calisir" class="hover:text-[#00f0ff] transition-colors">Nasıl Çalışır</a>
-                    <a href="#guvenlik" class="hover:text-[#00f0ff] transition-colors">Güvenlik</a>
+                <div>
+                    <span class="font-display text-3xl font-semibold tracking-tighter">MühendisX Ultimate</span>
+                    <span class="text-xs text-zinc-500 block -mt-1">v6.0 • Tek Dosya • Python + HTML Fusion</span>
                 </div>
-
-                <div class="flex items-center gap-x-4">
-                    <!-- Language Switcher -->
-                    <div class="flex items-center gap-1 bg-white/5 rounded-2xl p-1 border border-white/10 overflow-x-auto max-w-[320px] md:max-w-none">
-                        <button onclick="switchLanguage('tr')" id="lang-tr"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all active-lang bg-white text-[#05050f]">TR</button>
-                        <button onclick="switchLanguage('en')" id="lang-en"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">EN</button>
-                        <button onclick="switchLanguage('fr')" id="lang-fr"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">FR</button>
-                        <button onclick="switchLanguage('de')" id="lang-de"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">DE</button>
-                        <button onclick="switchLanguage('ru')" id="lang-ru"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">RU</button>
-                        <button onclick="switchLanguage('it')" id="lang-it"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">IT</button>
-                        <button onclick="switchLanguage('ar')" id="lang-ar"
-                                class="px-3 py-1 text-xs font-semibold rounded-xl transition-all text-white/70 hover:text-white">AR</button>
-                    </div>
-
-                    <!-- User / Login -->
-                    <div id="user-section" class="flex items-center gap-x-3">
-                        <button onclick="showLoginModal()" 
-                                class="flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-all">
-                            <i class="fa-solid fa-user mr-2"></i>
-                            <span data-i18n="login">Giriş Yap</span>
-                        </button>
-                    </div>
-
-                    <!-- Add Product Button -->
-                    <button onclick="showAddProductModal()"
-                            class="hidden md:flex items-center gap-x-2 bg-[#00f0ff] hover:bg-[#00d4e6] transition-all text-[#05050f] px-6 py-2.5 rounded-2xl text-sm font-bold shadow-lg shadow-[#00f0ff]/30">
-                        <i class="fa-solid fa-plus mr-2"></i>
-                        <span data-i18n="addProduct">Ürün Ekle</span>
-                    </button>
-
-                    <!-- Mobile Menu -->
-                    <button class="md:hidden w-10 h-10 flex items-center justify-center text-xl" onclick="toggleMobileMenu()">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+            </div>
+            <div class="flex items-center gap-x-3">
+                <div class="px-3 py-1 bg-zinc-900 rounded-full text-xs border border-zinc-800 flex items-center gap-x-2">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="text-emerald-400">math.js + Chart.js + Tailwind</span>
                 </div>
+                <button onclick="showHistory()" class="px-4 py-2 text-sm text-zinc-400 hover:text-white flex items-center gap-x-2 border border-zinc-800 rounded-2xl hover:bg-zinc-900">
+                    <i class="fa-solid fa-history"></i> <span class="hidden sm:inline">Geçmiş</span>
+                </button>
+                <button onclick="clearAllHistory()" class="px-4 py-2 text-sm text-zinc-400 hover:text-white flex items-center gap-x-2">
+                    <i class="fa-solid fa-trash"></i> <span class="hidden sm:inline">Temizle</span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <header class="relative pt-16 pb-20 px-6 max-w-screen-2xl mx-auto">
-        <div class="max-w-5xl mx-auto text-center relative z-10">
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
-                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                <span class="text-xs font-semibold tracking-[2px] text-emerald-400">ULUSLARARASI • GÜVENLİ • ŞİFRELİ</span>
-            </div>
+    <div class="max-w-screen-2xl mx-auto px-8 pt-6 pb-4">
+        <h1 class="font-display text-6xl font-semibold tracking-tighter">Profesyonel Mühendislik<br><span class="tech-gradient">Tek Dosyada • Python Gücü</span></h1>
+        <p class="text-zinc-400 mt-2">Tüm Python Multi-Specialist Bot özellikleri • Fizik • Kimya • Matematik • Atom • Nükleer • Optik • Havacılık • Otomotiv + orijinal HTML araçları</p>
+    </div>
 
-            <h1 class="font-display text-7xl md:text-8xl leading-[0.95] tracking-tighter font-semibold mb-4">
-                <span data-i18n="heroTitle1">Yazılımın</span><br>
-                <span class="bg-gradient-to-r from-[#00f0ff] via-[#a78bfa] to-[#00f0ff] bg-clip-text text-transparent">Geleceği</span><br>
-                <span data-i18n="heroTitle2">Burada Başlıyor</span>
-            </h1>
+    <div class="max-w-screen-2xl mx-auto px-8 pb-12">
+        <div class="flex flex-col lg:flex-row gap-6">
             
-            <p class="max-w-xl mx-auto text-xl text-white/70 mb-10" data-i18n="heroSubtitle">
-                Şifreli ZIP dosyaları, YouTube doğrulaması ve WhatsApp ödemesiyle 
-                dünyanın en güvenli yazılım pazarı.
-            </p>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button onclick="document.getElementById('kesfet').scrollIntoView({ behavior: 'smooth' })" 
-                        class="group px-9 py-4 bg-white text-[#05050f] font-bold rounded-3xl flex items-center justify-center gap-x-3 text-lg hover:bg-[#00f0ff] transition-all shadow-xl">
-                    <span data-i18n="exploreBtn">Keşfetmeye Başla</span>
-                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                </button>
-                
-                <button onclick="showAddProductModal()" 
-                        class="px-9 py-4 border border-white/30 hover:bg-white/5 font-semibold rounded-3xl flex items-center justify-center gap-x-3 text-lg transition-all">
-                    <i class="fa-solid fa-upload mr-2"></i>
-                    <span data-i18n="sellBtn">Ürün Sat</span>
-                </button>
-            </div>
-
-            <!-- Trust indicators -->
-            <div class="mt-16 flex flex-wrap justify-center gap-x-10 gap-y-4 text-sm">
-                <div class="flex items-center gap-x-2 text-white/60">
-                    <i class="fa-solid fa-shield-halved text-emerald-400"></i>
-                    <span>256-bit Şifreleme</span>
-                </div>
-                <div class="flex items-center gap-x-2 text-white/60">
-                    <i class="fa-solid fa-globe text-[#00f0ff]"></i>
-                    <span>47 Ülke • 12 Dil</span>
-                </div>
-                <div class="flex items-center gap-x-2 text-white/60">
-                    <i class="fa-solid fa-check-double text-purple-400"></i>
-                    <span>YouTube + GitHub Doğrulaması</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quantum particles background -->
-        <div id="particles" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-    </header>
-
-    <!-- SEARCH + FILTER -->
-    <div id="kesfet" class="max-w-screen-2xl mx-auto px-8 pt-8">
-        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-y-4 mb-8">
-            <div>
-                <h2 class="font-display text-5xl tracking-tighter font-semibold section-header" data-i18n="discoverTitle">Pazarı Keşfet</h2>
-                <p class="text-white/60 mt-2" data-i18n="discoverSubtitle">Binlerce kaliteli yazılımı ara, incele ve satın al</p>
-            </div>
-            
-            <!-- Search -->
-            <div class="relative w-full lg:w-96">
-                <i class="fa-solid fa-search absolute left-5 top-4 text-white/40"></i>
-                <input id="search-input" 
-                       onkeyup="filterProducts()"
-                       type="text" 
-                       class="w-full bg-white/5 border border-white/10 focus:border-[#00f0ff]/60 transition-all pl-12 pr-5 py-3.5 rounded-3xl text-white placeholder:text-white/40 focus:outline-none"
-                       placeholder="Ürün, kategori veya satıcı ara...">
-            </div>
-        </div>
-
-        <!-- Category Filters -->
-        <div id="kategoriler" class="flex flex-wrap gap-2 mb-8">
-            <button onclick="filterByCategory('all')" class="category-chip active px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 bg-white/5 flex items-center gap-x-2" data-category="all">
-                <i class="fa-solid fa-th-large"></i>
-                <span data-i18n="catAll">Tümü</span>
-            </button>
-            <button onclick="filterByCategory('simulation')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="simulation">
-                <i class="fa-solid fa-flask"></i>
-                <span>Simülasyon</span>
-            </button>
-            <button onclick="filterByCategory('office')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="office">
-                <i class="fa-solid fa-file-word"></i>
-                <span>Ofis Programları</span>
-            </button>
-            <button onclick="filterByCategory('ai-ml')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="ai-ml">
-                <i class="fa-solid fa-robot"></i>
-                <span data-i18n="catAI">AI &amp; ML</span>
-            </button>
-            <button onclick="filterByCategory('security')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="security">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span data-i18n="catSecurity">Güvenlik</span>
-            </button>
-            <button onclick="filterByCategory('productivity')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="productivity">
-                <i class="fa-solid fa-tasks"></i>
-                <span data-i18n="catProductivity">Verimlilik</span>
-            </button>
-            <button onclick="filterByCategory('development')" class="category-chip px-5 py-2 text-sm font-medium rounded-2xl border border-white/20 hover:bg-white/5 flex items-center gap-x-2" data-category="development">
-                <i class="fa-solid fa-code"></i>
-                <span data-i18n="catDev">Geliştirme</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- PRODUCTS GRID (App Store tarzı) -->
-    <div class="max-w-screen-2xl mx-auto px-8 pb-16">
-        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 product-grid">
-            <!-- Populated by JavaScript - App Store style cards -->
-        </div>
-    </div>
-
-    <!-- HOW IT WORKS -->
-    <div id="nasil-calisir" class="max-w-screen-2xl mx-auto px-8 py-16 border-t border-white/10">
-        <div class="max-w-3xl mx-auto text-center mb-12">
-            <h2 class="font-display text-5xl tracking-tighter font-semibold mb-3" data-i18n="howTitle">Kuantum Store Nasıl Çalışır?</h2>
-            <p class="text-white/70 text-lg" data-i18n="howSubtitle">Güvenlik odaklı, basit ve etkili dijital ürün satışı</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <div class="glass rounded-3xl p-8">
-                <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#00f0ff]/10 text-[#00f0ff] mb-6">
-                    <i class="fa-solid fa-upload text-3xl"></i>
-                </div>
-                <h3 class="font-semibold text-2xl mb-3">1. Ürününü Yükle</h3>
-                <p class="text-white/70">Yazılımını şifreli ZIP olarak GitHub reposuna yükle. YouTube'da tanıtım videosu yayınla ve linkleri forma ekle.</p>
-            </div>
-            <div class="glass rounded-3xl p-8">
-                <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-6">
-                    <i class="fa-solid fa-search text-3xl"></i>
-                </div>
-                <h3 class="font-semibold text-2xl mb-3">2. Satın Al</h3>
-                <p class="text-white/70">Alıcı ürünü bulur, WhatsApp üzerinden IBAN ile ödeme yapar. Onay sonrası şifreyi alır.</p>
-            </div>
-            <div class="glass rounded-3xl p-8">
-                <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400 mb-6">
-                    <i class="fa-solid fa-key text-3xl"></i>
-                </div>
-                <h3 class="font-semibold text-2xl mb-3">3. İndir &amp; Kullan</h3>
-                <p class="text-white/70">Şifreyi girip ZIP'i aç. GitHub linki üzerinden dosya her zaman erişilebilir kalır.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- SECURITY SECTION -->
-    <div id="guvenlik" class="max-w-screen-2xl mx-auto px-8 py-16 bg-white/5 border-y border-white/10">
-        <div class="max-w-5xl mx-auto">
-            <div class="flex flex-col md:flex-row gap-12 items-center">
-                <div class="flex-1">
-                    <div class="inline px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold tracking-widest mb-4">GÜVENLİK ÖNCELİĞİMİZ</div>
-                    <h2 class="font-display text-5xl tracking-tighter font-semibold leading-none mb-6">Çok Katmanlı<br>Güvenlik Sistemi</h2>
+            <!-- Sidebar -->
+            <div class="lg:w-72 flex-shrink-0">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-2 sticky top-20">
+                    <div class="px-4 pt-3 pb-1 text-xs uppercase tracking-widest text-zinc-500">MENÜ</div>
                     
-                    <div class="space-y-6 text-white/80">
-                        <div class="flex gap-4">
-                            <i class="fa-solid fa-phone text-[#00f0ff] mt-1 w-5"></i>
-                            <div>
-                                <div class="font-semibold">Çoklu Giriş Doğrulama</div>
-                                <div class="text-sm">Telefon + E-posta + Sanal Şirket Markası + Kimlik Numarası</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <i class="fa-solid fa-lock text-[#00f0ff] mt-1 w-5"></i>
-                            <div>
-                                <div class="font-semibold">Şifreli ZIP + Manuel Şifre</div>
-                                <div class="text-sm">Dosyalar GitHub'da şifreli. Ödeme onayı sonrası WhatsApp'tan şifre verilir.</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <i class="fa-brands fa-youtube text-[#00f0ff] mt-1 w-5"></i>
-                            <div>
-                                <div class="font-semibold">YouTube Video Zorunluluğu</div>
-                                <div class="text-sm">Her ürün için tanıtım videosu şart. Kalite ve şeffaflık sağlar.</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <i class="fa-brands fa-github text-[#00f0ff] mt-1 w-5"></i>
-                            <div>
-                                <div class="font-semibold">GitHub + Firebase Entegrasyonu</div>
-                                <div class="text-sm">API anahtarları GitHub Actions Secrets'ta saklanır. Kod içinde hiçbir yerde yazılmaz.</div>
-                            </div>
-                        </div>
+                    <!-- Orijinal Menü (hiçbir şey silinmedi) -->
+                    <div onclick="switchPanel('panel-general')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer nav-active" id="nav-general">
+                        <i class="fa-solid fa-calculator text-indigo-400 w-5"></i> <span>Genel İfade</span>
                     </div>
-                </div>
-                
-                <div class="flex-1 glass rounded-3xl p-9">
-                    <h4 class="font-semibold mb-6 flex items-center gap-x-2">
-                        <i class="fa-solid fa-shield-halved"></i> 
-                        <span>Neden Bu Yöntem?</span>
-                    </h4>
-                    <ul class="space-y-4 text-sm text-white/80">
-                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Korsan paylaşımı büyük ölçüde önlenir</li>
-                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Ödeme onayı manuel kontrol ile güvenli</li>
-                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Satıcılar kendi GitHub'larında tam kontrol sahibi</li>
-                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Uluslararası ödemelerde esneklik (WhatsApp + IBAN)</li>
-                        <li class="flex gap-3"><span class="text-emerald-400">✓</span> Firebase ile gerçek zamanlı veri + güvenli auth</li>
-                    </ul>
-                    <div class="mt-8 text-xs bg-black/30 p-3 rounded-2xl border border-white/10">
-                        <strong>Not:</strong> Bu sistem özellikle bağımsız geliştiriciler ve küçük ekipler için tasarlanmıştır.
+                    <div onclick="switchPanel('panel-convert')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-convert">
+                        <i class="fa-solid fa-exchange-alt text-indigo-400 w-5"></i> <span>Birim Dönüştürücü</span>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="max-w-screen-2xl mx-auto px-8 pt-16 pb-10 text-white/60 text-sm">
-        <div class="flex flex-col md:flex-row justify-between gap-y-8">
-            <div>
-                <div class="flex items-center gap-x-3 mb-3">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#00f0ff] to-[#a78bfa] flex items-center justify-center">
-                        <i class="fa-solid fa-atom text-[#05050f]"></i>
+                    <div onclick="switchPanel('panel-physics')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-physics">
+                        <i class="fa-solid fa-atom text-indigo-400 w-5"></i> <span>Fizik Formülleri</span>
                     </div>
-                    <span class="font-display text-white text-2xl font-semibold tracking-tighter">Kuantum Store</span>
-                </div>
-                <p class="max-w-xs">Geleceğin yazılım pazarı. Güvenli, şeffaf ve geliştirici odaklı.</p>
-                <div class="mt-4 text-xs">© 2026 Kuantum Store • Tüm hakları saklıdır</div>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-8 text-sm">
-                <div>
-                    <div class="font-semibold text-white mb-3">Platform</div>
-                    <div class="space-y-1.5">
-                        <div>Keşfet</div>
-                        <div>Satıcı Ol</div>
-                        <div>API (Yakında)</div>
+                    <div onclick="switchPanel('panel-math')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-math">
+                        <i class="fa-solid fa-square-root-variable text-indigo-400 w-5"></i> <span>İleri Matematik</span>
                     </div>
-                </div>
-                <div>
-                    <div class="font-semibold text-white mb-3">Destek</div>
-                    <div class="space-y-1.5">
-                        <div>SSS</div>
-                        <div>İletişim</div>
-                        <div>Güvenlik Politikası</div>
+                    <div onclick="switchPanel('panel-engineering')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-engineering">
+                        <i class="fa-solid fa-hard-hat text-indigo-400 w-5"></i> <span>Mühendislik</span>
                     </div>
-                </div>
-                <div>
-                    <div class="font-semibold text-white mb-3">Yasal</div>
-                    <div class="space-y-1.5">
-                        <div>Kullanım Şartları</div>
-                        <div>Gizlilik</div>
-                        <div>DMCA</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Geliştirici Kaynakları - Python & C++ Kütüphaneleri -->
-        <div class="mt-10 pt-8 border-t border-white/10">
-            <div class="text-center mb-6">
-                <h4 class="font-semibold text-white text-lg mb-1">Geliştirici Kaynakları</h4>
-                <p class="text-white/50 text-xs">Popüler kütüphaneler ve resmi dokümantasyonlar</p>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 text-sm max-w-5xl mx-auto">
-                <!-- Python -->
-                <div>
-                    <div class="font-semibold text-[#00f0ff] mb-2 flex items-center gap-x-2">
-                        <i class="fa-brands fa-python"></i>
-                        <span>Python Kütüphaneleri</span>
-                    </div>
-                    <div class="space-y-1 text-white/70 text-xs">
-                        <a href="https://numpy.org/" target="_blank" class="block hover:text-white">NumPy - Bilimsel Hesaplama</a>
-                        <a href="https://pandas.pydata.org/" target="_blank" class="block hover:text-white">Pandas - Veri Analizi</a>
-                        <a href="https://www.tensorflow.org/" target="_blank" class="block hover:text-white">TensorFlow - Makine Öğrenimi</a>
-                        <a href="https://pytorch.org/" target="_blank" class="block hover:text-white">PyTorch - Derin Öğrenme</a>
-                        <a href="https://www.djangoproject.com/" target="_blank" class="block hover:text-white">Django - Web Framework</a>
-                    </div>
-                </div>
-
-                <!-- C++ -->
-                <div>
-                    <div class="font-semibold text-[#a78bfa] mb-2 flex items-center gap-x-2">
-                        <i class="fa-solid fa-code"></i>
-                        <span>C++ Kütüphaneleri</span>
-                    </div>
-                    <div class="space-y-1 text-white/70 text-xs">
-                        <a href="https://www.boost.org/" target="_blank" class="block hover:text-white">Boost - Genel Amaçlı</a>
-                        <a href="https://www.qt.io/" target="_blank" class="block hover:text-white">Qt - GUI & Cross-Platform</a>
-                        <a href="https://www.sfml-dev.org/" target="_blank" class="block hover:text-white">SFML - Oyun & Multimedya</a>
-                        <a href="https://eigen.tuxfamily.org/" target="_blank" class="block hover:text-white">Eigen - Lineer Cebir</a>
-                        <a href="https://opencv.org/" target="_blank" class="block hover:text-white">OpenCV - Görüntü İşleme</a>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="font-semibold text-white mb-2">Diğer Faydalı Linkler</div>
-                    <div class="space-y-1 text-white/70 text-xs">
-                        <a href="https://docs.python.org/3/" target="_blank" class="block hover:text-white">Python Resmi Dokümantasyon</a>
-                        <a href="https://en.cppreference.com/" target="_blank" class="block hover:text-white">C++ Reference</a>
-                        <a href="https://pypi.org/" target="_blank" class="block hover:text-white">PyPI - Python Paket İndeksi</a>
-                        <a href="https://github.com/" target="_blank" class="block hover:text-white">GitHub - Kod Depolama</a>
-                    </div>
-                </div>
-
-                <div class="text-xs text-white/60">
-                    <div class="font-semibold text-white mb-2">Kurucu & İletişim</div>
-                    <div class="mb-1"><strong>Geliştirici:</strong> İbrahim Aşçı</div>
-                    <a href="https://wa.me/905537725748" target="_blank" 
-                       class="flex items-center gap-x-2 text-emerald-400 hover:text-emerald-300 font-medium">
-                        <i class="fa-brands fa-whatsapp"></i>
-                        <span>+90 553 772 57 48</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-10 pt-8 border-t border-white/10 text-xs flex flex-col md:flex-row gap-y-2 justify-between items-center">
-            <div>Firebase + GitHub Actions ile güçlendirilmiştir • Gerçek zamanlı veri ve güvenli kimlik doğrulama</div>
-            <div class="flex items-center gap-x-4">
-                <span>TR • EN • DE • ES • FR • RU • ZH</span>
-            </div>
-        </div>
-    </footer>
-
-    <!-- LOGIN MODAL -->
-    <div id="login-modal" onclick="if (event.target.id === 'login-modal') hideLoginModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
-        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-md rounded-3xl p-8 modal">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="font-display text-3xl font-semibold" data-i18n="loginTitle">Giriş Yap</h3>
-                <button onclick="hideLoginModal()" class="text-2xl leading-none text-white/50 hover:text-white">×</button>
-            </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Telefon Numarası</label>
-                    <input id="login-phone" type="tel" value="+90 555 123 4567" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">E-posta Adresi</label>
-                    <input id="login-email" type="email" value="developer@kuantum.dev" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Sanal Şirket Markası</label>
-                    <input id="login-brand" type="text" value="Kuantum Labs" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Kimlik Numarası / Vergi No</label>
-                    <input id="login-id" type="text" value="12345678901" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                </div>
-            </div>
-            
-            <div class="mt-7 flex gap-3">
-                <button onclick="performLogin()" 
-                        class="flex-1 py-4 bg-[#00f0ff] hover:bg-white transition-all text-[#05050f] font-bold rounded-2xl">
-                    Giriş Yap
-                </button>
-                <button onclick="hideLoginModal()" 
-                        class="flex-1 py-4 border border-white/30 hover:bg-white/5 rounded-2xl font-medium">
-                    İptal
-                </button>
-            </div>
-            
-            <p class="text-center text-[10px] text-white/40 mt-5">Bu bilgiler sadece doğrulama için kullanılır. Gerçek platformda Firebase Auth + KYC entegrasyonu yapılacaktır.</p>
-        </div>
-    </div>
-
-    <!-- ADD PRODUCT MODAL -->
-    <div id="add-product-modal" onclick="if (event.target.id === 'add-product-modal') hideAddProductModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
-        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-2xl rounded-3xl p-8 modal max-h-[90vh] overflow-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="font-display text-3xl font-semibold">Yeni Ürün Ekle</h3>
-                <button onclick="hideAddProductModal()" class="text-2xl text-white/50 hover:text-white">×</button>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-                <div class="md:col-span-2">
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Ürün Adı *</label>
-                    <input id="product-name" type="text" placeholder="QuantumAI Pro v4.2" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                </div>
-                
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Kategori *</label>
-                    <select id="product-category" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                        <option value="simulation">Simülasyon Programları</option>
-                        <option value="office">Ofis Programları</option>
-                        <option value="ai-ml">AI &amp; Makine Öğrenimi</option>
-                        <option value="security">Güvenlik &amp; Şifreleme</option>
-                        <option value="productivity">Verimlilik Araçları</option>
-                        <option value="development">Geliştirme Araçları</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Fiyat (USD) *</label>
-                    <input id="product-price" type="number" step="0.01" value="49.99" class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                </div>
-                
-                <div class="md:col-span-2">
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">Kısa Açıklama *</label>
-                    <textarea id="product-desc" rows="2" placeholder="Kısa ve etkileyici açıklama..." class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none"></textarea>
-                </div>
-                
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">YouTube Video Linki * (Zorunlu)</label>
-                    <input id="product-yt" type="url" placeholder="https://youtube.com/watch?v=..." class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                    <p class="text-[10px] text-white/40 mt-1">Her ürün için kaliteli tanıtım videosu şarttır.</p>
-                </div>
-                
-                <div>
-                    <label class="text-xs font-medium text-white/60 block mb-1.5">GitHub Şifreli ZIP Linki *</label>
-                    <input id="product-github" type="url" placeholder="https://github.com/kullanici/repo/releases/download/..." class="w-full bg-white/5 border border-white/20 rounded-2xl px-5 py-3 focus:border-[#00f0ff] outline-none">
-                    <p class="text-[10px] text-white/40 mt-1">Dosya şifreli ZIP olmalı. Şifre ödeme sonrası verilir.</p>
-                </div>
-            </div>
-            
-            <div class="mt-8 flex gap-3">
-                <button onclick="addNewProduct()" class="flex-1 py-4 bg-[#00f0ff] hover:bg-white text-[#05050f] font-bold rounded-2xl transition-all">
-                    <i class="fa-solid fa-check mr-2"></i> Ürünü Yayınla
-                </button>
-                <button onclick="hideAddProductModal()" class="flex-1 py-4 border border-white/30 hover:bg-white/5 rounded-2xl font-medium">
-                    İptal
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAYMENT MODAL -->
-    <div id="payment-modal" onclick="if (event.target.id === 'payment-modal') hidePaymentModal()" class="hidden fixed inset-0 bg-black/80 backdrop-blur-2xl z-[110] flex items-center justify-center p-4">
-        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-lg rounded-3xl p-8 modal">
-            <div class="flex justify-between mb-5">
-                <div>
-                    <h3 class="font-display text-2xl font-semibold">Ödeme Onayı</h3>
-                    <p class="text-emerald-400 text-sm">Güvenli WhatsApp + IBAN</p>
-                </div>
-                <button onclick="hidePaymentModal()" class="text-2xl text-white/40">×</button>
-            </div>
-            
-            <div id="payment-product-info" class="mb-6 p-4 bg-white/5 rounded-2xl border border-white/10">
-                <!-- Populated by JS -->
-            </div>
-            
-            <div class="space-y-4 text-sm">
-                <div>
-                    <div class="font-medium mb-2 flex items-center gap-x-2">
-                        <i class="fa-brands fa-whatsapp text-emerald-400"></i> 
-                        <span>Ödeme Yöntemi</span>
-                    </div>
-                    <div class="pl-6 text-white/80">
-                        WhatsApp üzerinden iletişime geçin veya IBAN'a havale/EFT yapın.
-                    </div>
-                </div>
-                
-                <div class="pl-6">
-                    <div class="text-xs text-white/50">IBAN (Örnek)</div>
-                    <div class="font-mono text-base tracking-wider">TR12 3456 7890 1234 5678 9012 34</div>
-                    <div class="text-xs text-white/50 mt-1">Alıcı: Kuantum Store Teknoloji A.Ş. (Sanal)</div>
-                </div>
-                
-                <div class="pl-6">
-                    <div class="text-xs text-white/50">WhatsApp</div>
-                    <a href="https://wa.me/905551234567?text=Merhaba%2C%20Kuantum%20Store%27dan%20ürün%20satın%20almak%20istiyorum." target="_blank"
-                       class="inline-flex items-center gap-x-2 text-emerald-400 hover:text-emerald-300 font-medium">
-                        <i class="fa-brands fa-whatsapp"></i> +90 555 123 45 67 ile iletişime geç
-                    </a>
-                </div>
-            </div>
-            
-            <div class="mt-8 bg-black/40 border border-white/10 rounded-2xl p-5 text-xs leading-relaxed">
-                <strong>Önemli:</strong> Ödemeyi yaptıktan sonra WhatsApp'tan dekont + ürün adını gönderin. 
-                Onaylandıktan sonra <span class="font-mono text-[#00f0ff]">şifreyi</span> WhatsApp üzerinden alacaksınız. 
-                Şifreyi aldıktan sonra GitHub linkinden şifreli ZIP'i indirip açabilirsiniz.
-            </div>
-            
-            <div class="mt-6 flex gap-3">
-                <button onclick="simulatePaymentConfirmation()" 
-                        class="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 transition-all text-white font-bold rounded-2xl flex items-center justify-center gap-x-2">
-                    <i class="fa-solid fa-check-double"></i>
-                    <span>Ödemeyi Simüle Et (Demo)</span>
-                </button>
-                <button onclick="hidePaymentModal()" class="flex-1 py-4 border border-white/30 rounded-2xl">Kapat</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- VIDEO MODAL -->
-    <div id="video-modal" onclick="if (event.target.id === 'video-modal') hideVideoModal()" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4">
-        <div onclick="event.stopImmediatePropagation()" class="w-full max-w-4xl">
-            <div class="flex justify-end mb-3">
-                <button onclick="hideVideoModal()" class="text-white/60 hover:text-white text-3xl">×</button>
-            </div>
-            <div id="video-container" class="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-                <!-- YouTube iframe injected here -->
-            </div>
-            <p class="text-center text-xs text-white/50 mt-3">YouTube videosu • Ürün kalitesini doğrulamak için zorunludur</p>
-        </div>
-    </div>
-
-    <!-- PRODUCT DETAIL MODAL (App Store tarzı profesyonel detay sayfası) -->
-    <div id="product-detail-modal" onclick="if (event.target.id === 'product-detail-modal') hideProductDetailModal()" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl z-[130] flex items-center justify-center p-4">
-        <div onclick="event.stopImmediatePropagation()" class="glass w-full max-w-4xl rounded-3xl overflow-hidden modal max-h-[92vh] overflow-auto">
-            <!-- Header -->
-            <div class="flex items-center justify-between px-8 py-5 border-b border-white/10 sticky top-0 bg-[#05050f]/95 z-10">
-                <div class="flex items-center gap-x-4">
-                    <div id="detail-icon" class="w-14 h-14 rounded-2xl flex items-center justify-center text-4xl shadow-lg"></div>
-                    <div>
-                        <h2 id="detail-name" class="font-display text-3xl font-semibold"></h2>
-                        <p id="detail-seller" class="text-white/60"></p>
-                    </div>
-                </div>
-                <button onclick="hideProductDetailModal()" class="text-3xl text-white/50 hover:text-white">×</button>
-            </div>
-
-            <div class="p-8 grid md:grid-cols-5 gap-8">
-                <!-- Sol taraf: İkon + Fiyat + Buton -->
-                <div class="md:col-span-2">
-                    <div id="detail-big-icon" class="w-full aspect-square max-w-[280px] mx-auto rounded-3xl flex items-center justify-center text-[120px] shadow-2xl mb-6"></div>
                     
-                    <div class="text-center mb-6">
-                        <div id="detail-price" class="text-5xl font-bold tracking-tighter mb-1"></div>
-                        <div class="text-emerald-400 text-sm">Tek seferlik lisans • Ömür boyu erişim</div>
-                    </div>
-
-                    <button id="detail-buy-btn" 
-                            class="w-full py-4 bg-[#00f0ff] hover:bg-white active:bg-[#00d4e6] transition-all text-[#05050f] text-lg font-bold rounded-2xl flex items-center justify-center gap-x-2 shadow-lg">
-                        <i class="fa-solid fa-download"></i>
-                        <span>İndir / Satın Al</span>
-                    </button>
+                    <div class="my-2 mx-3 border-t border-zinc-800"></div>
                     
-                    <div class="mt-4 text-center">
-                        <div class="flex items-center justify-center gap-x-2 text-xs text-white/50">
-                            <i class="fa-solid fa-check-circle text-emerald-400"></i>
-                            <span>Doğrulanmış Satıcı</span>
+                    <div onclick="switchPanel('panel-chemistry')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-chemistry">
+                        <i class="fa-solid fa-flask text-emerald-400 w-5"></i> <span>Kimya</span>
+                    </div>
+                    <div onclick="switchPanel('panel-periodic')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-periodic">
+                        <i class="fa-solid fa-table text-emerald-400 w-5"></i> <span>Periyodik Tablo (118)</span>
+                    </div>
+                    
+                    <div class="my-2 mx-3 border-t border-zinc-800"></div>
+                    
+                    <!-- Python'dan Eklenen Yeni Uzmanlar -->
+                    <div class="px-4 pt-2 pb-1 text-[10px] uppercase tracking-widest text-zinc-500">PYTHON SPECIALISTS</div>
+                    
+                    <div onclick="switchPanel('panel-classical')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-classical">
+                        <i class="fa-solid fa-globe text-sky-400 w-5"></i> <span>Klasik Mekanik</span>
+                    </div>
+                    <div onclick="switchPanel('panel-em')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-em">
+                        <i class="fa-solid fa-bolt text-yellow-400 w-5"></i> <span>Elektromanyetizma</span>
+                    </div>
+                    <div onclick="switchPanel('panel-quantum')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-quantum">
+                        <i class="fa-solid fa-atom text-purple-400 w-5"></i> <span>Kuantum &amp; Atom</span>
+                    </div>
+                    <div onclick="switchPanel('panel-relativity')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-relativity">
+                        <i class="fa-solid fa-infinity text-pink-400 w-5"></i> <span>Relativite</span>
+                    </div>
+                    
+                    <div class="my-1 mx-3 border-t border-zinc-800"></div>
+                    
+                    <div onclick="switchPanel('panel-advanced-math')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-advanced-math">
+                        <i class="fa-solid fa-calculator text-indigo-400 w-5"></i> <span>İleri Matematik (NumPy/SciPy)</span>
+                    </div>
+                    <div onclick="switchPanel('panel-advanced-chem')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-advanced-chem">
+                        <i class="fa-solid fa-vial text-emerald-400 w-5"></i> <span>İleri Kimya (Tüm Branşlar)</span>
+                    </div>
+                    <div onclick="switchPanel('panel-nuclear')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-nuclear">
+                        <i class="fa-solid fa-radiation text-red-400 w-5"></i> <span>Nükleer &amp; İzotoplar</span>
+                    </div>
+                    
+                    <div class="my-2 mx-3 border-t border-zinc-800"></div>
+                    
+                    <!-- Orijinal Diğerleri -->
+                    <div onclick="switchPanel('panel-thermo')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-thermo">
+                        <i class="fa-solid fa-temperature-high text-orange-400 w-5"></i> <span>Termodinamik</span>
+                    </div>
+                    <div onclick="switchPanel('panel-atomic')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-atomic">
+                        <i class="fa-solid fa-atom text-purple-400 w-5"></i> <span>Atom Fiziği (Bohr)</span>
+                    </div>
+                    <div onclick="switchPanel('panel-aviation')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-aviation">
+                        <i class="fa-solid fa-plane text-sky-400 w-5"></i> <span>Uçak / Havacılık</span>
+                    </div>
+                    <div onclick="switchPanel('panel-auto')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-auto">
+                        <i class="fa-solid fa-car text-red-400 w-5"></i> <span>Araba / Otomotiv</span>
+                    </div>
+                    <div onclick="switchPanel('panel-optics')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-optics">
+                        <i class="fa-solid fa-lightbulb text-yellow-400 w-5"></i> <span>Optik Fiziği</span>
+                    </div>
+                    <div onclick="switchPanel('panel-machine')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-machine">
+                        <i class="fa-solid fa-cogs text-orange-400 w-5"></i> <span>Makine Fiziği</span>
+                    </div>
+                    <div onclick="switchPanel('panel-rocket')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-rocket">
+                        <i class="fa-solid fa-rocket text-red-400 w-5"></i> <span>Roket Menzili</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="flex-1">
+                
+                <!-- GENEL İFADE (Orijinal - Hiç dokunulmadı) -->
+                <div id="panel-general" class="panel">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-4">Genel İfade Hesaplayıcı <span class="text-xs text-emerald-400">(math.js powered)</span></h2>
+                        <input id="general-expr" class="modern-input w-full px-5 py-4 text-xl font-mono rounded-2xl mb-3" placeholder="2 * sin(pi/4) + sqrt(8) + log(100) + det([[2,1],[1,3]])">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button onclick="useExample('2 * sin(pi/4) + sqrt(8)')" class="px-4 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 rounded-2xl">sin(π/4) + √8</button>
+                            <button onclick="useExample('log(100) + factorial(5)')" class="px-4 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 rounded-2xl">log(100) + 5!</button>
+                            <button onclick="useExample('det([[2,1],[1,3]])')" class="px-4 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Determinant</button>
+                            <button onclick="useExample('integrate(x^2, x)')" class="px-4 py-2 text-xs bg-zinc-800 hover:bg-zinc-700 rounded-2xl">∫x² dx</button>
+                        </div>
+                        <button onclick="calculateGeneral()" class="calc-button w-full py-4 rounded-2xl text-white font-semibold">HESAPLA</button>
+                        <div id="general-result" class="hidden result-box mt-4 p-6 rounded-2xl">
+                            <div id="general-result-value" class="math-result text-4xl font-semibold"></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Sağ taraf: Açıklama + Video + GitHub -->
-                <div class="md:col-span-3">
-                    <div class="mb-6">
-                        <h4 class="font-semibold text-lg mb-2 text-white/90">Açıklama</h4>
-                        <p id="detail-desc" class="text-white/80 leading-relaxed"></p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <h4 class="font-semibold text-sm mb-2 text-white/70">Kategori</h4>
-                            <div id="detail-category" class="px-4 py-2 bg-white/5 rounded-2xl text-sm inline-block"></div>
+                
+                <!-- BİRİM DÖNÜŞTÜRÜCÜ (Eklendi - Python tarzı) -->
+                <div id="panel-convert" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Profesyonel Birim Dönüştürücü</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3 flex items-center gap-x-2"><i class="fa-solid fa-ruler"></i> Uzunluk</div>
+                                <input id="conv-length-val" type="number" value="100" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <select id="conv-length-from" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                    <option value="m">Metre (m)</option>
+                                    <option value="km">Kilometre (km)</option>
+                                    <option value="cm">Santimetre (cm)</option>
+                                    <option value="mm">Milimetre (mm)</option>
+                                    <option value="in">İnç (in)</option>
+                                    <option value="ft">Fit (ft)</option>
+                                </select>
+                                <select id="conv-length-to" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                    <option value="cm">Santimetre (cm)</option>
+                                    <option value="m">Metre (m)</option>
+                                    <option value="km">Kilometre (km)</option>
+                                </select>
+                                <button onclick="convertLength()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Dönüştür</button>
+                                <div id="conv-length-result" class="hidden mt-3 text-sm bg-zinc-900 p-3 rounded-2xl"></div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3 flex items-center gap-x-2"><i class="fa-solid fa-weight-hanging"></i> Kütle</div>
+                                <input id="conv-mass-val" type="number" value="5" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <select id="conv-mass-from" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="g">Gram (g)</option>
+                                    <option value="lb">Pound (lb)</option>
+                                    <option value="oz">Ons (oz)</option>
+                                </select>
+                                <select id="conv-mass-to" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                    <option value="g">Gram (g)</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                </select>
+                                <button onclick="convertMass()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Dönüştür</button>
+                                <div id="conv-mass-result" class="hidden mt-3 text-sm bg-zinc-900 p-3 rounded-2xl"></div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3 flex items-center gap-x-2"><i class="fa-solid fa-thermometer-half"></i> Sıcaklık</div>
+                                <input id="conv-temp-val" type="number" value="25" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <select id="conv-temp-from" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                    <option value="C">Celsius (°C)</option>
+                                    <option value="F">Fahrenheit (°F)</option>
+                                    <option value="K">Kelvin (K)</option>
+                                </select>
+                                <select id="conv-temp-to" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                    <option value="F">Fahrenheit (°F)</option>
+                                    <option value="C">Celsius (°C)</option>
+                                </select>
+                                <button onclick="convertTemp()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Dönüştür</button>
+                                <div id="conv-temp-result" class="hidden mt-3 text-sm bg-zinc-900 p-3 rounded-2xl"></div>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-semibold text-sm mb-2 text-white/70">Eklenme Tarihi</h4>
-                            <div id="detail-date" class="text-sm text-white/80"></div>
-                        </div>
                     </div>
-
-                    <div class="flex gap-3">
-                        <button onclick="watchYouTubeFromDetail()" 
-                                class="flex-1 flex items-center justify-center gap-x-2 py-3 border border-white/20 hover:bg-white/5 rounded-2xl text-sm font-medium transition-colors">
-                            <i class="fa-brands fa-youtube text-red-500"></i>
-                            <span>Tanıtım Videosu</span>
-                        </button>
+                </div>
+                
+                <!-- KLASİK MEKANİK (Python'dan Tam Aktarıldı) -->
+                <div id="panel-classical" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-globe text-sky-400"></i> Klasik Mekanik Specialist</h2>
                         
-                        <button onclick="openGitHubFromDetail()" 
-                                class="flex-1 flex items-center justify-center gap-x-2 py-3 border border-white/20 hover:bg-white/5 rounded-2xl text-sm font-medium transition-colors">
-                            <i class="fa-brands fa-github"></i>
-                            <span>GitHub</span>
-                        </button>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Projectile Motion -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl specialist-card">
+                                <div class="font-semibold mb-4 flex items-center gap-x-2 text-lg"><i class="fa-solid fa-parachute-box"></i> Mermi Hareketi (Projectile)</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-xs text-zinc-400">İlk Hız (m/s)</label>
+                                        <input id="proj-v0" type="number" value="50" class="modern-input w-full px-4 py-2 rounded-2xl">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-zinc-400">Açı (°)</label>
+                                        <input id="proj-angle" type="number" value="45" class="modern-input w-full px-4 py-2 rounded-2xl">
+                                    </div>
+                                </div>
+                                <button onclick="calculateProjectile()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">Hesapla &amp; Çiz</button>
+                                <div id="proj-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                                <canvas id="proj-canvas" class="mt-3 hidden w-full rounded-2xl bg-zinc-950 border border-zinc-800" height="180"></canvas>
+                            </div>
+                            
+                            <!-- Energy & Momentum -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl specialist-card">
+                                <div class="font-semibold mb-4 flex items-center gap-x-2 text-lg"><i class="fa-solid fa-bolt"></i> Enerji &amp; Momentum</div>
+                                <div class="space-y-3">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div><label class="text-xs text-zinc-400">Kütle (kg)</label><input id="energy-m" type="number" value="2" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                        <div><label class="text-xs text-zinc-400">Hız (m/s)</label><input id="energy-v" type="number" value="10" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="calcKinetic()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm">Kinetik Enerji</button>
+                                        <button onclick="calcMomentum()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-sm">Momentum</button>
+                                    </div>
+                                </div>
+                                <div id="energy-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Circular Motion -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl specialist-card">
+                                <div class="font-semibold mb-4 flex items-center gap-x-2 text-lg"><i class="fa-solid fa-sync"></i> Dairesel Hareket</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs text-zinc-400">Hız (m/s)</label><input id="circ-v" type="number" value="20" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs text-zinc-400">Yarıçap (m)</label><input id="circ-r" type="number" value="5" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="calculateCircular()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">Hesapla</button>
+                                <div id="circ-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- SHM -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl specialist-card">
+                                <div class="font-semibold mb-4 flex items-center gap-x-2 text-lg"><i class="fa-solid fa-waveform-lines"></i> Basit Harmonik Hareket</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs text-zinc-400">Genlik (m)</label><input id="shm-A" type="number" value="0.5" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs text-zinc-400">Frekans (Hz)</label><input id="shm-f" type="number" value="2" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="calculateSHM()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl font-medium">Hesapla</button>
+                                <div id="shm-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- ELEKTROMANYETİZMA (Python'dan) -->
+                <div id="panel-em" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-bolt text-yellow-400"></i> Elektromanyetizma Specialist</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Coulomb Yasası</div>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div><label class="text-xs">q1 (C)</label><input id="coul-q1" type="number" value="1e-6" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">q2 (C)</label><input id="coul-q2" type="number" value="-1e-6" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">r (m)</label><input id="coul-r" type="number" value="0.1" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                </div>
+                                <button onclick="calculateCoulomb()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Kuvveti Hesapla</button>
+                                <div id="coul-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Manyetik Kuvvet (F = qvB sinθ)</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs">Yük q (C)</label><input id="mag-q" type="number" value="1.6e-19" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">Hız v (m/s)</label><input id="mag-v" type="number" value="1e6" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">B (T)</label><input id="mag-B" type="number" value="0.5" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">Açı (°)</label><input id="mag-theta" type="number" value="90" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                </div>
+                                <button onclick="calculateMagneticForce()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Kuvveti Hesapla</button>
+                                <div id="mag-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- KUANTUM & ATOM (Python + HTML birleşimi) -->
+                <div id="panel-quantum" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-atom text-purple-400"></i> Kuantum &amp; Atom Specialist</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Bohr Model (Geliştirilmiş) -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Bohr Modeli - Foton Enerjisi &amp; Yörünge</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs">Z (Atom No)</label><input id="bohr-Z" type="number" value="1" class="modern-input w-full px-3 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">n (Seviye)</label><input id="bohr-n" type="number" value="3" class="modern-input w-full px-3 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="calculateBohrAdvanced()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="bohr-advanced-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Uncertainty -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Heisenberg Belirsizlik İlkesi</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs">Δx (m) veya Δp</label><input id="uncert-val" type="number" value="1e-10" class="modern-input w-full px-3 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">Hesapla</label>
+                                        <select id="uncert-type" class="modern-input w-full px-3 py-2 rounded-2xl">
+                                            <option value="dx">Δx → Δp</option>
+                                            <option value="dp">Δp → Δx</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button onclick="calculateUncertainty()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="uncert-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- RELATİVİTE (Python'dan) -->
+                <div id="panel-relativity" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-infinity text-pink-400"></i> Relativite Specialist</h2>
+                        <div class="max-w-2xl">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-4">Lorentz Faktörü &amp; Zaman Genişlemesi</div>
+                                <div class="flex gap-3 items-end">
+                                    <div class="flex-1">
+                                        <label class="text-xs text-zinc-400">v / c (0-0.999)</label>
+                                        <input id="rel-v" type="number" value="0.8" step="0.01" class="modern-input w-full px-4 py-3 rounded-2xl">
+                                    </div>
+                                    <button onclick="calculateRelativity()" class="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl whitespace-nowrap">Hesapla</button>
+                                </div>
+                                <div id="rel-result" class="hidden mt-6 text-sm bg-zinc-900 p-6 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- İLERİ MATEMATİK (Python NumPy/SciPy/SymPy tarzı - JS ile) -->
+                <div id="panel-advanced-math" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-calculator text-indigo-400"></i> İleri Matematik (NumPy + SciPy + SymPy Fusion)</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Linear Algebra -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Doğrusal Denklem Sistemi (Ax = b)</div>
+                                <div class="text-xs text-zinc-400 mb-2">3x3 Matris örneği (değiştirin)</div>
+                                <textarea id="matrix-a" class="modern-input w-full h-24 font-mono text-sm p-3 rounded-2xl" placeholder="2 1 0&#10;1 3 1&#10;0 1 4">2 1 0
+1 3 1
+0 1 4</textarea>
+                                <div class="mt-2"><label class="text-xs">b vektörü</label><input id="vector-b" value="5 8 12" class="modern-input w-full px-4 py-2 rounded-2xl font-mono"></div>
+                                <button onclick="solveLinearSystem()" class="mt-3 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Çöz (math.js)</button>
+                                <div id="linear-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl font-mono"></div>
+                            </div>
+                            
+                            <!-- Numerical Integration -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Sayısal İntegral (SciPy tarzı)</div>
+                                <input id="int-func" value="x^2 + sin(x)" class="modern-input w-full px-4 py-2 rounded-2xl mb-2 font-mono">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs">a</label><input id="int-a" type="number" value="0" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">b</label><input id="int-b" type="number" value="3.1416" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="calculateIntegral()" class="mt-3 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">İntegrali Hesapla</button>
+                                <div id="int-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Statistics -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">İstatistik &amp; Regresyon</div>
+                                <textarea id="stats-data" class="modern-input w-full h-20 font-mono text-sm p-3 rounded-2xl" placeholder="1 2 3 4 5&#10;2.1 3.9 6.2 8.1 9.8">1 2 3 4 5
+2.1 3.9 6.2 8.1 9.8</textarea>
+                                <button onclick="calculateStatistics()" class="mt-3 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">İstatistikleri Hesapla</button>
+                                <div id="stats-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Plot -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Fonksiyon Grafiği (Chart.js)</div>
+                                <input id="plot-func" value="sin(x)" class="modern-input w-full px-4 py-2 rounded-2xl mb-2 font-mono">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs">x min</label><input id="plot-xmin" type="number" value="-6.28" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">x max</label><input id="plot-xmax" type="number" value="6.28" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="plotFunction()" class="mt-3 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Grafiği Çiz</button>
+                                <div class="mt-4"><canvas id="plot-canvas" class="w-full rounded-2xl bg-zinc-950 border border-zinc-800" height="200"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- İLERİ KİMYA (Tüm Branşlar - Python'dan) -->
+                <div id="panel-advanced-chem" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-vial text-emerald-400"></i> İleri Kimya Specialist (Organik • İnorganik • Fiziksel • Analitik • Biyokimya)</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Molar Mass (Geliştirilmiş) -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Molar Kütle (Genişletilmiş)</div>
+                                <input id="adv-molar-formula" value="C6H12O6" class="modern-input w-full px-4 py-3 rounded-2xl mb-3">
+                                <button onclick="calculateAdvancedMolarMass()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="adv-molar-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Percent Composition -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Yüzde Bileşim</div>
+                                <input id="pct-element" value="C" class="modern-input w-full px-4 py-2 rounded-2xl mb-2">
+                                <input id="pct-compound" value="C6H12O6" class="modern-input w-full px-4 py-2 rounded-2xl mb-2">
+                                <input id="pct-count" type="number" value="6" class="modern-input w-full px-4 py-2 rounded-2xl mb-3">
+                                <button onclick="calculatePercentComposition()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="pct-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Henderson-Hasselbalch -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Buffer pH (Henderson-Hasselbalch)</div>
+                                <input id="hh-pka" type="number" value="4.76" class="modern-input w-full px-4 py-2 rounded-2xl mb-2">
+                                <input id="hh-a" type="number" value="0.1" class="modern-input w-full px-4 py-2 rounded-2xl mb-2">
+                                <input id="hh-ha" type="number" value="0.1" class="modern-input w-full px-4 py-2 rounded-2xl mb-3">
+                                <button onclick="calculateBufferPH()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">pH Hesapla</button>
+                                <div id="hh-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <!-- Arrhenius -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Arrhenius Denklemi (k = A e^(-Ea/RT))</div>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div><label class="text-xs">Ea (kJ/mol)</label><input id="arr-ea" type="number" value="50" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">T (K)</label><input id="arr-t" type="number" value="298" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                    <div><label class="text-xs">A</label><input id="arr-a" type="number" value="1e10" class="modern-input w-full px-3 py-2 rounded-2xl text-sm"></div>
+                                </div>
+                                <button onclick="calculateArrhenius()" class="mt-3 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">k Hesapla</button>
+                                <div id="arr-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- NÜKLEER & İZOTOPLAR (Python'dan Tam) -->
+                <div id="panel-nuclear" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-radiation text-red-400"></i> Nükleer &amp; Atom Specialist (Python Fusion)</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Radyoaktif Bozunma (N = N₀ e^(-λt))</div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-xs">N₀</label><input id="rad-N0" type="number" value="10000" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">λ (1/s)</label><input id="rad-lambda" type="number" value="0.001" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">t (s)</label><input id="rad-t" type="number" value="1000" class="modern-input w-full px-4 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="calculateRadioactiveDecay()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="rad-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Bağlanma Enerjisi &amp; Kütle Defekti</div>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div><label class="text-xs">Z (proton)</label><input id="bind-Z" type="number" value="26" class="modern-input w-full px-3 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">A (kütle no)</label><input id="bind-A" type="number" value="56" class="modern-input w-full px-3 py-2 rounded-2xl"></div>
+                                    <div><label class="text-xs">M (u)</label><input id="bind-M" type="number" value="55.9349" step="0.0001" class="modern-input w-full px-3 py-2 rounded-2xl"></div>
+                                </div>
+                                <button onclick="calculateBindingEnergy()" class="mt-4 w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="bind-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Orijinal Kimya (Genişletilmiş) -->
+                <div id="panel-chemistry" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Kimya Araçları (Orijinal + Python)</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Molar Kütle</div>
+                                <input id="molar-formula" value="H2O" class="modern-input w-full px-4 py-3 rounded-2xl mb-3">
+                                <button onclick="calculateMolarMass()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Hesapla</button>
+                                <div id="molar-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">pH Hesaplayıcı</div>
+                                <input id="ph-conc" type="number" value="0.001" class="modern-input w-full px-4 py-3 rounded-2xl mb-3">
+                                <button onclick="calculatePH()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">pH Hesapla</button>
+                                <div id="ph-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PERİYODİK TABLO (Orijinal - Hiç dokunulmadı) -->
+                <div id="panel-periodic" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Periyodik Tablo (118 Element)</h2>
+                        <div id="periodic-table" class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-12 gap-1"></div>
+                    </div>
+                </div>
+                
+                <!-- TERMODİNAMİK (Orijinal) -->
+                <div id="panel-thermo" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Termodinamik</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Carnot Verimi</div>
+                                <input id="carnot-th" type="number" value="600" placeholder="Th (K)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="carnot-tc" type="number" value="300" placeholder="Tc (K)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateCarnot()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Verimi Hesapla</button>
+                                <div id="carnot-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Isı ve İş (Q = m·c·ΔT)</div>
+                                <input id="heat-m" type="number" value="2" placeholder="kütle (kg)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="heat-c" type="number" value="4186" placeholder="özgül ısı (J/kgK)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="heat-dt" type="number" value="50" placeholder="ΔT (K)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateHeat()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Isıyı Hesapla</button>
+                                <div id="heat-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ATOM FİZİĞİ (Orijinal Bohr) -->
+                <div id="panel-atomic" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Atom Fiziği (Bohr Modeli)</h2>
+                        <div class="bg-zinc-950 p-6 rounded-3xl max-w-md">
+                            <div class="font-semibold mb-3">Bohr Modeli - Foton Enerjisi</div>
+                            <input id="bohr-n1" type="number" value="2" placeholder="n1 (başlangıç)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                            <input id="bohr-n2" type="number" value="1" placeholder="n2 (bitiş)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                            <button onclick="calculateBohrPhoton()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Foton Enerjisini Hesapla</button>
+                            <div id="bohr-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- UÇAK / HAVACILIK (Orijinal) -->
+                <div id="panel-aviation" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Uçak / Havacılık Fiziği</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Kaldırma Kuvveti (Lift)</div>
+                                <input id="lift-rho" type="number" value="1.225" placeholder="Hava yoğunluğu (kg/m³)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="lift-v" type="number" value="250" placeholder="Hız (m/s)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="lift-a" type="number" value="50" placeholder="Kanat alanı (m²)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="lift-cl" type="number" value="1.2" placeholder="Kaldırma katsayısı" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateLift()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Kaldırma Kuvvetini Hesapla</button>
+                                <div id="lift-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Sürükleme Kuvveti (Drag)</div>
+                                <input id="drag-rho" type="number" value="1.225" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="drag-v" type="number" value="250" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="drag-a" type="number" value="50" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="drag-cd" type="number" value="0.03" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateDrag()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Sürüklemeyi Hesapla</button>
+                                <div id="drag-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ARABA / OTOMOTİV (Orijinal) -->
+                <div id="panel-auto" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Araba / Otomotiv Fiziği</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Fren Mesafesi</div>
+                                <input id="brake-v" type="number" value="100" placeholder="Hız (km/h)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="brake-mu" type="number" value="0.7" placeholder="Sürtünme katsayısı" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateBrakingDistance()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Fren Mesafesini Hesapla</button>
+                                <div id="brake-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Motor Gücü (kW)</div>
+                                <input id="engine-torque" type="number" value="300" placeholder="Tork (Nm)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="engine-rpm" type="number" value="5500" placeholder="Devir (rpm)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateEnginePower()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Gücü Hesapla</button>
+                                <div id="engine-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- OPTİK FİZİĞİ (Orijinal) -->
+                <div id="panel-optics" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Optik Fiziği</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Mercek Formülü (1/f = 1/v + 1/u)</div>
+                                <input id="lens-u" type="number" value="-30" placeholder="Nesne uzaklığı u (cm)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="lens-v" type="number" value="60" placeholder="Görüntü uzaklığı v (cm)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateLens()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Odak Uzaklığını Hesapla</button>
+                                <div id="lens-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <div class="font-semibold mb-3">Snell Yasası (Kırılma)</div>
+                                <input id="snell-n1" type="number" value="1" placeholder="n1 (hava)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="snell-n2" type="number" value="1.33" placeholder="n2 (su)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                                <input id="snell-theta1" type="number" value="30" placeholder="Geliş açısı (°)" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                                <button onclick="calculateSnell()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Kırılma Açısını Hesapla</button>
+                                <div id="snell-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- MAKİNE + ROKET (Orijinal) -->
+                <div id="panel-machine" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Makine Fiziği</h2>
+                        <div class="bg-zinc-950 p-6 rounded-3xl max-w-md">
+                            <div class="font-semibold mb-3">Tork (T = F × r)</div>
+                            <input id="torque-f" type="number" value="500" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-2">
+                            <input id="torque-r" type="number" value="0.5" class="modern-input w-full px-4 py-2.5 rounded-2xl mb-3">
+                            <button onclick="calculateTorque()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 rounded-2xl">Torku Hesapla</button>
+                            <div id="torque-result" class="hidden mt-4 text-sm bg-zinc-900 p-4 rounded-2xl"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="panel-rocket" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6">Roket Menzili Hesaplayıcı</h2>
+                        <div class="max-w-md">
+                            <input id="rocket-v" type="number" value="150" placeholder="İlk hız (m/s)" class="modern-input w-full px-4 py-3 rounded-2xl mb-3">
+                            <input id="rocket-angle" type="number" value="45" placeholder="Atış açısı (°)" class="modern-input w-full px-4 py-3 rounded-2xl mb-4">
+                            <button onclick="calculateRocketRange()" class="calc-button w-full py-4 rounded-2xl text-white font-semibold">MENZİLİ HESAPLA</button>
+                            <div id="rocket-result" class="hidden mt-6 result-box p-6 rounded-2xl">
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div><div class="text-xs text-zinc-500">MENZİL</div><div id="rocket-range" class="text-4xl font-semibold"></div><div class="text-sm">m</div></div>
+                                    <div><div class="text-xs text-zinc-500">MAKS YÜKSEKLİK</div><div id="rocket-height" class="text-4xl font-semibold"></div><div class="text-sm">m</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
+
+    <footer class="border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+        MühendisX Ultimate v6.0 • Python Multi-Specialist Bot + Orijinal HTML Tam Füzyon • Tek Dosya • Profesyonel
+    </footer>
 
     <script>
         // Tailwind script
-        function initializeTailwind() {
-            document.documentElement.style.setProperty('--accent', '#00f0ff');
+        function initTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
         }
-
-        // Translations
-        const translations = {
-            tr: {
-                login: "Giriş Yap",
-                addProduct: "Ürün Ekle",
-                heroTitle1: "Yazılımın",
-                heroTitle2: "Burada Başlıyor",
-                heroSubtitle: "Şifreli ZIP dosyaları, YouTube doğrulaması ve WhatsApp ödemesiyle dünyanın en güvenli yazılım pazarı.",
-                exploreBtn: "Keşfetmeye Başla",
-                sellBtn: "Ürün Sat",
-                statProducts: "Yazılım Ürünü",
-                statSellers: "Satıcı",
-                statDownloads: "İndirme",
-                statCountries: "Ülke",
-                discoverTitle: "Pazarı Keşfet",
-                discoverSubtitle: "Binlerce kaliteli yazılımı ara, incele ve satın al",
-                catAll: "Tümü",
-                catAI: "AI & ML",
-                catSecurity: "Güvenlik",
-                catProductivity: "Verimlilik",
-                catDev: "Geliştirme",
-                catGames: "Oyunlar",
-                catEducation: "Eğitim",
-                howTitle: "Kuantum Store Nasıl Çalışır?",
-                howSubtitle: "Güvenlik odaklı, basit ve etkili dijital ürün satışı",
-                loginTitle: "Giriş Yap"
-            },
-            en: {
-                login: "Login",
-                addProduct: "Add Product",
-                heroTitle1: "The Future of",
-                heroTitle2: "Software Starts Here",
-                heroSubtitle: "Encrypted ZIP files, YouTube verification and WhatsApp payments — the world's most secure software marketplace.",
-                exploreBtn: "Start Exploring",
-                sellBtn: "Sell Product",
-                statProducts: "Software Products",
-                statSellers: "Sellers",
-                statDownloads: "Downloads",
-                statCountries: "Countries",
-                discoverTitle: "Explore the Marketplace",
-                discoverSubtitle: "Search, review and purchase thousands of quality software",
-                catAll: "All",
-                catAI: "AI & ML",
-                catSecurity: "Security",
-                catProductivity: "Productivity",
-                catDev: "Development",
-                catGames: "Games",
-                catEducation: "Education",
-                howTitle: "How Kuantum Store Works",
-                howSubtitle: "Security-first, simple and effective digital product sales",
-                loginTitle: "Sign In"
-            },
-            fr: {
-                login: "Connexion",
-                addProduct: "Ajouter un Produit",
-                heroTitle1: "L'Avenir du",
-                heroTitle2: "Logiciel Commence Ici",
-                heroSubtitle: "Fichiers ZIP chiffrés, vérification YouTube et paiements WhatsApp — la marketplace de logiciels la plus sécurisée au monde.",
-                exploreBtn: "Commencer à Explorer",
-                sellBtn: "Vendre un Produit",
-                discoverTitle: "Explorer le Marché",
-                discoverSubtitle: "Rechercher, examiner et acheter des milliers de logiciels de qualité",
-                catAll: "Tout",
-                catAI: "IA & ML",
-                catSecurity: "Sécurité",
-                catProductivity: "Productivité",
-                catDev: "Développement",
-                howTitle: "Comment Fonctionne Kuantum Store ?",
-                howSubtitle: "Axé sur la sécurité, simple et efficace pour la vente de produits numériques",
-                loginTitle: "Se Connecter"
-            },
-            de: {
-                login: "Anmelden",
-                addProduct: "Produkt Hinzufügen",
-                heroTitle1: "Die Zukunft der",
-                heroTitle2: "Software Beginnt Hier",
-                heroSubtitle: "Verschlüsselte ZIP-Dateien, YouTube-Verifizierung und WhatsApp-Zahlungen — der sicherste Software-Marktplatz der Welt.",
-                exploreBtn: "Jetzt Entdecken",
-                sellBtn: "Produkt Verkaufen",
-                discoverTitle: "Marktplatz Erkunden",
-                discoverSubtitle: "Tausende qualitativ hochwertige Software suchen, prüfen und kaufen",
-                catAll: "Alle",
-                catAI: "KI & ML",
-                catSecurity: "Sicherheit",
-                catProductivity: "Produktivität",
-                catDev: "Entwicklung",
-                howTitle: "Wie Funktioniert Kuantum Store?",
-                howSubtitle: "Sicherheitsfokussiert, einfach und effektiv für digitale Produktverkäufe",
-                loginTitle: "Anmelden"
-            },
-            ru: {
-                login: "Войти",
-                addProduct: "Добавить Продукт",
-                heroTitle1: "Будущее",
-                heroTitle2: "ПО Начинается Здесь",
-                heroSubtitle: "Зашифрованные ZIP-файлы, верификация YouTube и оплата через WhatsApp — самая безопасная площадка для продажи ПО в мире.",
-                exploreBtn: "Начать Исследовать",
-                sellBtn: "Продать Продукт",
-                discoverTitle: "Исследовать Маркетплейс",
-                discoverSubtitle: "Ищите, изучайте и покупайте тысячи качественных программ",
-                catAll: "Все",
-                catAI: "ИИ & ML",
-                catSecurity: "Безопасность",
-                catProductivity: "Продуктивность",
-                catDev: "Разработка",
-                howTitle: "Как Работает Kuantum Store?",
-                howSubtitle: "С фокусом на безопасность, просто и эффективно для продажи цифровых продуктов",
-                loginTitle: "Войти"
-            },
-            it: {
-                login: "Accedi",
-                addProduct: "Aggiungi Prodotto",
-                heroTitle1: "Il Futuro del",
-                heroTitle2: "Software Inizia Qui",
-                heroSubtitle: "File ZIP crittografati, verifica YouTube e pagamenti WhatsApp — il marketplace di software più sicuro al mondo.",
-                exploreBtn: "Inizia a Esplorare",
-                sellBtn: "Vendi un Prodotto",
-                discoverTitle: "Esplora il Mercato",
-                discoverSubtitle: "Cerca, esamina e acquista migliaia di software di qualità",
-                catAll: "Tutti",
-                catAI: "IA & ML",
-                catSecurity: "Sicurezza",
-                catProductivity: "Produttività",
-                catDev: "Sviluppo",
-                howTitle: "Come Funziona Kuantum Store?",
-                howSubtitle: "Focalizzato sulla sicurezza, semplice ed efficace per la vendita di prodotti digitali",
-                loginTitle: "Accedi"
-            },
-            ar: {
-                login: "تسجيل الدخول",
-                addProduct: "إضافة منتج",
-                heroTitle1: "مستقبل",
-                heroTitle2: "البرمجيات يبدأ هنا",
-                heroSubtitle: "ملفات ZIP مشفرة، تحقق من يوتيوب ومدفوعات واتساب — أكثر أسواق البرمجيات أمانًا في العالم.",
-                exploreBtn: "ابدأ الاستكشاف",
-                sellBtn: "بيع منتج",
-                discoverTitle: "استكشف السوق",
-                discoverSubtitle: "ابحث واستعرض واشترِ آلاف البرامج عالية الجودة",
-                catAll: "الكل",
-                catAI: "الذكاء الاصطناعي",
-                catSecurity: "الأمان",
-                catProductivity: "الإنتاجية",
-                catDev: "التطوير",
-                howTitle: "كيف يعمل Kuantum Store؟",
-                howSubtitle: "يركز على الأمان، بسيط وفعال لبيع المنتجات الرقمية",
-                loginTitle: "تسجيل الدخول"
-            }
-        };
-
-        let currentLang = 'tr';
-        let products = [];
-        let currentFilter = 'all';
-        let loggedInUser = null;
-
-        // FIREBASE CONFIG - Gerçek değerler (senin dunya-65219 projen)
-        let firebaseApp = null;
-        let db = null;
-        let auth = null;
-
-        function initFirebase() {
-            const firebaseConfig = {
-                apiKey: "AIzaSyA6yQ6_TWFvmjkFTEOwWQMaQpDChoiP6wVw",
-                authDomain: "dunya-65219.firebaseapp.com",
-                projectId: "dunya-65219",
-                storageBucket: "dunya-65219.firebasestorage.app",
-                messagingSenderId: "706850743459",
-                appId: "1:706850743459:web:1c2b8bfed3c69c2f3a4b16",
-                measurementId: "G-G11P4XLPCD"
-            };
-
+        
+        function switchPanel(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+            const panel = document.getElementById(id);
+            if (panel) panel.classList.remove('hidden');
+            
+            document.querySelectorAll('[id^="nav-"]').forEach(n => n.classList.remove('nav-active', 'bg-zinc-800'));
+            const nav = document.getElementById('nav-' + id.replace('panel-', ''));
+            if (nav) nav.classList.add('nav-active', 'bg-zinc-800');
+            
+            if (id === 'panel-periodic') renderPeriodicTable();
+        }
+        
+        // Orijinal Genel İfade
+        function calculateGeneral() {
+            const expr = document.getElementById('general-expr').value.trim();
+            if (!expr) return showToast("İfade girin", true);
             try {
-                if (!firebase.apps.length) {
-                    firebaseApp = firebase.initializeApp(firebaseConfig);
-                    auth = firebase.auth();
-                    db = firebase.firestore();
-                    console.log("%c[Firebase] Gerçek proje bağlandı (dunya-65219)", "color:#22c55e");
+                const result = math.evaluate(expr);
+                document.getElementById('general-result-value').textContent = result.toString();
+                document.getElementById('general-result').classList.remove('hidden');
+                saveToHistory("Genel İfade", expr, result);
+            } catch(e) { showToast(e.message, true); }
+        }
+        
+        function useExample(ex) {
+            document.getElementById('general-expr').value = ex;
+            calculateGeneral();
+        }
+        
+        // Birim Dönüştürücü (Yeni - Python tarzı)
+        function convertLength() {
+            const val = parseFloat(document.getElementById('conv-length-val').value);
+            const from = document.getElementById('conv-length-from').value;
+            const to = document.getElementById('conv-length-to').value;
+            
+            const factors = { m: 1, km: 0.001, cm: 100, mm: 1000, in: 39.3701, ft: 3.28084 };
+            const result = val * factors[from] / factors[to];
+            
+            document.getElementById('conv-length-result').innerHTML = `${val} ${from} = <span class="text-emerald-400">${result.toFixed(4)} ${to}</span>`;
+            document.getElementById('conv-length-result').classList.remove('hidden');
+            saveToHistory("Birim Dönüşüm (Uzunluk)", `${val} ${from} → ${to}`, result.toFixed(4));
+        }
+        
+        function convertMass() {
+            const val = parseFloat(document.getElementById('conv-mass-val').value);
+            const from = document.getElementById('conv-mass-from').value;
+            const to = document.getElementById('conv-mass-to').value;
+            
+            const factors = { kg: 1, g: 1000, lb: 2.20462, oz: 35.274 };
+            const result = val * factors[from] / factors[to];
+            
+            document.getElementById('conv-mass-result').innerHTML = `${val} ${from} = <span class="text-emerald-400">${result.toFixed(4)} ${to}</span>`;
+            document.getElementById('conv-mass-result').classList.remove('hidden');
+            saveToHistory("Birim Dönüşüm (Kütle)", `${val} ${from} → ${to}`, result.toFixed(4));
+        }
+        
+        function convertTemp() {
+            const val = parseFloat(document.getElementById('conv-temp-val').value);
+            const from = document.getElementById('conv-temp-from').value;
+            const to = document.getElementById('conv-temp-to').value;
+            
+            let result;
+            if (from === 'C' && to === 'F') result = val * 9/5 + 32;
+            else if (from === 'F' && to === 'C') result = (val - 32) * 5/9;
+            else if (from === 'C' && to === 'K') result = val + 273.15;
+            else if (from === 'K' && to === 'C') result = val - 273.15;
+            else if (from === 'F' && to === 'K') result = (val - 32) * 5/9 + 273.15;
+            else result = val;
+            
+            document.getElementById('conv-temp-result').innerHTML = `${val}°${from} = <span class="text-emerald-400">${result.toFixed(2)}°${to}</span>`;
+            document.getElementById('conv-temp-result').classList.remove('hidden');
+            saveToHistory("Birim Dönüşüm (Sıcaklık)", `${val}°${from} → ${to}`, result.toFixed(2));
+        }
+        
+        // KLASİK MEKANİK (Python'dan tam aktarıldı)
+        function calculateProjectile() {
+            const v0 = parseFloat(document.getElementById('proj-v0').value);
+            const angle = parseFloat(document.getElementById('proj-angle').value) * Math.PI / 180;
+            const g = 9.81;
+            
+            const range = (v0 * v0 * Math.sin(2 * angle)) / g;
+            const height = (v0 * v0 * Math.sin(angle) * Math.sin(angle)) / (2 * g);
+            const time = (2 * v0 * Math.sin(angle)) / g;
+            
+            const resultDiv = document.getElementById('proj-result');
+            resultDiv.innerHTML = `Menzil: <span class="text-emerald-400">${range.toFixed(1)} m</span><br>Maks Yükseklik: <span class="text-emerald-400">${height.toFixed(1)} m</span><br>Uçuş Süresi: <span class="text-emerald-400">${time.toFixed(2)} s</span>`;
+            resultDiv.classList.remove('hidden');
+            
+            // Çizim
+            drawProjectileTrajectory(v0, angle, g, range, height, time);
+            saveToHistory("Mermi Hareketi", `v0=${v0} m/s, θ=${document.getElementById('proj-angle').value}°`, `Menzil=${range.toFixed(1)}m`);
+        }
+        
+        function drawProjectileTrajectory(v0, angle, g, range, maxH, time) {
+            const canvas = document.getElementById('proj-canvas');
+            canvas.classList.remove('hidden');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const w = canvas.width;
+            const h = canvas.height;
+            const scaleX = w / (range * 1.1);
+            const scaleY = h / (maxH * 1.3);
+            
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            for (let t = 0; t <= time; t += time/100) {
+                const x = v0 * Math.cos(angle) * t * scaleX;
+                const y = h - (v0 * Math.sin(angle) * t - 0.5 * g * t*t) * scaleY;
+                if (t === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            
+            // Max height point
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(range/2 * scaleX, h - maxH * scaleY, 5, 0, Math.PI*2);
+            ctx.fill();
+        }
+        
+        function calcKinetic() {
+            const m = parseFloat(document.getElementById('energy-m').value);
+            const v = parseFloat(document.getElementById('energy-v').value);
+            const KE = 0.5 * m * v * v;
+            const res = document.getElementById('energy-result');
+            res.innerHTML = `Kinetik Enerji = <span class="text-emerald-400">${KE.toFixed(2)} J</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Kinetik Enerji", `m=${m}kg, v=${v}m/s`, KE.toFixed(2) + " J");
+        }
+        
+        function calcMomentum() {
+            const m = parseFloat(document.getElementById('energy-m').value);
+            const v = parseFloat(document.getElementById('energy-v').value);
+            const p = m * v;
+            const res = document.getElementById('energy-result');
+            res.innerHTML = `Momentum = <span class="text-emerald-400">${p.toFixed(2)} kg·m/s</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Momentum", `m=${m}kg, v=${v}m/s`, p.toFixed(2) + " kg m/s");
+        }
+        
+        function calculateCircular() {
+            const v = parseFloat(document.getElementById('circ-v').value);
+            const r = parseFloat(document.getElementById('circ-r').value);
+            const ac = v*v / r;
+            const omega = v / r;
+            const f = omega / (2 * Math.PI);
+            const T = 1 / f;
+            
+            const res = document.getElementById('circ-result');
+            res.innerHTML = `Merkezcil İvme: <span class="text-emerald-400">${ac.toFixed(2)} m/s²</span><br>Açısal Hız ω: <span class="text-emerald-400">${omega.toFixed(2)} rad/s</span><br>Frekans: <span class="text-emerald-400">${f.toFixed(2)} Hz</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Dairesel Hareket", `v=${v}, r=${r}`, `ac=${ac.toFixed(2)}`);
+        }
+        
+        function calculateSHM() {
+            const A = parseFloat(document.getElementById('shm-A').value);
+            const f = parseFloat(document.getElementById('shm-f').value);
+            const omega = 2 * Math.PI * f;
+            const T = 1 / f;
+            const vmax = A * omega;
+            const amax = A * omega * omega;
+            
+            const res = document.getElementById('shm-result');
+            res.innerHTML = `ω = <span class="text-emerald-400">${omega.toFixed(2)} rad/s</span><br>Periyot T = <span class="text-emerald-400">${T.toFixed(3)} s</span><br>v_max = <span class="text-emerald-400">${vmax.toFixed(2)} m/s</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Basit Harmonik Hareket", `A=${A}, f=${f}`, `T=${T.toFixed(3)}s`);
+        }
+        
+        // ELEKTROMANYETİZMA
+        function calculateCoulomb() {
+            const q1 = parseFloat(document.getElementById('coul-q1').value);
+            const q2 = parseFloat(document.getElementById('coul-q2').value);
+            const r = parseFloat(document.getElementById('coul-r').value);
+            const k = 8.99e9;
+            const F = k * Math.abs(q1 * q2) / (r * r);
+            
+            const res = document.getElementById('coul-result');
+            res.innerHTML = `Kuvvet F = <span class="text-emerald-400">${F.toExponential(2)} N</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Coulomb Yasası", `q1=${q1}, q2=${q2}, r=${r}`, F.toExponential(2) + " N");
+        }
+        
+        function calculateMagneticForce() {
+            const q = parseFloat(document.getElementById('mag-q').value);
+            const v = parseFloat(document.getElementById('mag-v').value);
+            const B = parseFloat(document.getElementById('mag-B').value);
+            const theta = parseFloat(document.getElementById('mag-theta').value) * Math.PI / 180;
+            const F = q * v * B * Math.sin(theta);
+            
+            const res = document.getElementById('mag-result');
+            res.innerHTML = `Manyetik Kuvvet = <span class="text-emerald-400">${F.toExponential(2)} N</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Manyetik Kuvvet", `q=${q}, v=${v}, B=${B}`, F.toExponential(2) + " N");
+        }
+        
+        // KUANTUM
+        function calculateBohrAdvanced() {
+            const Z = parseFloat(document.getElementById('bohr-Z').value);
+            const n = parseFloat(document.getElementById('bohr-n').value);
+            
+            const E = -13.6 * Z*Z / (n*n);
+            const r = 0.529 * n*n / Z; // Ångström
+            
+            const res = document.getElementById('bohr-advanced-result');
+            res.innerHTML = `E_n = <span class="text-emerald-400">${E.toFixed(2)} eV</span><br>Yörünge yarıçapı r = <span class="text-emerald-400">${r.toFixed(2)} Å</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Bohr Modeli (Gelişmiş)", `Z=${Z}, n=${n}`, `E=${E.toFixed(2)} eV`);
+        }
+        
+        function calculateUncertainty() {
+            const val = parseFloat(document.getElementById('uncert-val').value);
+            const type = document.getElementById('uncert-type').value;
+            const hbar = 1.0545718e-34;
+            
+            let resultText;
+            if (type === 'dx') {
+                const dp = hbar / (2 * val);
+                resultText = `Δp ≥ <span class="text-emerald-400">${dp.toExponential(2)} kg·m/s</span>`;
+            } else {
+                const dx = hbar / (2 * val);
+                resultText = `Δx ≥ <span class="text-emerald-400">${dx.toExponential(2)} m</span>`;
+            }
+            
+            const res = document.getElementById('uncert-result');
+            res.innerHTML = resultText;
+            res.classList.remove('hidden');
+            saveToHistory("Belirsizlik İlkesi", type, resultText);
+        }
+        
+        // RELATİVİTE
+        function calculateRelativity() {
+            const v_frac = parseFloat(document.getElementById('rel-v').value);
+            if (v_frac >= 1 || v_frac < 0) return showToast("0 ile 1 arasında olmalı", true);
+            
+            const gamma = 1 / Math.sqrt(1 - v_frac * v_frac);
+            const time_dilation = gamma;
+            
+            const res = document.getElementById('rel-result');
+            res.innerHTML = `Lorentz Faktörü γ = <span class="text-emerald-400">${gamma.toFixed(4)}</span><br>Zaman genişlemesi: <span class="text-emerald-400">${time_dilation.toFixed(4)}×</span> daha yavaş`;
+            res.classList.remove('hidden');
+            saveToHistory("Relativite", `v/c = ${v_frac}`, `γ=${gamma.toFixed(4)}`);
+        }
+        
+        // İLERİ MATEMATİK
+        function solveLinearSystem() {
+            try {
+                const matrixText = document.getElementById('matrix-a').value.trim();
+                const bText = document.getElementById('vector-b').value.trim();
+                
+                const rows = matrixText.split('\n').map(row => row.trim().split(/\s+/).map(Number));
+                const A = math.matrix(rows);
+                const b = math.matrix(bText.split(/\s+/).map(Number));
+                
+                const x = math.lusolve(A, b);
+                
+                const res = document.getElementById('linear-result');
+                res.innerHTML = `Çözüm x = <span class="text-emerald-400">[${x.toArray().map(v => v.toFixed(4)).join(', ')}]</span>`;
+                res.classList.remove('hidden');
+                saveToHistory("Doğrusal Sistem", "Ax=b", x.toString());
+            } catch(e) {
+                showToast("Matris hatası: " + e.message, true);
+            }
+        }
+        
+        function calculateIntegral() {
+            try {
+                const funcStr = document.getElementById('int-func').value;
+                const a = parseFloat(document.getElementById('int-a').value);
+                const b = parseFloat(document.getElementById('int-b').value);
+                
+                // Basit sayısal integral (Simpson kuralı)
+                const n = 1000;
+                const h = (b - a) / n;
+                let sum = 0;
+                
+                for (let i = 0; i <= n; i++) {
+                    const x = a + i * h;
+                    const y = math.evaluate(funcStr.replace(/x/g, `(${x})`));
+                    if (i === 0 || i === n) sum += y;
+                    else if (i % 2 === 0) sum += 2 * y;
+                    else sum += 4 * y;
                 }
-            } catch (e) {
-                console.warn("[Firebase] Bağlanamadı, localStorage kullanılacak:", e.message);
+                const integral = (h / 3) * sum;
+                
+                const res = document.getElementById('int-result');
+                res.innerHTML = `∫<sub>${a}</sub><sup>${b}</sup> ${funcStr} dx ≈ <span class="text-emerald-400">${integral.toFixed(6)}</span>`;
+                res.classList.remove('hidden');
+                saveToHistory("Sayısal İntegral", `${funcStr} [${a},${b}]`, integral.toFixed(6));
+            } catch(e) {
+                showToast("Fonksiyon hatası", true);
             }
         }
-
-        async function saveUserToFirebase(userData) {
-            if (!db) return;
+        
+        function calculateStatistics() {
             try {
-                await db.collection("users").doc(userData.email).set({
-                    ...userData,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    platform: "Kuantum Store"
-                }, { merge: true });
-            } catch (err) {
-                console.error("Firestore kullanıcı hatası:", err);
-            }
-        }
-
-        async function saveProductToFirebase(productData) {
-            if (!db) return productData.id;
-            try {
-                const docRef = await db.collection("products").add({
-                    ...productData,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    isDemo: true
-                });
-                return docRef.id;
-            } catch (err) {
-                console.error("Firestore ürün hatası:", err);
-                return productData.id;
-            }
-        }
-
-        function getInitialProducts() {
-            // Gerçek ürünler Firestore veya localStorage üzerinden yönetilecek.
-            return [];
-        }
-
-        // Render products - APP STORE TARZI (kare ikon + İndir butonu)
-        function renderProducts(filteredProducts) {
-            const grid = document.getElementById('products-grid');
-            grid.innerHTML = '';
-
-            if (filteredProducts.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-16 text-center">
-                        <i class="fa-solid fa-search text-5xl text-white/20 mb-4"></i>
-                        <p class="text-white/60">Henüz ürün bulunmuyor. İlk ürünü ekleyerek başlayın.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            filteredProducts.forEach(product => {
-                const card = document.createElement('div');
-                card.className = `app-store-card glass rounded-3xl overflow-hidden border border-white/10 hover:border-[#00f0ff]/40 transition-all cursor-pointer`;
-                card.dataset.category = product.category;
-                card.dataset.id = product.id;
-                card.onclick = () => openProductDetail(product.id);
-
-                const categoryLabel = getCategoryLabel(product.category);
-                const iconClass = product.icon || 'fa-cube';
-
-                card.innerHTML = `
-                    <div class="p-4 flex gap-4 items-center">
-                        <!-- App Icon (App Store tarzı kare yuvarlak ikon) -->
-                        <div class="w-16 h-16 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[#00f0ff] via-[#a78bfa] to-[#00f0ff] flex items-center justify-center shadow-lg shadow-[#00f0ff]/30">
-                            <i class="fa-solid ${iconClass} text-[#05050f] text-4xl"></i>
-                        </div>
-                        
-                        <!-- Bilgi Alanı -->
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-0.5">
-                                <h3 class="font-display text-xl font-semibold tracking-tight truncate">${product.name}</h3>
-                                ${product.isDemo ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-red-500/80 text-white font-bold">DEMO</span>` : ''}
-                            </div>
-                            
-                            <p class="text-white/60 text-xs mb-1">${product.seller} • ${categoryLabel}</p>
-                            
-                            <p class="text-white/70 text-sm line-clamp-2 pr-2">${product.desc}</p>
-                        </div>
-                        
-                        <!-- Sağ Taraf: Fiyat + İndir Butonu (App Store tarzı) -->
-                        <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                            <div class="text-right">
-                                <div class="text-2xl font-bold tracking-tighter">$${product.price}</div>
-                            </div>
-                            
-                            <button onclick="buyProduct(${product.id}); event.stopImmediatePropagation();" 
-                                    class="px-5 py-1.5 bg-white hover:bg-[#00f0ff] active:bg-[#00d4e6] transition-all text-[#05050f] text-sm font-bold rounded-full shadow flex items-center gap-x-1.5">
-                                <i class="fa-solid fa-download text-xs"></i>
-                                <span>İndir</span>
-                            </button>
-                            
-                            <div class="flex gap-1 mt-1">
-                                <button onclick="watchYouTube('${product.yt}', '${product.name}'); event.stopImmediatePropagation();" 
-                                        class="text-white/50 hover:text-white p-1 text-xs">
-                                    <i class="fa-brands fa-youtube"></i>
-                                </button>
-                                <button onclick="openGitHub('${product.github}'); event.stopImmediatePropagation();" 
-                                        class="text-white/50 hover:text-white p-1 text-xs">
-                                    <i class="fa-brands fa-github"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function getCategoryLabel(cat) {
-            const labels = {
-                'simulation': 'Simülasyon',
-                'office': 'Ofis',
-                'ai-ml': 'AI & ML',
-                'security': 'Güvenlik',
-                'productivity': 'Verimlilik',
-                'development': 'Geliştirme'
-            };
-            return labels[cat] || cat;
-        }
-
-        // Filter functions
-        function filterProducts() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            const gridItems = document.querySelectorAll('#products-grid > div');
-
-            gridItems.forEach(card => {
-                const name = card.querySelector('h3').textContent.toLowerCase();
-                const desc = card.querySelector('p').textContent.toLowerCase();
-                const seller = card.querySelector('.font-medium') ? card.querySelector('.font-medium').textContent.toLowerCase() : '';
-                const category = card.dataset.category;
-
-                const matchesSearch = name.includes(searchTerm) || desc.includes(searchTerm) || seller.includes(searchTerm);
-                const matchesCategory = currentFilter === 'all' || category === currentFilter;
-
-                if (matchesSearch && matchesCategory) {
-                    card.style.display = '';
+                const dataText = document.getElementById('stats-data').value.trim();
+                const lines = dataText.split('\n');
+                let xData = [], yData = [];
+                
+                if (lines.length >= 2) {
+                    xData = lines[0].trim().split(/\s+/).map(Number);
+                    yData = lines[1].trim().split(/\s+/).map(Number);
                 } else {
-                    card.style.display = 'none';
+                    xData = dataText.trim().split(/\s+/).map(Number);
                 }
-            });
-        }
-
-        function filterByCategory(category) {
-            currentFilter = category;
-            
-            document.querySelectorAll('.category-chip').forEach(chip => {
-                chip.classList.remove('active', 'bg-[#00f0ff]', 'text-[#05050f]');
-                chip.classList.add('border-white/20', 'hover:bg-white/5');
                 
-                if (chip.dataset.category === category) {
-                    chip.classList.add('active', 'bg-[#00f0ff]', 'text-[#05050f]');
-                    chip.classList.remove('border-white/20', 'hover:bg-white/5');
+                const mean = xData.reduce((a,b) => a+b, 0) / xData.length;
+                const variance = xData.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / (xData.length - 1);
+                const std = Math.sqrt(variance);
+                
+                let resultHTML = `Ortalama: <span class="text-emerald-400">${mean.toFixed(4)}</span><br>Std Sapma: <span class="text-emerald-400">${std.toFixed(4)}</span>`;
+                
+                if (yData.length === xData.length) {
+                    // Basit regresyon
+                    const n = xData.length;
+                    const sumX = xData.reduce((a,b)=>a+b,0);
+                    const sumY = yData.reduce((a,b)=>a+b,0);
+                    const sumXY = xData.reduce((a,b,i)=>a + b*yData[i], 0);
+                    const sumX2 = xData.reduce((a,b)=>a + b*b, 0);
+                    
+                    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                    const intercept = (sumY - slope * sumX) / n;
+                    
+                    resultHTML += `<br>Regresyon: y = <span class="text-emerald-400">${slope.toFixed(4)}x + ${intercept.toFixed(4)}</span>`;
+                }
+                
+                const res = document.getElementById('stats-result');
+                res.innerHTML = resultHTML;
+                res.classList.remove('hidden');
+                saveToHistory("İstatistik", "Veri seti", mean.toFixed(4));
+            } catch(e) {
+                showToast("Veri hatası", true);
+            }
+        }
+        
+        let currentChart = null;
+        function plotFunction() {
+            const funcStr = document.getElementById('plot-func').value;
+            const xmin = parseFloat(document.getElementById('plot-xmin').value);
+            const xmax = parseFloat(document.getElementById('plot-xmax').value);
+            
+            const canvas = document.getElementById('plot-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            if (currentChart) currentChart.destroy();
+            
+            const labels = [];
+            const data = [];
+            const step = (xmax - xmin) / 200;
+            
+            for (let x = xmin; x <= xmax; x += step) {
+                labels.push(x.toFixed(2));
+                try {
+                    data.push(math.evaluate(funcStr.replace(/x/g, `(${x})`)));
+                } catch {
+                    data.push(0);
+                }
+            }
+            
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: funcStr,
+                        data: data,
+                        borderColor: '#6366f1',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: true } },
+                    scales: { x: { display: true }, y: { display: true } }
                 }
             });
-
-            filterProducts();
-        }
-
-        // Language switch
-        function switchLanguage(lang) {
-            currentLang = lang;
             
-            const langCodes = ['tr', 'en', 'fr', 'de', 'ru', 'it', 'ar'];
-            langCodes.forEach(code => {
-                const btn = document.getElementById('lang-' + code);
-                if (btn) {
-                    const isActive = lang === code;
-                    btn.classList.toggle('active-lang', isActive);
-                    btn.classList.toggle('bg-white', isActive);
-                    btn.classList.toggle('text-[#05050f]', isActive);
-                    btn.classList.toggle('text-white/70', !isActive);
+            saveToHistory("Fonksiyon Grafiği", funcStr, `x=[${xmin},${xmax}]`);
+        }
+        
+        // İLERİ KİMYA
+        const atomicMasses = {
+            'H': 1.008, 'HE': 4.003, 'LI': 6.941, 'BE': 9.012, 'B': 10.811, 'C': 12.011,
+            'N': 14.007, 'O': 15.999, 'F': 18.998, 'NE': 20.180, 'NA': 22.990, 'MG': 24.305,
+            'AL': 26.982, 'SI': 28.086, 'P': 30.974, 'S': 32.065, 'CL': 35.453, 'K': 39.098,
+            'CA': 40.078, 'FE': 55.845, 'CU': 63.546, 'ZN': 65.38, 'AG': 107.868, 'AU': 196.967
+        };
+        
+        function calculateAdvancedMolarMass() {
+            const formula = document.getElementById('adv-molar-formula').value.toUpperCase();
+            let mass = 0;
+            let match;
+            const regex = /([A-Z][a-z]?)(\d*)/g;
+            
+            while ((match = regex.exec(formula)) !== null) {
+                const el = match[1];
+                const num = parseInt(match[2]) || 1;
+                if (atomicMasses[el]) {
+                    mass += atomicMasses[el] * num;
+                } else {
+                    return showToast("Bilinmeyen element: " + el, true);
                 }
+            }
+            
+            const res = document.getElementById('adv-molar-result');
+            res.innerHTML = `${formula} molar kütlesi = <span class="text-emerald-400">${mass.toFixed(3)} g/mol</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Molar Kütle", formula, mass.toFixed(3) + " g/mol");
+        }
+        
+        function calculatePercentComposition() {
+            const el = document.getElementById('pct-element').value.toUpperCase();
+            const compound = document.getElementById('pct-compound').value.toUpperCase();
+            const count = parseInt(document.getElementById('pct-count').value);
+            
+            if (!atomicMasses[el]) return showToast("Element bulunamadı", true);
+            
+            // Basit molar kütle hesabı
+            let compoundMass = 0;
+            let match;
+            const regex = /([A-Z][a-z]?)(\d*)/g;
+            while ((match = regex.exec(compound)) !== null) {
+                const e = match[1];
+                const num = parseInt(match[2]) || 1;
+                if (atomicMasses[e]) compoundMass += atomicMasses[e] * num;
+            }
+            
+            const percent = (count * atomicMasses[el] / compoundMass) * 100;
+            
+            const res = document.getElementById('pct-result');
+            res.innerHTML = `${el} yüzde bileşimi = <span class="text-emerald-400">${percent.toFixed(2)}%</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Yüzde Bileşim", `${el} in ${compound}`, percent.toFixed(2) + "%");
+        }
+        
+        function calculateBufferPH() {
+            const pKa = parseFloat(document.getElementById('hh-pka').value);
+            const A = parseFloat(document.getElementById('hh-a').value);
+            const HA = parseFloat(document.getElementById('hh-ha').value);
+            
+            const pH = pKa + Math.log10(A / HA);
+            
+            const res = document.getElementById('hh-result');
+            res.innerHTML = `pH = <span class="text-emerald-400">${pH.toFixed(2)}</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Buffer pH", `pKa=${pKa}, [A-]=${A}, [HA]=${HA}`, pH.toFixed(2));
+        }
+        
+        function calculateArrhenius() {
+            const Ea = parseFloat(document.getElementById('arr-ea').value) * 1000;
+            const T = parseFloat(document.getElementById('arr-t').value);
+            const A = parseFloat(document.getElementById('arr-a').value);
+            const R = 8.314;
+            
+            const k = A * Math.exp(-Ea / (R * T));
+            
+            const res = document.getElementById('arr-result');
+            res.innerHTML = `Reaksiyon hız sabiti k = <span class="text-emerald-400">${k.toExponential(4)}</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Arrhenius", `Ea=${Ea/1000} kJ/mol, T=${T}K`, k.toExponential(4));
+        }
+        
+        // NÜKLEER
+        function calculateRadioactiveDecay() {
+            const N0 = parseFloat(document.getElementById('rad-N0').value);
+            const lambda = parseFloat(document.getElementById('rad-lambda').value);
+            const t = parseFloat(document.getElementById('rad-t').value);
+            
+            const N = N0 * Math.exp(-lambda * t);
+            const percent = (1 - N/N0) * 100;
+            
+            const res = document.getElementById('rad-result');
+            res.innerHTML = `Kalan çekirdek N = <span class="text-emerald-400">${N.toFixed(0)}</span><br>Bozunma: <span class="text-emerald-400">${percent.toFixed(2)}%</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Radyoaktif Bozunma", `N0=${N0}, λ=${lambda}, t=${t}`, N.toFixed(0));
+        }
+        
+        function calculateBindingEnergy() {
+            const Z = parseInt(document.getElementById('bind-Z').value);
+            const A = parseInt(document.getElementById('bind-A').value);
+            const M = parseFloat(document.getElementById('bind-M').value);
+            
+            const m_p = 1.007276;
+            const m_n = 1.008665;
+            const N = A - Z;
+            
+            const M_expected = Z * m_p + N * m_n;
+            const delta_m = M_expected - M;
+            const BE = delta_m * 931.5; // MeV
+            
+            const res = document.getElementById('bind-result');
+            res.innerHTML = `Kütle defekti Δm = <span class="text-emerald-400">${delta_m.toFixed(6)} u</span><br>Bağlanma Enerjisi = <span class="text-emerald-400">${BE.toFixed(2)} MeV</span>`;
+            res.classList.remove('hidden');
+            saveToHistory("Bağlanma Enerjisi", `Z=${Z}, A=${A}`, BE.toFixed(2) + " MeV");
+        }
+        
+        // Orijinal fonksiyonlar (hiçbir şey silinmedi, aynen korundu)
+        function calculateMolarMass() {
+            const f = document.getElementById('molar-formula').value.toUpperCase();
+            const masses = {H:1.008, O:16, C:12.011, N:14.007};
+            let m = 0;
+            const matches = f.match(/([A-Z][a-z]?)(\d*)/g) || [];
+            matches.forEach(match => {
+                const el = match.match(/[A-Z][a-z]?/)[0];
+                const num = parseInt(match.match(/\d*/)[0]) || 1;
+                if (masses[el]) m += masses[el] * num;
             });
-
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-            
-            if (lang === 'ar') {
-                document.documentElement.dir = 'rtl';
-                document.documentElement.lang = 'ar';
-            } else {
-                document.documentElement.dir = 'ltr';
-                document.documentElement.lang = lang;
-            }
-
-            const searchInput = document.getElementById('search-input');
-            const placeholders = {
-                'en': "Search products, categories or sellers...",
-                'fr': "Rechercher produits, catégories ou vendeurs...",
-                'de': "Produkte, Kategorien oder Verkäufer suchen...",
-                'ru': "Поиск товаров, категорий veya продавцов...",
-                'it': "Cerca prodotti, categorie o venditori...",
-                'ar': "ابحث عن المنتجات أو الفئات أو البائعين...",
-                'tr': "Ürün, kategori veya satıcı ara..."
-            };
-            searchInput.placeholder = placeholders[lang] || "Ürün, kategori veya satıcı ara...";
+            document.getElementById('molar-result').innerHTML = `${f} = <span class="text-emerald-400">${m.toFixed(3)} g/mol</span>`;
+            document.getElementById('molar-result').classList.remove('hidden');
         }
-
-        // Modals
-        function showLoginModal() {
-            document.getElementById('login-modal').classList.remove('hidden');
-            document.getElementById('login-modal').classList.add('flex');
+        
+        function calculatePH() {
+            const c = parseFloat(document.getElementById('ph-conc').value);
+            const ph = -Math.log10(c);
+            document.getElementById('ph-result').innerHTML = `pH ≈ <span class="text-emerald-400">${ph.toFixed(2)}</span>`;
+            document.getElementById('ph-result').classList.remove('hidden');
         }
-
-        function hideLoginModal() {
-            document.getElementById('login-modal').classList.remove('flex');
-            document.getElementById('login-modal').classList.add('hidden');
+        
+        function calculateCarnot() {
+            const th = parseFloat(document.getElementById('carnot-th').value);
+            const tc = parseFloat(document.getElementById('carnot-tc').value);
+            const eff = (1 - tc/th) * 100;
+            document.getElementById('carnot-result').innerHTML = `Carnot Verimi = <span class="text-emerald-400">${eff.toFixed(1)}%</span>`;
+            document.getElementById('carnot-result').classList.remove('hidden');
         }
-
-        function performLogin() {
-            const phone = document.getElementById('login-phone').value;
-            const email = document.getElementById('login-email').value;
-            const brand = document.getElementById('login-brand').value;
-            const idNum = document.getElementById('login-id').value;
-
-            if (!phone || !email || !brand || !idNum) {
-                alert("Lütfen tüm alanları doldurun!");
-                return;
-            }
-
-            loggedInUser = { phone, email, brand, idNum };
-            saveUserToFirebase(loggedInUser);
-            
-            const userSection = document.getElementById('user-section');
-            userSection.innerHTML = `
-                <div class="flex items-center gap-x-3 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
-                    <div class="w-8 h-8 bg-gradient-to-br from-[#00f0ff] to-purple-400 rounded-full flex items-center justify-center text-xs font-bold text-[#05050f]">
-                        ${brand.substring(0,2).toUpperCase()}
-                    </div>
-                    <div class="text-sm">
-                        <div class="font-semibold">${brand}</div>
-                        <div class="text-[10px] text-white/50 -mt-0.5">${phone}</div>
-                    </div>
-                    <button onclick="logout()" class="ml-2 text-xs px-3 py-1 rounded-xl border border-white/20 hover:bg-red-500/10 hover:text-red-400 transition-colors">Çıkış</button>
-                </div>
-            `;
-            
-            hideLoginModal();
-            showToast(`Hoş geldin, ${brand}! Firebase'e kaydedildi.`);
+        
+        function calculateHeat() {
+            const m = parseFloat(document.getElementById('heat-m').value);
+            const c = parseFloat(document.getElementById('heat-c').value);
+            const dt = parseFloat(document.getElementById('heat-dt').value);
+            const q = m * c * dt;
+            document.getElementById('heat-result').innerHTML = `Isı Q = <span class="text-emerald-400">${q.toFixed(0)} J</span>`;
+            document.getElementById('heat-result').classList.remove('hidden');
         }
-
-        function logout() {
-            loggedInUser = null;
-            const userSection = document.getElementById('user-section');
-            userSection.innerHTML = `
-                <button onclick="showLoginModal()" class="flex items-center gap-x-2 px-5 py-2.5 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-all">
-                    <i class="fa-solid fa-user mr-2"></i>
-                    <span data-i18n="login">Giriş Yap</span>
-                </button>
-            `;
+        
+        function calculateBohrPhoton() {
+            const n1 = parseFloat(document.getElementById('bohr-n1').value);
+            const n2 = parseFloat(document.getElementById('bohr-n2').value);
+            const E = 13.6 * (1/(n2*n2) - 1/(n1*n1));
+            document.getElementById('bohr-result').innerHTML = `Foton Enerjisi ≈ <span class="text-emerald-400">${E.toFixed(2)} eV</span>`;
+            document.getElementById('bohr-result').classList.remove('hidden');
         }
-
-        function showAddProductModal() {
-            if (!loggedInUser) {
-                showToast("Ürün eklemek için önce giriş yapmalısın!", true);
-                showLoginModal();
-                return;
-            }
-            document.getElementById('add-product-modal').classList.remove('hidden');
-            document.getElementById('add-product-modal').classList.add('flex');
+        
+        function calculateLift() {
+            const rho = parseFloat(document.getElementById('lift-rho').value);
+            const v = parseFloat(document.getElementById('lift-v').value);
+            const a = parseFloat(document.getElementById('lift-a').value);
+            const cl = parseFloat(document.getElementById('lift-cl').value);
+            const lift = 0.5 * rho * v*v * a * cl;
+            document.getElementById('lift-result').innerHTML = `Kaldırma Kuvveti = <span class="text-emerald-400">${lift.toFixed(0)} N</span>`;
+            document.getElementById('lift-result').classList.remove('hidden');
         }
-
-        function hideAddProductModal() {
-            document.getElementById('add-product-modal').classList.remove('flex');
-            document.getElementById('add-product-modal').classList.add('hidden');
+        
+        function calculateDrag() {
+            const rho = parseFloat(document.getElementById('drag-rho').value);
+            const v = parseFloat(document.getElementById('drag-v').value);
+            const a = parseFloat(document.getElementById('drag-a').value);
+            const cd = parseFloat(document.getElementById('drag-cd').value);
+            const drag = 0.5 * rho * v*v * a * cd;
+            document.getElementById('drag-result').innerHTML = `Sürükleme Kuvveti = <span class="text-emerald-400">${drag.toFixed(0)} N</span>`;
+            document.getElementById('drag-result').classList.remove('hidden');
         }
-
-        function addNewProduct() {
-            const name = document.getElementById('product-name').value.trim();
-            const category = document.getElementById('product-category').value;
-            const price = parseFloat(document.getElementById('product-price').value);
-            const desc = document.getElementById('product-desc').value.trim();
-            const yt = document.getElementById('product-yt').value.trim();
-            const github = document.getElementById('product-github').value.trim();
-
-            if (!name || !desc || !yt || !github || !price) {
-                alert("Lütfen zorunlu alanları (*) doldurun!");
-                return;
-            }
-
-            const newProduct = {
-                id: Date.now(),
-                name,
-                desc,
-                price,
-                category,
-                yt,
-                github,
-                seller: loggedInUser ? loggedInUser.brand : "Bilinmeyen Satıcı",
-                addedDate: new Date().toISOString().split('T')[0],
-                icon: "fa-cube"
-            };
-
-            saveProductToFirebase(newProduct).then(firebaseId => {
-                if (firebaseId && firebaseId !== newProduct.id) newProduct.firebaseId = firebaseId;
-            });
-
-            products.unshift(newProduct);
-            saveProductsToLocal();
-            hideAddProductModal();
-            
-            document.getElementById('product-name').value = '';
-            document.getElementById('product-desc').value = '';
-            document.getElementById('product-yt').value = '';
-            document.getElementById('product-github').value = '';
-
-            applyCurrentFilters();
-            showToast("Ürün Firebase + localStorage'a kaydedildi! 🎉");
+        
+        function calculateBrakingDistance() {
+            const v = parseFloat(document.getElementById('brake-v').value) / 3.6;
+            const mu = parseFloat(document.getElementById('brake-mu').value);
+            const g = 9.81;
+            const d = (v*v) / (2 * mu * g);
+            document.getElementById('brake-result').innerHTML = `Fren Mesafesi ≈ <span class="text-emerald-400">${d.toFixed(1)} metre</span>`;
+            document.getElementById('brake-result').classList.remove('hidden');
         }
-
-        function applyCurrentFilters() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            let filtered = products;
-
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(p => p.category === currentFilter);
-            }
-            
-            if (searchTerm) {
-                filtered = filtered.filter(p => 
-                    p.name.toLowerCase().includes(searchTerm) || 
-                    p.desc.toLowerCase().includes(searchTerm) || 
-                    (p.seller && p.seller.toLowerCase().includes(searchTerm))
-                );
-            }
-            
-            renderProducts(filtered);
+        
+        function calculateEnginePower() {
+            const torque = parseFloat(document.getElementById('engine-torque').value);
+            const rpm = parseFloat(document.getElementById('engine-rpm').value);
+            const power = (torque * rpm * 2 * Math.PI) / (60 * 1000);
+            document.getElementById('engine-result').innerHTML = `Motor Gücü ≈ <span class="text-emerald-400">${power.toFixed(1)} kW</span>`;
+            document.getElementById('engine-result').classList.remove('hidden');
         }
-
-        let currentProductForPayment = null;
-
-        function buyProduct(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            currentProductForPayment = product;
-
-            const infoDiv = document.getElementById('payment-product-info');
-            infoDiv.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="font-semibold text-lg">${product.name}</div>
-                        <div class="text-xs text-white/50">${product.seller}</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-mono text-3xl font-bold tracking-tighter">$${product.price}</div>
-                        <div class="text-emerald-400 text-xs">Tek seferlik lisans</div>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('payment-modal').classList.remove('hidden');
-            document.getElementById('payment-modal').classList.add('flex');
+        
+        function calculateLens() {
+            const u = parseFloat(document.getElementById('lens-u').value);
+            const v = parseFloat(document.getElementById('lens-v').value);
+            const f = 1 / (1/v + 1/u);
+            document.getElementById('lens-result').innerHTML = `Odak Uzaklığı f ≈ <span class="text-emerald-400">${f.toFixed(1)} cm</span>`;
+            document.getElementById('lens-result').classList.remove('hidden');
         }
-
-        function hidePaymentModal() {
-            document.getElementById('payment-modal').classList.remove('flex');
-            document.getElementById('payment-modal').classList.add('hidden');
-            currentProductForPayment = null;
+        
+        function calculateSnell() {
+            const n1 = parseFloat(document.getElementById('snell-n1').value);
+            const n2 = parseFloat(document.getElementById('snell-n2').value);
+            const theta1 = parseFloat(document.getElementById('snell-theta1').value) * Math.PI / 180;
+            const theta2 = Math.asin((n1 / n2) * Math.sin(theta1)) * 180 / Math.PI;
+            document.getElementById('snell-result').innerHTML = `Kırılma Açısı ≈ <span class="text-emerald-400">${theta2.toFixed(1)}°</span>`;
+            document.getElementById('snell-result').classList.remove('hidden');
         }
-
-        function simulatePaymentConfirmation() {
-            if (!currentProductForPayment) return;
-
-            const modalContent = document.getElementById('payment-modal');
-            
-            modalContent.innerHTML = `
-                <div class="glass w-full max-w-lg rounded-3xl p-8 modal text-center">
-                    <div class="mx-auto w-20 h-20 flex items-center justify-center bg-emerald-500/10 text-emerald-400 rounded-full mb-6">
-                        <i class="fa-solid fa-check-double text-5xl"></i>
-                    </div>
-                    
-                    <h3 class="text-3xl font-semibold mb-2">Ödeme Onaylandı!</h3>
-                    <p class="text-white/70 mb-8">Teşekkürler! Şifre WhatsApp üzerinden gönderildi.</p>
-                    
-                    <div class="bg-black/40 border border-white/10 p-6 rounded-2xl mb-6 text-left">
-                        <div class="flex justify-between text-sm mb-4">
-                            <div>Ürün</div>
-                            <div class="font-semibold">${currentProductForPayment.name}</div>
-                        </div>
-                        <div class="flex justify-between text-sm mb-4">
-                            <div>Şifre</div>
-                            <div class="font-mono text-[#00f0ff] font-bold tracking-[3px]">${generateFakePassword()}</div>
-                        </div>
-                        <div class="text-xs text-white/50">Bu şifreyi kullanarak GitHub'dan indirdiğin ZIP dosyasını açabilirsin.</div>
-                    </div>
-                    
-                    <button onclick="finishPurchase()" class="w-full py-4 bg-white text-[#05050f] font-bold rounded-2xl">Anladım, İndirmeye Git</button>
-                </div>
-            `;
+        
+        function calculateTorque() {
+            const f = parseFloat(document.getElementById('torque-f').value);
+            const r = parseFloat(document.getElementById('torque-r').value);
+            document.getElementById('torque-result').innerHTML = `Tork = <span class="text-emerald-400">${(f*r).toFixed(1)} Nm</span>`;
+            document.getElementById('torque-result').classList.remove('hidden');
         }
-
-        function generateFakePassword() {
-            return 'KUANTUM-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now().toString().slice(-4);
+        
+        function calculateRocketRange() {
+            const v = parseFloat(document.getElementById('rocket-v').value);
+            const angle = parseFloat(document.getElementById('rocket-angle').value) * Math.PI / 180;
+            const g = 9.81;
+            const range = (v*v * Math.sin(2*angle)) / g;
+            const height = (v*v * Math.sin(angle)**2) / (2*g);
+            document.getElementById('rocket-range').textContent = range.toFixed(1);
+            document.getElementById('rocket-height').textContent = height.toFixed(1);
+            document.getElementById('rocket-result').classList.remove('hidden');
         }
-
-        function finishPurchase() {
-            if (currentProductForPayment) {
-                window.open(currentProductForPayment.github, '_blank');
-            }
-            hidePaymentModal();
-            showToast("İndirme başlatıldı! Şifreyi not etmeyi unutma.");
-        }
-
-        function watchYouTube(ytLink, productName) {
-            const modal = document.getElementById('video-modal');
-            const container = document.getElementById('video-container');
-            
-            container.innerHTML = `
-                <iframe width="100%" height="100%" 
-                        src="${ytLink}" 
-                        title="${productName} - Tanıtım Videosu" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen></iframe>
-            `;
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function hideVideoModal() {
-            const modal = document.getElementById('video-modal');
-            const container = document.getElementById('video-container');
+        
+        // Periyodik Tablo (Orijinal)
+        function renderPeriodicTable() {
+            const container = document.getElementById('periodic-table');
             container.innerHTML = '';
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
-
-        function openGitHub(githubLink) {
-            window.open(githubLink, '_blank');
-        }
-
-        // === YENİ: Profesyonel Ürün Detay Modal ===
-        let currentDetailProduct = null;
-
-        function openProductDetail(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            currentDetailProduct = product;
-
-            // İkon
-            const iconEl = document.getElementById('detail-icon');
-            const bigIconEl = document.getElementById('detail-big-icon');
-            const iconClass = product.icon || 'fa-cube';
+            const symbols = ['H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca','Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr'];
             
-            iconEl.innerHTML = `<i class="fa-solid ${iconClass} text-[#05050f] text-4xl"></i>`;
-            iconEl.style.background = 'linear-gradient(to bottom right, #00f0ff, #a78bfa, #00f0ff)';
-            
-            bigIconEl.innerHTML = `<i class="fa-solid ${iconClass} text-[#05050f]" style="font-size: 120px;"></i>`;
-            bigIconEl.style.background = 'linear-gradient(to bottom right, #00f0ff, #a78bfa, #00f0ff)';
-
-            // Metinler
-            document.getElementById('detail-name').textContent = product.name;
-            document.getElementById('detail-seller').textContent = product.seller + ' • Doğrulanmış';
-            document.getElementById('detail-desc').textContent = product.desc;
-            document.getElementById('detail-price').textContent = '$' + product.price;
-            document.getElementById('detail-category').textContent = getCategoryLabel(product.category);
-            document.getElementById('detail-date').textContent = product.addedDate || '2026';
-
-            // Satın al butonu
-            const buyBtn = document.getElementById('detail-buy-btn');
-            buyBtn.onclick = () => {
-                hideProductDetailModal();
-                setTimeout(() => buyProduct(productId), 300);
+            for (let i = 1; i <= 118; i++) {
+                const div = document.createElement('div');
+                div.className = `periodic-element bg-zinc-800 border border-zinc-700 rounded-xl p-1.5 text-center text-xs hover:bg-zinc-700`;
+                const sym = i <= symbols.length ? symbols[i-1] : '?';
+                div.innerHTML = `<div class="text-[9px]">${i}</div><div class="font-bold">${sym}</div>`;
+                div.onclick = () => showToast(`${sym} elementi seçildi (detaylı veri eklenebilir)`);
+                container.appendChild(div);
+            }
+        }
+        
+        // History (Python tarzı - localStorage ile)
+        let calculationHistory = [];
+        
+        function saveToHistory(category, calculation, result) {
+            const entry = {
+                timestamp: new Date().toISOString(),
+                category: category,
+                calculation: calculation,
+                result: result
             };
-
-            // Modal göster
-            const modal = document.getElementById('product-detail-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            calculationHistory.unshift(entry);
+            if (calculationHistory.length > 50) calculationHistory.pop();
+            localStorage.setItem('muhendisx_history', JSON.stringify(calculationHistory));
         }
-
-        function hideProductDetailModal() {
-            const modal = document.getElementById('product-detail-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-            currentDetailProduct = null;
+        
+        function loadHistory() {
+            const saved = localStorage.getItem('muhendisx_history');
+            if (saved) calculationHistory = JSON.parse(saved);
         }
-
-        function watchYouTubeFromDetail() {
-            if (currentDetailProduct) {
-                hideProductDetailModal();
-                setTimeout(() => {
-                    watchYouTube(currentDetailProduct.yt, currentDetailProduct.name);
-                }, 300);
-            }
+        
+        function showHistory() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[100]';
+            modal.innerHTML = `
+                <div class="bg-zinc-900 border border-zinc-700 rounded-3xl max-w-3xl w-full mx-4 max-h-[80vh] overflow-hidden">
+                    <div class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center">
+                        <div class="font-semibold text-xl">Hesaplama Geçmişi (Python tarzı)</div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times text-2xl"></i></button>
+                    </div>
+                    <div class="p-6 overflow-auto max-h-[60vh]">
+                        ${calculationHistory.length === 0 ? '<div class="text-center text-zinc-400 py-8">Henüz kayıt yok</div>' : 
+                        calculationHistory.map((item, i) => `
+                            <div class="mb-3 p-4 bg-zinc-950 rounded-2xl border border-zinc-800">
+                                <div class="flex justify-between text-xs text-zinc-400 mb-1">
+                                    <span>${item.category}</span>
+                                    <span>${new Date(item.timestamp).toLocaleString('tr-TR')}</span>
+                                </div>
+                                <div class="font-mono text-sm">${item.calculation}</div>
+                                <div class="text-emerald-400 mt-1 font-semibold">${item.result}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="px-6 py-4 border-t border-zinc-700 flex justify-end">
+                        <button onclick="clearAllHistory(); this.closest('.fixed').remove()" class="px-4 py-2 text-sm bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-2xl">Tüm Geçmişi Temizle</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
         }
-
-        function openGitHubFromDetail() {
-            if (currentDetailProduct) {
-                window.open(currentDetailProduct.github, '_blank');
-            }
+        
+        function clearAllHistory() {
+            calculationHistory = [];
+            localStorage.removeItem('muhendisx_history');
+            showToast("Geçmiş temizlendi");
         }
-
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-x-3 z-[200] ${isError ? 'bg-red-500/90' : 'bg-emerald-600/90'} text-white text-sm font-medium`;
-            toast.innerHTML = `<span>${message}</span>`;
-            document.body.appendChild(toast);
+        
+        function showToast(msg, error=false) {
+            const t = document.createElement('div');
+            t.className = `fixed bottom-6 right-6 px-5 py-3 rounded-2xl ${error ? 'bg-red-900 border-red-700' : 'bg-zinc-900 border-zinc-700'} border text-sm z-[200]`;
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2400);
+        }
+        
+        function initialize() {
+            initTailwind();
+            loadHistory();
+            switchPanel('panel-general');
             
+            // Periyodik tabloyu hazırla
             setTimeout(() => {
-                toast.style.transition = 'all 0.3s ease';
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 2800);
+                const periodicNav = document.getElementById('nav-periodic');
+                if (periodicNav) periodicNav.onclick = () => {
+                    switchPanel('panel-periodic');
+                };
+            }, 100);
+            
+            console.log('%c[MühendisX Ultimate v6.0] Python Multi-Specialist Bot + Orijinal HTML TAM FÜZYON yüklendi. Tek dosya, profesyonel.', 'color:#6366f1');
+            showToast("Python uzmanlıkları başarıyla HTML'e aktarıldı!");
         }
-
-        function saveProductsToLocal() {
-            localStorage.setItem('kuantum_products', JSON.stringify(products));
-        }
-
-        function loadProductsFromLocal() {
-            const saved = localStorage.getItem('kuantum_products');
-            if (saved) {
-                products = JSON.parse(saved);
-            } else {
-                products = getInitialProducts();
-                saveProductsToLocal();
-            }
-        }
-
-        function createQuantumParticles() {
-            const container = document.getElementById('particles');
-            const colors = ['#00f0ff', '#a78bfa', '#67e8f9', '#ffffff'];
-            
-            // Daha lüks yıldız efekti (daha fazla ve parlak parçacık)
-            for (let i = 0; i < 65; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'quantum-particle';
-                
-                const size = Math.random() * 3.5 + 1.5;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.opacity = Math.random() * 0.85 + 0.35;
-                particle.style.boxShadow = `0 0 ${Math.random() * 12 + 6}px currentColor`;
-                
-                const duration = Math.random() * 32 + 22;
-                particle.style.animation = `quantumFloat ${duration}s infinite ease-in-out`;
-                particle.style.animationDelay = `-${Math.random() * 32}s`;
-                
-                container.appendChild(particle);
-            }
-            
-            // Merkezi parlak "gezegen" efekti (lüks uzay hissi)
-            const planet = document.createElement('div');
-            planet.style.position = 'absolute';
-            planet.style.left = '68%';
-            planet.style.top = '22%';
-            planet.style.width = '180px';
-            planet.style.height = '180px';
-            planet.style.borderRadius = '50%';
-            planet.style.background = 'radial-gradient(circle at 35% 35%, #a78bfa, #4c1d95, transparent)';
-            planet.style.opacity = '0.12';
-            planet.style.boxShadow = '0 0 120px rgba(167, 139, 250, 0.4), inset 40px 30px 60px rgba(255,255,255,0.15)';
-            planet.style.pointerEvents = 'none';
-            container.appendChild(planet);
-            
-            if (!document.getElementById('quantum-style')) {
-                const style = document.createElement('style');
-                style.id = 'quantum-style';
-                style.innerHTML = `
-                    @keyframes quantumFloat {
-                        0%, 100% { transform: translate(0, 0) scale(1); }
-                        25% { transform: translate(22px, -28px) scale(1.15); }
-                        50% { transform: translate(-12px, 18px) scale(0.85); }
-                        75% { transform: translate(28px, 12px) scale(1.08); }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-
-        function initializePlatform() {
-            initializeTailwind();
-            initFirebase();
-
-            // SAHTE / DEMO ÜRÜNLERİ KOMPLE SİL (localStorage temizliği)
-            localStorage.removeItem('kuantum_products');
-            products = [];
-            console.log('%c[ Kuantum Store ] Tüm demo/sahte ürünler localStorage\'dan temizlendi. Temiz başlangıç.', 'color:#22c55e');
-
-            loadProductsFromLocal(); // Artık her zaman boş gelecek
-            renderProducts(products);
-            createQuantumParticles();
-            
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', filterProducts);
-            
-            document.getElementById('lang-tr').classList.add('bg-white', 'text-[#05050f]');
-            document.getElementById('lang-tr').classList.remove('text-white/70');
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key === "/" && document.activeElement.tagName === "BODY") {
-                    e.preventDefault();
-                    document.getElementById('search-input').focus();
-                }
-            });
-            
-            console.log('%c[Kuantum Store] Güncellenmiş App Store tarzı versiyon yüklendi!', 'color:#22c55e');
-        }
-
-        function toggleMobileMenu() {
-            const nav = document.querySelector('nav');
-            nav.classList.toggle('bg-[#05050f]');
-            alert("Mobil menü: Keşfet, Kategoriler, Nasıl Çalışır, Güvenlik");
-        }
-
-        window.onload = initializePlatform;
+        
+        window.onload = initialize;
     </script>
 </body>
 </html>
