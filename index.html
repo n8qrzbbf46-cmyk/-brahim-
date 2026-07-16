@@ -172,6 +172,12 @@
                     <div onclick="switchPanel('panel-machine')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-machine">
                         <i class="fa-solid fa-cogs text-orange-400 w-5"></i> <span>Makine Fiziği</span>
                     </div>
+                    
+                    <!-- YENİ: Simülasyonlar -->
+                    <div onclick="switchPanel('panel-simulation')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-simulation">
+                        <i class="fa-solid fa-play-circle text-amber-400 w-5"></i> <span>Simülasyonlar (Civata + Rulman)</span>
+                    </div>
+                    
                     <div onclick="switchPanel('panel-rocket')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-rocket">
                         <i class="fa-solid fa-rocket text-red-400 w-5"></i> <span>Roket Menzili</span>
                     </div>
@@ -1439,6 +1445,119 @@
                         
                         <div class="mt-6 text-center text-xs text-zinc-500">
                             Toplam <span class="text-emerald-400 font-semibold">26 Araç</span> • Temel + İleri Matematik • Tüm hesaplamalar client-side JS ile yapılır
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ==================== YENİ: SİMÜLASYONLAR (Civata + Rulman) ==================== -->
+                <div id="panel-simulation" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                        <h2 class="text-3xl font-semibold mb-6 flex items-center gap-x-3"><i class="fa-solid fa-play-circle text-amber-400"></i> Mühendislik Simülasyonları</h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            
+                            <!-- Civata Simülasyonu (Profesyonel) -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <h3 class="font-semibold mb-4 flex items-center gap-x-2 text-lg"><i class="fa-solid fa-bolt text-amber-400"></i> Civata (Bolt) Profesyonel Simülasyonu</h3>
+                                
+                                <div class="grid grid-cols-2 gap-3 mb-4 text-xs">
+                                    <div>
+                                        <label>Çap d (mm)</label>
+                                        <input id="bolt-d" type="number" value="12" class="modern-input w-full px-3 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Uzunluk L (mm)</label>
+                                        <input id="bolt-l" type="number" value="80" class="modern-input w-full px-3 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Ön Yük Fp (kN)</label>
+                                        <input id="bolt-fp" type="number" value="25" class="modern-input w-full px-3 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Çalışma Yükü Fw (kN)</label>
+                                        <input id="bolt-fw" type="number" value="15" class="modern-input w-full px-3 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Malzeme</label>
+                                        <select id="bolt-mat" class="modern-input w-full px-3 py-1.5 rounded-xl">
+                                            <option value="8.8">Sınıf 8.8 (Çelik)</option>
+                                            <option value="10.9">Sınıf 10.9 (Yüksek Dayanımlı)</option>
+                                            <option value="12.9">Sınıf 12.9 (Ultra Yüksek)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Sıcaklık (°C)</label>
+                                        <input id="bolt-temp" type="number" value="80" class="modern-input w-full px-3 py-1.5 rounded-xl">
+                                    </div>
+                                </div>
+                                
+                                <button onclick="simulateBoltProfessional()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 rounded-2xl font-semibold mb-4">Profesyonel Simülasyonu Başlat</button>
+                                
+                                <div id="bolt-result" class="hidden bg-zinc-900 p-4 rounded-2xl text-sm mb-4"></div>
+                                
+                                <canvas id="bolt-canvas" width="320" height="140" class="w-full border border-zinc-700 rounded-2xl bg-zinc-950"></canvas>
+                                <div class="text-[10px] text-center text-zinc-500 mt-1">Gerilme dağılımı + Yorulma + Çatlama Risk Analizi</div>
+                            </div>
+                            
+                            <!-- Rulman Simülasyonu (Profesyonel + Geometri + Çatlama) -->
+                            <div class="bg-zinc-950 p-6 rounded-3xl">
+                                <h3 class="font-semibold mb-4 flex items-center gap-x-2 text-lg"><i class="fa-solid fa-cogs text-amber-400"></i> Rulman Profesyonel Simülasyonu</h3>
+                                
+                                <div class="grid grid-cols-3 gap-3 mb-4 text-xs">
+                                    <div>
+                                        <label>İç Çap d (mm)</label>
+                                        <input id="bearing-d" type="number" value="40" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Dış Çap D (mm)</label>
+                                        <input id="bearing-D" type="number" value="80" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Genişlik B (mm)</label>
+                                        <input id="bearing-B" type="number" value="18" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Bilya Sayısı Z</label>
+                                        <input id="bearing-Z" type="number" value="12" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Malzeme</label>
+                                        <select id="bearing-mat" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                            <option value="steel">100Cr6 Çelik</option>
+                                            <option value="ceramic">Si3N4 Seramik</option>
+                                            <option value="hybrid">Hibrit</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Devir (rpm)</label>
+                                        <input id="bearing-rpm" type="number" value="3000" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Rad. Yük Fr (kN)</label>
+                                        <input id="bearing-fr" type="number" value="6" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Ax. Yük Fa (kN)</label>
+                                        <input id="bearing-fa" type="number" value="2" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                    <div>
+                                        <label>Sıcaklık (°C)</label>
+                                        <input id="bearing-temp" type="number" value="85" class="modern-input w-full px-2 py-1.5 rounded-xl">
+                                    </div>
+                                </div>
+                                
+                                <button onclick="simulateBearingProfessional()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 rounded-2xl font-semibold mb-4">Profesyonel Rulman Simülasyonu</button>
+                                
+                                <div id="bearing-result" class="hidden bg-zinc-900 p-4 rounded-2xl text-sm mb-4"></div>
+                                
+                                <canvas id="bearing-canvas" width="320" height="140" class="w-full border border-zinc-700 rounded-2xl bg-zinc-950"></canvas>
+                                <div class="text-[10px] text-center text-zinc-500 mt-1">Geometri + Yük Dağılımı + Sıcaklık Etkisi + Çatlama Riski</div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="mt-6 text-xs text-zinc-500 text-center">
+                            Bu simülasyonlar eğitim amaçlı basit fiziksel modellerdir. Gerçek mühendislik hesapları için profesyonel yazılımlar kullanılmalıdır.
                         </div>
                     </div>
                 </div>
@@ -6179,6 +6298,176 @@
             const E = E0 - (0.059 / n) * Math.log10(Q);
             document.getElementById('adv-molar-result').innerHTML = `E (Nernst) ≈ <span class="text-emerald-400">${E.toFixed(3)} V</span>`;
             document.getElementById('adv-molar-result').classList.remove('hidden');
+        }
+
+        // ==================== SİMÜLASYON FONKSİYONLARI (Civata + Rulman) ====================
+        function simulateBoltProfessional() {
+            const d_mm = parseFloat(document.getElementById('bolt-d').value);
+            const L_mm = parseFloat(document.getElementById('bolt-l').value);
+            const Fp_kN = parseFloat(document.getElementById('bolt-fp').value);
+            const Fw_kN = parseFloat(document.getElementById('bolt-fw').value);
+            const mat = document.getElementById('bolt-mat').value;
+            const temp = parseFloat(document.getElementById('bolt-temp').value);
+            
+            const d = d_mm / 1000;
+            const Fp = Fp_kN * 1000;
+            const Fw = Fw_kN * 1000;
+            
+            // Malzeme dayanımı
+            let Rm = 800; // MPa
+            if (mat === "10.9") Rm = 1000;
+            if (mat === "12.9") Rm = 1200;
+            
+            const As = Math.PI * d * d / 4; // Gerilme alanı
+            const sigma_p = Fp / As / 1e6; // MPa
+            const sigma_w = (Fp + Fw) / As / 1e6;
+            
+            // Emniyet katsayısı
+            const SF = Rm / sigma_w;
+            
+            // Yorulma + Çatlama riski (basit)
+            let crackRisk = "Düşük";
+            let color = "text-emerald-400";
+            if (SF < 2.5) { crackRisk = "Orta - Yorulma Riski"; color = "text-yellow-400"; }
+            if (SF < 1.8) { crackRisk = "Yüksek - Çatlama Riski!"; color = "text-red-400"; }
+            
+            // Sıcaklık etkisi
+            const tempFactor = temp > 150 ? 0.85 : 1.0;
+            const finalSF = SF * tempFactor;
+            
+            const res = document.getElementById('bolt-result');
+            res.innerHTML = `
+                <div class="space-y-1">
+                    <div>Ön Gerilme: <span class="text-emerald-400">${sigma_p.toFixed(1)} MPa</span></div>
+                    <div>Toplam Gerilme: <span class="text-emerald-400">${sigma_w.toFixed(1)} MPa</span></div>
+                    <div>Emniyet Katsayısı: <span class="${finalSF > 2.5 ? 'text-emerald-400' : 'text-red-400'}">${finalSF.toFixed(2)}</span></div>
+                    <div class="${color} font-semibold">Çatlama / Yorulma Riski: ${crackRisk}</div>
+                </div>
+            `;
+            res.classList.remove('hidden');
+            
+            // Gelişmiş Canvas
+            const canvas = document.getElementById('bolt-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Arka plan
+            ctx.fillStyle = '#18181b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Civata başı (gerilme rengine göre)
+            ctx.fillStyle = finalSF > 2.5 ? '#22c55e' : (finalSF > 1.8 ? '#eab308' : '#ef4444');
+            ctx.fillRect(40, 35, 50, 50);
+            
+            // Vida gövdesi
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(90, 50, 180, 20);
+            
+            // Dişler
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 6; i++) {
+                ctx.beginPath();
+                ctx.moveTo(95 + i*28, 50);
+                ctx.lineTo(95 + i*28 + 10, 70);
+                ctx.stroke();
+            }
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText('Civata', 50, 65);
+            ctx.fillText(`SF: ${finalSF.toFixed(1)}`, 200, 100);
+            
+            if (finalSF < 2) {
+                ctx.fillStyle = '#ef4444';
+                ctx.fillText('⚠ ÇATLAMA RİSKİ', 180, 120);
+            }
+        }
+
+        function simulateBearingProfessional() {
+            const d = parseFloat(document.getElementById('bearing-d').value);
+            const D = parseFloat(document.getElementById('bearing-D').value);
+            const B = parseFloat(document.getElementById('bearing-B').value);
+            const Z = parseFloat(document.getElementById('bearing-Z').value);
+            const mat = document.getElementById('bearing-mat').value;
+            const rpm = parseFloat(document.getElementById('bearing-rpm').value);
+            const Fr = parseFloat(document.getElementById('bearing-fr').value);
+            const Fa = parseFloat(document.getElementById('bearing-fa').value);
+            const temp = parseFloat(document.getElementById('bearing-temp').value);
+            
+            // Basit dinamik kapasite tahmini (gerçekte katalog değeri kullanılır)
+            let C = (d * D * B * Z) / 80000; // kaba tahmin
+            if (mat === "ceramic") C *= 1.3;
+            
+            const P = Math.sqrt(Fr*Fr + Fa*Fa); // Eşdeğer yük yaklaşık
+            const L10 = Math.pow(C / P, 3) * 1e6 / (60 * rpm);
+            
+            // Düzeltme faktörleri
+            let a1 = 1.0; // Güvenilirlik
+            let a2 = (mat === "ceramic") ? 3 : 1.0; // Malzeme
+            let a3 = (temp > 120) ? 0.6 : 1.0; // Sıcaklık
+            
+            const Lna = L10 * a1 * a2 * a3;
+            
+            // Çatlama / Yorulma riski
+            let risk = "Düşük";
+            let riskColor = "text-emerald-400";
+            const lifeYears = Lna / (rpm * 60 * 24 * 365);
+            
+            if (lifeYears < 5) { risk = "Orta - Yorulma Riski"; riskColor = "text-yellow-400"; }
+            if (lifeYears < 2) { risk = "Yüksek - Çatlama Riski!"; riskColor = "text-red-400"; }
+            
+            const res = document.getElementById('bearing-result');
+            res.innerHTML = `
+                <div class="space-y-1 text-xs">
+                    <div>Tahmini C: <span class="text-emerald-400">${C.toFixed(1)} kN</span></div>
+                    <div>L10 Ömrü: <span class="text-emerald-400">${L10.toFixed(0)} saat</span></div>
+                    <div>Düzeltilmiş Ömür: <span class="text-emerald-400">${Lna.toFixed(0)} saat</span> (${lifeYears.toFixed(1)} yıl)</div>
+                    <div class="${riskColor} font-semibold">Risk: ${risk}</div>
+                </div>
+            `;
+            res.classList.remove('hidden');
+            
+            // Gelişmiş Rulman Canvas
+            const canvas = document.getElementById('bearing-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#18181b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const cx = 160, cy = 70;
+            
+            // Dış halka
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 52, 0, Math.PI*2);
+            ctx.stroke();
+            
+            // İç halka
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 28, 0, Math.PI*2);
+            ctx.stroke();
+            
+            // Bilyeler (yük altında renk değişimi)
+            const loadFactor = P / C;
+            ctx.fillStyle = loadFactor > 0.6 ? '#ef4444' : '#22c55e';
+            
+            for (let i = 0; i < Z; i++) {
+                const angle = (i / Z) * Math.PI * 2;
+                const x = cx + Math.cos(angle) * 40;
+                const y = cy + Math.sin(angle) * 40;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI*2);
+                ctx.fill();
+            }
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = '10px sans-serif';
+            ctx.fillText(`Lna: ${Lna.toFixed(0)}h`, 20, 130);
+            ctx.fillText(`Risk: ${risk}`, 180, 130);
         }
 
         window.onload = initialize;
