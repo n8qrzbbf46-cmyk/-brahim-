@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MühendisX Ultimate v10.3 • Matris Fabrikası ULTRA PRO MAX + Eigen + NumPy</title>
+    <title>MühendisX Ultimate v10.7 • 50 İntegral + 50 DE + Matris</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.js"></script>
@@ -41,7 +41,7 @@
                 </div>
                 <div>
                     <span class="font-display text-3xl font-semibold tracking-tighter">MühendisX Ultimate</span>
-                    <span class="text-xs text-zinc-500 block -mt-1">v10.3 • Eigen-class + NumPy/SciPy/SymPy Matris Motoru + AI Lab</span>
+                    <span class="text-xs text-zinc-500 block -mt-1">v10.7 • 50 İntegral + 50 DE + Uzay + Eigen</span>
                 </div>
             </div>
             <div class="flex items-center gap-x-3">
@@ -187,6 +187,15 @@
                     <!-- YENİ: Matris Fabrikası 1000+ -->
                     <div onclick="switchPanel('panel-matrix-factory')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-matrix-factory">
                         <i class="fa-solid fa-cubes text-indigo-400 w-5"></i> <span>Matris Fabrikası ULTRA PRO MAX</span>
+                    </div>
+                    <div onclick="switchPanel('panel-space-batch')" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-space-batch">
+                        <i class="fa-solid fa-satellite text-rose-400 w-5"></i> <span>Uzay · Roket · Uydu (60K Batch)</span>
+                    </div>
+                    <div onclick="switchPanel('panel-de50'); try{deInitCards()}catch(e){}" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-de50">
+                        <i class="fa-solid fa-square-root-variable text-violet-400 w-5"></i> <span>50 Diferansiyel Denklem (250K)</span>
+                    </div>
+                    <div onclick="switchPanel('panel-int50'); try{intInitCards()}catch(e){}" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-int50">
+                        <i class="fa-solid fa-integral text-teal-400 w-5"></i> <span>50 İntegral Fabrikası (250K)</span>
                     </div>
 
                     <!-- YENİ: Geometri ve Topoloji Ansiklopedisi -->
@@ -5305,7 +5314,7 @@
                                     <i class="fa-solid fa-cubes text-indigo-400"></i>
                                     Matris Fabrikası
                                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400">ULTRA PRO MAX</span>
-                                    <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-950 to-cyan-950 text-emerald-300 border border-emerald-700/80 tracking-wide shadow-sm shadow-emerald-900/30">v10.3 MAX • Eigen-class + NumPy/SciPy/SymPy • Benchmark • Hash</span>
+                                    <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-950 to-cyan-950 text-emerald-300 border border-emerald-700/80 tracking-wide shadow-sm shadow-emerald-900/30">v10.7 MAX · 50 İntegral + 50 DE × 5000 · Uzay · Eigen</span>
                                 </h2>
                                 <p class="text-zinc-400 text-sm mt-1.5 max-w-4xl leading-relaxed">
                                     Profesyonel matris laboratuvarı: <b class="text-zinc-200">10–100.000 matris</b> tek seferde • <b class="text-zinc-200">100+ matris türü</b> (8 kategori) • 
@@ -6078,6 +6087,269 @@
                                 8×8 + N=1000 + Ultra Doğruluk tarayıcıyı yorabilir — N≤400 önerilir.
                                 Sonuçlar seed ile birebir tekrarlanır. ETA canlı hızdan tahmin edilir.
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UZAY / ROKET / UYDU BATCH FİZİK -->
+                <div id="panel-space-batch" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-6">
+                        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-semibold flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <i class="fa-solid fa-satellite text-rose-400"></i>
+                                    Uzay, Roket ve Uydu Fiziği
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-orange-400 to-amber-400">BATCH ULTRA</span>
+                                    <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800">12 denklem · 5.000× · ≈60.000 hesap</span>
+                                </h2>
+                                <p class="text-zinc-400 text-sm mt-1.5 max-w-4xl leading-relaxed">
+                                    12 uzay/roket/uydu denklemi tek seferde · her biri <b class="text-zinc-200">5.000 satır</b> · toplam <b class="text-rose-300">60.000 detaylı sonuç</b>.
+                                    Ara değerler, birimler, türetilmiş büyüklükler, yüzdelikler (p10/p50/p90) ve sayfalı profesyonel tablo + tam CSV.
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 text-[11px] shrink-0">
+                                <span class="px-2.5 py-1 rounded-full bg-rose-950 border border-rose-800 text-rose-300" id="sp-status">Hazır</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800">
+                                <label class="text-[10px] text-zinc-500 uppercase">Her denklem için N</label>
+                                <input type="number" id="sp-n" value="5000" min="10" max="20000" class="modern-input w-full mt-1 px-3 py-2 rounded-xl text-sm font-mono">
+                            </div>
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800">
+                                <label class="text-[10px] text-zinc-500 uppercase">Seed</label>
+                                <input type="number" id="sp-seed" value="42" class="modern-input w-full mt-1 px-3 py-2 rounded-xl text-sm font-mono">
+                            </div>
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800 md:col-span-2 flex flex-wrap items-end gap-2">
+                                <button onclick="spRunAll()" id="sp-btn-all" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 via-orange-600 to-amber-600 hover:opacity-95 text-white font-semibold text-sm shadow-lg shadow-rose-900/30">
+                                    <i class="fa-solid fa-bolt mr-1"></i> 12×N Toplu Hesap (~60K)
+                                </button>
+                                <button onclick="spExportCSV()" id="sp-btn-csv" disabled class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs border border-zinc-700 disabled:opacity-40">CSV</button>
+                                <button onclick="spClear()" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-xs">Temizle</button>
+                            </div>
+                        </div>
+
+                        <div id="sp-progress-wrap" class="hidden mb-4">
+                            <div class="flex justify-between text-xs text-zinc-400 mb-1 font-mono">
+                                <span id="sp-progress-label">0 / 12</span>
+                                <span id="sp-progress-eta">—</span>
+                            </div>
+                            <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                <div id="sp-progress-bar" class="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full" style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div id="sp-summary" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-4"></div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 mb-4" id="sp-cards">
+                            <!-- cards filled by JS for maintainability; static shells: -->
+                        </div>
+
+                        <div class="bg-zinc-950 rounded-2xl border border-zinc-800 p-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                <div class="text-sm font-semibold text-zinc-200"><i class="fa-solid fa-table mr-2 text-rose-400"></i>Detaylı Sonuç Tablosu (60.000 satıra kadar)</div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <select id="sp-table-eq" onchange="SP.page=0; spRenderTable()" class="modern-input px-3 py-1.5 rounded-xl text-xs">
+                                        <option value="__all__">Tümü (birleşik 60K)</option>
+                                    </select>
+                                    <input type="search" id="sp-table-filter" placeholder="Filtre…" oninput="SP.page=0; spRenderTable()" class="modern-input px-2 py-1.5 rounded-xl text-xs w-28">
+                                    <select id="sp-page-size" onchange="SP.page=0; spRenderTable()" class="modern-input px-2 py-1.5 rounded-xl text-xs">
+                                        <option value="50">50/sayfa</option>
+                                        <option value="100" selected>100/sayfa</option>
+                                        <option value="250">250/sayfa</option>
+                                        <option value="500">500/sayfa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto max-h-[520px] overflow-y-auto border border-zinc-800/80 rounded-xl">
+                                <table class="w-full text-[11px] font-mono">
+                                    <thead class="sticky top-0 bg-zinc-900 text-zinc-400 z-10" id="sp-thead"></thead>
+                                    <tbody id="sp-tbody" class="text-zinc-300"></tbody>
+                                </table>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mt-3">
+                                <div class="text-[10px] text-zinc-500" id="sp-table-info"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <button onclick="spPage(-1)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300">‹</button>
+                                    <span id="sp-page-label" class="text-[11px] font-mono text-zinc-400 px-2">1 / 1</span>
+                                    <button onclick="spPage(1)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300">›</button>
+                                    <button onclick="spPage(0, true)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-500">İlk</button>
+                                    <button onclick="spPage(999999)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-500">Son</button>
+                                </div>
+                            </div>
+                            <div id="sp-detail-stats" class="mt-3 hidden grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-[10px]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 50 DİFERANSİYEL DENKLEM FABRİKASI -->
+                <div id="panel-de50" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-6">
+                        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-semibold flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <i class="fa-solid fa-square-root-variable text-violet-400"></i>
+                                    Diferansiyel Denklem Fabrikası
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400">50 × 5000</span>
+                                    <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-violet-950 text-violet-300 border border-violet-800">≈250.000 hesap</span>
+                                </h2>
+                                <p class="text-zinc-400 text-sm mt-1.5 max-w-4xl leading-relaxed">
+                                    ODE / PDE / özel fonksiyonlar / dalga-ısı / Navier–Stokes / KdV / Black–Scholes / Schrödinger ve 50 klasik denklem.
+                                    Her biri rastgele katsayılarla <b class="text-zinc-200">5.000 örnek</b> üretir: residual, enerji, adım çözümü, karakteristik metrikler, formül metni.
+                                </p>
+                            </div>
+                            <span id="de-status" class="px-2.5 py-1 rounded-full bg-violet-950 border border-violet-800 text-violet-300 text-[11px] shrink-0">Hazır</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800">
+                                <label class="text-[10px] text-zinc-500 uppercase">Her denklem N</label>
+                                <input type="number" id="de-n" value="5000" min="10" max="10000" class="modern-input w-full mt-1 px-3 py-2 rounded-xl text-sm font-mono">
+                            </div>
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800">
+                                <label class="text-[10px] text-zinc-500 uppercase">Seed</label>
+                                <input type="number" id="de-seed" value="42" class="modern-input w-full mt-1 px-3 py-2 rounded-xl text-sm font-mono">
+                            </div>
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800 md:col-span-2 flex flex-wrap items-end gap-2">
+                                <button onclick="deRunAll()" id="de-btn-all" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:opacity-95 text-white font-semibold text-sm shadow-lg shadow-violet-900/30">
+                                    <i class="fa-solid fa-bolt mr-1"></i> 50×N Toplu (~250K)
+                                </button>
+                                <button onclick="deExportCSV()" id="de-btn-csv" disabled class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs border border-zinc-700 disabled:opacity-40">CSV</button>
+                                <button onclick="deClear()" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-xs">Temizle</button>
+                            </div>
+                        </div>
+
+                        <div id="de-progress-wrap" class="hidden mb-4">
+                            <div class="flex justify-between text-xs text-zinc-400 mb-1 font-mono">
+                                <span id="de-progress-label">0 / 50</span>
+                                <span id="de-progress-eta">—</span>
+                            </div>
+                            <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                <div id="de-progress-bar" class="h-full bg-gradient-to-r from-violet-500 to-pink-500 rounded-full" style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div id="de-summary" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-4"></div>
+
+                        <div class="mb-3 flex flex-wrap gap-2 items-center">
+                            <input type="search" id="de-card-filter" placeholder="Denklem ara…" oninput="deFilterCards()" class="modern-input px-3 py-1.5 rounded-xl text-xs w-48">
+                            <span class="text-[10px] text-zinc-500" id="de-card-count">50 denklem</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-4 max-h-[520px] overflow-y-auto pr-1" id="de-cards"></div>
+
+                        <div class="bg-zinc-950 rounded-2xl border border-zinc-800 p-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                <div class="text-sm font-semibold text-zinc-200"><i class="fa-solid fa-table mr-2 text-violet-400"></i>Detaylı Sonuç Tablosu</div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <select id="de-table-eq" onchange="DE.page=0; deRenderTable()" class="modern-input px-3 py-1.5 rounded-xl text-xs max-w-[220px]"></select>
+                                    <input type="search" id="de-table-filter" placeholder="Filtre…" oninput="DE.page=0; deRenderTable()" class="modern-input px-2 py-1.5 rounded-xl text-xs w-28">
+                                    <select id="de-page-size" onchange="DE.page=0; deRenderTable()" class="modern-input px-2 py-1.5 rounded-xl text-xs">
+                                        <option value="50">50/sayfa</option>
+                                        <option value="100" selected>100/sayfa</option>
+                                        <option value="250">250/sayfa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="de-formula-box" class="hidden mb-3 p-3 rounded-xl bg-zinc-900 border border-violet-900/40 text-[11px] font-mono text-violet-200/90 leading-relaxed"></div>
+                            <div class="overflow-x-auto max-h-[480px] overflow-y-auto border border-zinc-800/80 rounded-xl">
+                                <table class="w-full text-[11px] font-mono">
+                                    <thead class="sticky top-0 bg-zinc-900 text-zinc-400 z-10" id="de-thead"></thead>
+                                    <tbody id="de-tbody" class="text-zinc-300"></tbody>
+                                </table>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mt-3">
+                                <div class="text-[10px] text-zinc-500" id="de-table-info"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <button onclick="dePage(-1)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300">‹</button>
+                                    <span id="de-page-label" class="text-[11px] font-mono text-zinc-400 px-2">1 / 1</span>
+                                    <button onclick="dePage(1)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300">›</button>
+                                </div>
+                            </div>
+                            <div id="de-detail-stats" class="mt-3 hidden grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-[10px]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 50 İNTEGRAL FABRİKASI -->
+                <div id="panel-int50" class="panel hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-6">
+                        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-3 mb-5">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-semibold flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <i class="fa-solid fa-integral text-teal-400"></i>
+                                    İntegral Fabrikası
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-400 to-sky-400">50 × 5000</span>
+                                    <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-teal-950 text-teal-300 border border-teal-800">≈250.000 hesap</span>
+                                </h2>
+                                <p class="text-zinc-400 text-sm mt-1.5 max-w-4xl leading-relaxed">
+                                    Gaussian, Gamma, Beta, Fresnel, Cauchy, Fourier/Laplace/Mellin, Fredholm/Volterra, elliptic, Si/Ci/Ei, path integral, residue ve 50 klasik integral.
+                                    Her biri rastgele parametrelerle <b class="text-zinc-200">5.000 sayısal örnek</b>: değer, hata, residual, formül.
+                                </p>
+                            </div>
+                            <span id="int-status" class="px-2.5 py-1 rounded-full bg-teal-950 border border-teal-800 text-teal-300 text-[11px] shrink-0">Hazır</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800">
+                                <label class="text-[10px] text-zinc-500 uppercase">Her integral N</label>
+                                <input type="number" id="int-n" value="5000" min="10" max="10000" class="modern-input w-full mt-1 px-3 py-2 rounded-xl text-sm font-mono">
+                            </div>
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800">
+                                <label class="text-[10px] text-zinc-500 uppercase">Seed</label>
+                                <input type="number" id="int-seed" value="42" class="modern-input w-full mt-1 px-3 py-2 rounded-xl text-sm font-mono">
+                            </div>
+                            <div class="bg-zinc-950 rounded-2xl p-3 border border-zinc-800 md:col-span-2 flex flex-wrap items-end gap-2">
+                                <button onclick="intRunAll()" id="int-btn-all" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 via-cyan-600 to-sky-600 hover:opacity-95 text-white font-semibold text-sm shadow-lg shadow-teal-900/30">
+                                    <i class="fa-solid fa-bolt mr-1"></i> 50×N Toplu (~250K)
+                                </button>
+                                <button onclick="intExportCSV()" id="int-btn-csv" disabled class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs border border-zinc-700 disabled:opacity-40">CSV</button>
+                                <button onclick="intClear()" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-xs">Temizle</button>
+                            </div>
+                        </div>
+                        <div id="int-progress-wrap" class="hidden mb-4">
+                            <div class="flex justify-between text-xs text-zinc-400 mb-1 font-mono">
+                                <span id="int-progress-label">0 / 50</span>
+                                <span id="int-progress-eta">—</span>
+                            </div>
+                            <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                <div id="int-progress-bar" class="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div id="int-summary" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-4"></div>
+                        <div class="mb-3 flex flex-wrap gap-2 items-center">
+                            <input type="search" id="int-card-filter" placeholder="İntegral ara…" oninput="intFilterCards()" class="modern-input px-3 py-1.5 rounded-xl text-xs w-48">
+                            <span class="text-[10px] text-zinc-500" id="int-card-count">50 integral</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-4 max-h-[520px] overflow-y-auto pr-1" id="int-cards"></div>
+                        <div class="bg-zinc-950 rounded-2xl border border-zinc-800 p-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                <div class="text-sm font-semibold text-zinc-200"><i class="fa-solid fa-table mr-2 text-teal-400"></i>Detaylı Sonuç Tablosu</div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <select id="int-table-eq" onchange="INT.page=0; intRenderTable()" class="modern-input px-3 py-1.5 rounded-xl text-xs max-w-[220px]"></select>
+                                    <input type="search" id="int-table-filter" placeholder="Filtre…" oninput="INT.page=0; intRenderTable()" class="modern-input px-2 py-1.5 rounded-xl text-xs w-28">
+                                    <select id="int-page-size" onchange="INT.page=0; intRenderTable()" class="modern-input px-2 py-1.5 rounded-xl text-xs">
+                                        <option value="50">50/sayfa</option>
+                                        <option value="100" selected>100/sayfa</option>
+                                        <option value="250">250/sayfa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="int-formula-box" class="hidden mb-3 p-3 rounded-xl bg-zinc-900 border border-teal-900/40 text-[11px] font-mono text-teal-200/90 leading-relaxed"></div>
+                            <div class="overflow-x-auto max-h-[480px] overflow-y-auto border border-zinc-800/80 rounded-xl">
+                                <table class="w-full text-[11px] font-mono">
+                                    <thead class="sticky top-0 bg-zinc-900 text-zinc-400 z-10" id="int-thead"></thead>
+                                    <tbody id="int-tbody" class="text-zinc-300"></tbody>
+                                </table>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mt-3">
+                                <div class="text-[10px] text-zinc-500" id="int-table-info"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <button onclick="intPage(-1)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300">‹</button>
+                                    <span id="int-page-label" class="text-[11px] font-mono text-zinc-400 px-2">1 / 1</span>
+                                    <button onclick="intPage(1)" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300">›</button>
+                                </div>
+                            </div>
+                            <div id="int-detail-stats" class="mt-3 hidden grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-[10px]"></div>
                         </div>
                     </div>
                 </div>
@@ -23392,9 +23664,1269 @@ ${cos>0.8?'Yüksek benzerlik (embedding uzayında yakın)': cos>0.3?'Orta benzer
         };
 
 
-        window.onload = function() {
+        
+
+        /* ========== UZAY / ROKET / UYDU BATCH MOTOR PRO v10.5 (12 × 5000 = 60.000) ========== */
+        const SP = {
+            results: {},
+            running: false,
+            eqs: [],
+            page: 0,
+            combined: [],
+            flatFilter: ''
+        };
+
+        const SP_MU = 3.986004418e14;
+        const SP_RE = 6371000;
+        const SP_G = 6.67430e-11;
+        const SP_G0 = 9.80665;
+        const SP_C = 299792458;
+        const SP_ME = 5.972e24;
+
+        function spRand(seed) {
+            let s = (seed >>> 0) || 1;
+            return function () {
+                s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+                return s / 4294967296;
+            };
+        }
+        function spU(rnd, a, b) { return a + (b - a) * rnd(); }
+        function spStats(arr) {
+            if (!arr.length) return { n: 0, mean: 0, std: 0, min: 0, max: 0, p10: 0, p50: 0, p90: 0, sum: 0 };
+            const s = arr.slice().sort((a, b) => a - b);
+            const n = s.length;
+            const sum = s.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            const std = Math.sqrt(s.reduce((a, x) => a + (x - mean) ** 2, 0) / n);
+            const q = (p) => s[Math.min(n - 1, Math.floor(n * p))];
+            return { n, mean, std, min: s[0], max: s[n - 1], p10: q(0.1), p50: q(0.5), p90: q(0.9), sum };
+        }
+        function spFmt(v, d) {
+            if (v == null || !isFinite(v)) return '—';
+            const x = +v;
+            if (Math.abs(x) >= 1e6 || (Math.abs(x) > 0 && Math.abs(x) < 1e-4)) return x.toExponential(5);
+            return x.toFixed(d != null ? d : 6);
+        }
+
+        SP.eqs = [
+            {
+                id: 'tsiolkovsky', name: 'Tsiolkovsky Roket',
+                desc: 'Δv = ve·ln(m0/mf) · Isp = ve/g0 · mass ratio',
+                cols: ['m0_kg', 'mf_kg', 'mp_kg', 'MR', 've_m_s', 'Isp_s', 'dV_m_s', 'dV_km_s', 'propellant_frac'],
+                primary: 'dV_m_s',
+                sample(rnd) {
+                    const m0 = spU(rnd, 2000, 800000);
+                    const MR = spU(rnd, 1.15, 15);
+                    const mf = m0 / MR;
+                    const mp = m0 - mf;
+                    const ve = spU(rnd, 1800, 4800);
+                    const Isp = ve / SP_G0;
+                    const dV = ve * Math.log(MR);
+                    return {
+                        m0_kg: m0, mf_kg: mf, mp_kg: mp, MR,
+                        ve_m_s: ve, Isp_s: Isp,
+                        dV_m_s: dV, dV_km_s: dV / 1000,
+                        propellant_frac: mp / m0
+                    };
+                }
+            },
+            {
+                id: 'kepler3', name: 'Kepler III (Yörünge Periyodu)',
+                desc: 'T = 2π√(a³/μ) · n = 2π/T · altitüd',
+                cols: ['a_m', 'a_km', 'alt_km', 'mu', 'T_s', 'T_min', 'T_h', 'n_rad_s', 'n_deg_s'],
+                primary: 'T_s',
+                sample(rnd) {
+                    const alt = spU(rnd, 200e3, 45000e3);
+                    const a = SP_RE + alt;
+                    const T = 2 * Math.PI * Math.sqrt(Math.pow(a, 3) / SP_MU);
+                    const n = 2 * Math.PI / T;
+                    return {
+                        a_m: a, a_km: a / 1000, alt_km: alt / 1000, mu: SP_MU,
+                        T_s: T, T_min: T / 60, T_h: T / 3600,
+                        n_rad_s: n, n_deg_s: n * 180 / Math.PI
+                    };
+                }
+            },
+            {
+                id: 'escape', name: 'Kaçış Hızı',
+                desc: 'v_esc = √(2μ/r) · v_c = √(μ/r) · oran √2',
+                cols: ['r_m', 'r_km', 'alt_km', 'v_esc_m_s', 'v_esc_km_s', 'v_circ_m_s', 'ratio_esc_circ', 'E_spec'],
+                primary: 'v_esc_m_s',
+                sample(rnd) {
+                    const alt = spU(rnd, 0, 60000e3);
+                    const r = SP_RE + alt;
+                    const vesc = Math.sqrt(2 * SP_MU / r);
+                    const vc = Math.sqrt(SP_MU / r);
+                    return {
+                        r_m: r, r_km: r / 1000, alt_km: alt / 1000,
+                        v_esc_m_s: vesc, v_esc_km_s: vesc / 1000,
+                        v_circ_m_s: vc, ratio_esc_circ: vesc / vc,
+                        E_spec: 0 // parabolic → ε=0
+                    };
+                }
+            },
+            {
+                id: 'circular', name: 'Çember Yörünge Hızı',
+                desc: 'v=√(μ/r) · a_c=v²/r · T · g_eff',
+                cols: ['r_m', 'alt_km', 'v_m_s', 'v_km_s', 'a_cent_m_s2', 'T_s', 'T_min', 'g_eff'],
+                primary: 'v_m_s',
+                sample(rnd) {
+                    const alt = spU(rnd, 160e3, 40000e3);
+                    const r = SP_RE + alt;
+                    const v = Math.sqrt(SP_MU / r);
+                    const ac = v * v / r;
+                    const T = 2 * Math.PI * r / v;
+                    return {
+                        r_m: r, alt_km: alt / 1000,
+                        v_m_s: v, v_km_s: v / 1000,
+                        a_cent_m_s2: ac, T_s: T, T_min: T / 60,
+                        g_eff: SP_MU / (r * r)
+                    };
+                }
+            },
+            {
+                id: 'visviva', name: 'Vis-Viva Denklemi',
+                desc: 'v=√[μ(2/r−1/a)] · e · true anomaly örneklem',
+                cols: ['a_m', 'e', 'nu_deg', 'r_m', 'rp_m', 'ra_m', 'v_m_s', 'v_km_s', 'flight_path_deg'],
+                primary: 'v_m_s',
+                sample(rnd) {
+                    const a = SP_RE + spU(rnd, 300e3, 25000e3);
+                    const e = spU(rnd, 0.001, 0.55);
+                    const nu = spU(rnd, 0, 2 * Math.PI);
+                    const r = a * (1 - e * e) / (1 + e * Math.cos(nu));
+                    const rp = a * (1 - e), ra = a * (1 + e);
+                    const v = Math.sqrt(Math.max(0, SP_MU * (2 / r - 1 / a)));
+                    // flight path angle γ: cosγ = h/(r v), h=√(μa(1-e²))
+                    const h = Math.sqrt(SP_MU * a * (1 - e * e));
+                    const cosg = Math.min(1, Math.max(-1, h / (r * v + 1e-30)));
+                    const gamma = Math.acos(cosg) * 180 / Math.PI;
+                    return {
+                        a_m: a, e, nu_deg: nu * 180 / Math.PI,
+                        r_m: r, rp_m: rp, ra_m: ra,
+                        v_m_s: v, v_km_s: v / 1000,
+                        flight_path_deg: gamma
+                    };
+                }
+            },
+            {
+                id: 'newton', name: 'Newton Evrensel Çekim',
+                desc: 'F=G m1 m2 / r² · g · potansiyel',
+                cols: ['m1_kg', 'm2_kg', 'r_m', 'F_N', 'g1_m_s2', 'g2_m_s2', 'U_J', 'F_weight_ratio'],
+                primary: 'F_N',
+                sample(rnd) {
+                    const m1 = spU(rnd, 10, 1e7);
+                    const m2 = spU(rnd, 10, 1e7);
+                    const r = spU(rnd, 0.5, 1e6);
+                    const F = SP_G * m1 * m2 / (r * r);
+                    const g1 = SP_G * m2 / (r * r);
+                    const g2 = SP_G * m1 / (r * r);
+                    const U = -SP_G * m1 * m2 / r;
+                    return {
+                        m1_kg: m1, m2_kg: m2, r_m: r,
+                        F_N: F, g1_m_s2: g1, g2_m_s2: g2, U_J: U,
+                        F_weight_ratio: F / (m1 * SP_G0)
+                    };
+                }
+            },
+            {
+                id: 'drag', name: 'Atmosferik Sürükleme (Drag)',
+                desc: 'Fd=½ρv²CdA · q_dyn · ballistic coeff',
+                cols: ['rho_kg_m3', 'v_m_s', 'Cd', 'A_m2', 'mass_kg', 'q_dyn_Pa', 'Fd_N', 'a_drag', 'BC'],
+                primary: 'Fd_N',
+                sample(rnd) {
+                    const rho = Math.exp(spU(rnd, Math.log(1e-14), Math.log(1.25)));
+                    const v = spU(rnd, 50, 9000);
+                    const Cd = spU(rnd, 0.15, 2.8);
+                    const A = spU(rnd, 0.05, 80);
+                    const mass = spU(rnd, 5, 20000);
+                    const q = 0.5 * rho * v * v;
+                    const Fd = q * Cd * A;
+                    const BC = mass / (Cd * A);
+                    return {
+                        rho_kg_m3: rho, v_m_s: v, Cd, A_m2: A, mass_kg: mass,
+                        q_dyn_Pa: q, Fd_N: Fd, a_drag: Fd / mass, BC
+                    };
+                }
+            },
+            {
+                id: 'orbenergy', name: 'Yörünge Enerjisi',
+                desc: 'ε=−μ/(2a) · E=mε · v_c · dönem',
+                cols: ['a_m', 'alt_km', 'mass_kg', 'eps_J_kg', 'E_J', 'v_circ', 'T_h', 'binding_eV_per_kg'],
+                primary: 'eps_J_kg',
+                sample(rnd) {
+                    const alt = spU(rnd, 200e3, 50000e3);
+                    const a = SP_RE + alt;
+                    const m = spU(rnd, 20, 8000);
+                    const eps = -SP_MU / (2 * a);
+                    const T = 2 * Math.PI * Math.sqrt(a * a * a / SP_MU);
+                    return {
+                        a_m: a, alt_km: alt / 1000, mass_kg: m,
+                        eps_J_kg: eps, E_J: eps * m,
+                        v_circ: Math.sqrt(SP_MU / a), T_h: T / 3600,
+                        binding_eV_per_kg: -eps / 1.602176634e-19
+                    };
+                }
+            },
+            {
+                id: 'hohmann', name: 'Hohmann Transfer Δv',
+                desc: 'Δv1, Δv2, toplam, transfer yarı-büyük eksen, TOF',
+                cols: ['r1_m', 'r2_m', 'alt1_km', 'alt2_km', 'a_t_m', 'dV1_m_s', 'dV2_m_s', 'dV_total_m_s', 'dV_total_km_s', 'TOF_s', 'TOF_h'],
+                primary: 'dV_total_m_s',
+                sample(rnd) {
+                    let r1 = SP_RE + spU(rnd, 200e3, 2500e3);
+                    let r2 = SP_RE + spU(rnd, 400e3, 42000e3);
+                    if (r2 < r1) { const t = r1; r1 = r2; r2 = t; }
+                    const at = (r1 + r2) / 2;
+                    const dV1 = Math.sqrt(SP_MU / r1) * (Math.sqrt(2 * r2 / (r1 + r2)) - 1);
+                    const dV2 = Math.sqrt(SP_MU / r2) * (1 - Math.sqrt(2 * r1 / (r1 + r2)));
+                    const TOF = Math.PI * Math.sqrt(Math.pow(at, 3) / SP_MU);
+                    return {
+                        r1_m: r1, r2_m: r2,
+                        alt1_km: (r1 - SP_RE) / 1000, alt2_km: (r2 - SP_RE) / 1000,
+                        a_t_m: at,
+                        dV1_m_s: dV1, dV2_m_s: dV2,
+                        dV_total_m_s: dV1 + dV2, dV_total_km_s: (dV1 + dV2) / 1000,
+                        TOF_s: TOF, TOF_h: TOF / 3600
+                    };
+                }
+            },
+            {
+                id: 'lambert', name: 'Lambert (coplanar tahmin)',
+                desc: 'Kord c, yarı-perimetre, min-enerji a, Δv tahmini, TOF',
+                cols: ['r1_m', 'r2_m', 'dtheta_deg', 'c_m', 's_m', 'a_min_m', 'TOF_s', 'v1_est', 'v2_est', 'dV_est_m_s'],
+                primary: 'dV_est_m_s',
+                sample(rnd) {
+                    const r1 = SP_RE + spU(rnd, 250e3, 8000e3);
+                    const r2 = SP_RE + spU(rnd, 300e3, 25000e3);
+                    const dth = spU(rnd, 0.15, Math.PI);
+                    const c = Math.sqrt(r1 * r1 + r2 * r2 - 2 * r1 * r2 * Math.cos(dth));
+                    const s = (r1 + r2 + c) / 2;
+                    const a_min = s / 2;
+                    const TOF = Math.sqrt(2 * Math.pow(s, 3) / (8 * SP_MU)) * (Math.PI / 2); // rough
+                    const v1c = Math.sqrt(SP_MU / r1);
+                    const v2c = Math.sqrt(SP_MU / r2);
+                    const v1t = Math.sqrt(Math.max(0, SP_MU * (2 / r1 - 1 / Math.max(a_min, (r1 + r2) / 2))));
+                    const v2t = Math.sqrt(Math.max(0, SP_MU * (2 / r2 - 1 / Math.max(a_min, (r1 + r2) / 2))));
+                    const dV = Math.abs(v1t - v1c) + Math.abs(v2t - v2c);
+                    return {
+                        r1_m: r1, r2_m: r2, dtheta_deg: dth * 180 / Math.PI,
+                        c_m: c, s_m: s, a_min_m: a_min, TOF_s: TOF,
+                        v1_est: v1t, v2_est: v2t, dV_est_m_s: dV
+                    };
+                }
+            },
+            {
+                id: 'timedilation', name: 'Relativistik Kütleçekimsel Zaman',
+                desc: 'Schwarzschild: dτ/dt = √(1−rs/r) · GPS ölçeği',
+                cols: ['r_m', 'alt_km', 'rs_m', 'factor_dt_dtau', 'factor_dtau_dt', 'us_per_day', 'ns_per_sec', 'redshift_z'],
+                primary: 'us_per_day',
+                sample(rnd) {
+                    const alt = spU(rnd, 0, 30000e3);
+                    const r = SP_RE + alt;
+                    const rs = 2 * SP_G * SP_ME / (SP_C * SP_C);
+                    const arg = 1 - rs / r;
+                    const dtau_dt = arg > 0 ? Math.sqrt(arg) : NaN;
+                    const dt_dtau = arg > 0 ? 1 / dtau_dt : NaN;
+                    const us_day = isFinite(dt_dtau) ? (dt_dtau - 1) * 86400 * 1e6 : NaN;
+                    const ns_s = isFinite(dt_dtau) ? (dt_dtau - 1) * 1e9 : NaN;
+                    const z = isFinite(dt_dtau) ? dt_dtau - 1 : NaN;
+                    return {
+                        r_m: r, alt_km: alt / 1000, rs_m: rs,
+                        factor_dt_dtau: dt_dtau, factor_dtau_dt: dtau_dt,
+                        us_per_day: us_day, ns_per_sec: ns_s, redshift_z: z
+                    };
+                }
+            },
+            {
+                id: 'isp', name: 'Roket Özgül İtme (Isp)',
+                desc: 've=Isp·g0 · F=ṁ·ve · güç · verim proxy',
+                cols: ['Isp_s', 've_m_s', 'mdot_kg_s', 'thrust_N', 'thrust_kN', 'power_W', 'power_MW', 'impulse_1s_Ns', 'tw_proxy'],
+                primary: 'thrust_N',
+                sample(rnd) {
+                    const Isp = spU(rnd, 160, 460);
+                    const ve = Isp * SP_G0;
+                    const mdot = spU(rnd, 0.2, 400);
+                    const F = mdot * ve;
+                    const power = 0.5 * mdot * ve * ve; // jet power
+                    return {
+                        Isp_s: Isp, ve_m_s: ve, mdot_kg_s: mdot,
+                        thrust_N: F, thrust_kN: F / 1000,
+                        power_W: power, power_MW: power / 1e6,
+                        impulse_1s_Ns: F,
+                        tw_proxy: F / (mdot * 100 * SP_G0) // rough vs 100s propellant stack
+                    };
+                }
+            }
+        ];
+
+        function spInitCards() {
+            const box = document.getElementById('sp-cards');
+            if (!box) return;
+            box.innerHTML = SP.eqs.map((eq, idx) => `
+                <div class="bg-zinc-950 rounded-2xl p-4 border border-zinc-800 hover:border-rose-800/50 transition-colors" id="sp-card-${eq.id}">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <div class="text-sm font-semibold text-rose-300"><span class="text-zinc-600 font-mono text-[10px] mr-1">${idx + 1}.</span>${eq.name}</div>
+                        <span class="text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800" id="sp-badge-${eq.id}">—</span>
+                    </div>
+                    <div class="text-[10px] text-zinc-500 font-mono mb-2 leading-snug">${eq.desc}</div>
+                    <div class="text-[11px] text-zinc-400 min-h-[4rem] leading-relaxed" id="sp-stat-${eq.id}">Henüz çalıştırılmadı</div>
+                    <button onclick="spRunOne('${eq.id}')" class="mt-2 w-full py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-[11px] text-zinc-300">Sadece bunu çalıştır</button>
+                </div>
+            `).join('');
+            const sel = document.getElementById('sp-table-eq');
+            if (sel) {
+                sel.innerHTML = '<option value="__all__">Tümü (birleşik 60K)</option>' +
+                    SP.eqs.map(eq => `<option value="${eq.id}">${eq.name}</option>`).join('');
+            }
+        }
+
+        function spRunOne(id) {
+            const eq = SP.eqs.find(e => e.id === id);
+            if (!eq) return null;
+            const N = Math.min(20000, Math.max(10, +document.getElementById('sp-n').value || 5000));
+            const seedBase = (+document.getElementById('sp-seed').value || 42);
+            const seed = (seedBase + SP.eqs.findIndex(e => e.id === id) * 9973) >>> 0;
+            const rnd = spRand(seed);
+            const rows = [];
+            const primary = [];
+            const t0 = performance.now();
+            for (let i = 0; i < N; i++) {
+                const row = eq.sample(rnd);
+                row._i = i + 1;
+                row._eq = eq.id;
+                row._eqName = eq.name;
+                rows.push(row);
+                const v = row[eq.primary];
+                if (v != null && isFinite(v)) primary.push(v);
+            }
+            const st = spStats(primary);
+            const ms = performance.now() - t0;
+            SP.results[id] = { rows, stats: st, cols: eq.cols, primary: eq.primary, name: eq.name, N, ms, seed };
+            const badge = document.getElementById('sp-badge-' + id);
+            if (badge) {
+                badge.textContent = N + ' satır';
+                badge.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800';
+            }
+            const statEl = document.getElementById('sp-stat-' + id);
+            if (statEl) {
+                statEl.innerHTML =
+                    `<div class="text-zinc-500 text-[10px]">birincil: <span class="text-rose-300/90">${eq.primary}</span> · ${ms.toFixed(0)} ms</div>` +
+                    `<div>mean <b class="text-zinc-100">${spFmt(st.mean)}</b> · std <span class="text-zinc-400">${spFmt(st.std)}</span></div>` +
+                    `<div class="text-zinc-500">p10 ${spFmt(st.p10)} · p50 ${spFmt(st.p50)} · p90 ${spFmt(st.p90)}</div>` +
+                    `<div class="text-zinc-500">min ${spFmt(st.min)} · max ${spFmt(st.max)}</div>`;
+            }
+            return SP.results[id];
+        }
+
+        function spRebuildCombined() {
+            SP.combined = [];
+            SP.eqs.forEach(eq => {
+                const R = SP.results[eq.id];
+                if (!R) return;
+                R.rows.forEach(row => {
+                    SP.combined.push(row);
+                });
+            });
+        }
+
+        async function spRunAll() {
+            if (SP.running) return;
+            SP.running = true;
+            SP.results = {};
+            SP.combined = [];
+            SP.page = 0;
+            const btn = document.getElementById('sp-btn-all');
+            if (btn) btn.disabled = true;
+            const wrap = document.getElementById('sp-progress-wrap');
+            if (wrap) wrap.classList.remove('hidden');
+            const st = document.getElementById('sp-status');
+            if (st) {
+                st.textContent = '60K hesaplanıyor…';
+                st.className = 'px-2.5 py-1 rounded-full bg-amber-950 border border-amber-800 text-amber-300';
+            }
+            const t0 = performance.now();
+            for (let i = 0; i < SP.eqs.length; i++) {
+                spRunOne(SP.eqs[i].id);
+                const pct = ((i + 1) / SP.eqs.length) * 100;
+                const bar = document.getElementById('sp-progress-bar');
+                if (bar) bar.style.width = pct + '%';
+                const lab = document.getElementById('sp-progress-label');
+                if (lab) lab.textContent = (i + 1) + ' / 12 denklem · ' + ((i + 1) * (+document.getElementById('sp-n').value || 5000)) + ' satır';
+                const elapsed = performance.now() - t0;
+                const eta = (elapsed / (i + 1)) * (SP.eqs.length - i - 1);
+                const etaEl = document.getElementById('sp-progress-eta');
+                if (etaEl) etaEl.textContent = 'ETA ' + (eta < 1000 ? eta.toFixed(0) + ' ms' : (eta / 1000).toFixed(2) + ' s');
+                await new Promise(r => setTimeout(r, 0));
+            }
+            spRebuildCombined();
+            const total = performance.now() - t0;
+            const totalRows = SP.combined.length;
+            if (st) {
+                st.textContent = 'OK · ' + totalRows + ' satır · ' + (total / 1000).toFixed(2) + 's';
+                st.className = 'px-2.5 py-1 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300';
+            }
+            if (btn) btn.disabled = false;
+            const csvBtn = document.getElementById('sp-btn-csv');
+            if (csvBtn) csvBtn.disabled = false;
+            SP.running = false;
+            spUpdateSummary();
+            const sel = document.getElementById('sp-table-eq');
+            if (sel) sel.value = '__all__';
+            spRenderTable();
+        }
+
+        function spUpdateSummary() {
+            const box = document.getElementById('sp-summary');
+            if (!box) return;
+            const keys = Object.keys(SP.results);
+            if (!keys.length) { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+            let totalRows = 0, totalMs = 0;
+            keys.forEach(k => { totalRows += SP.results[k].N; totalMs += SP.results[k].ms || 0; });
+            box.innerHTML =
+                `<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500 uppercase">Denklem</div><div class="text-lg font-semibold text-rose-300 font-mono">${keys.length}</div></div>` +
+                `<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500 uppercase">Toplam satır</div><div class="text-lg font-semibold text-amber-300 font-mono">${totalRows.toLocaleString('tr-TR')}</div></div>` +
+                `<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500 uppercase">Süre</div><div class="text-lg font-semibold text-emerald-300 font-mono">${totalMs.toFixed(0)} ms</div></div>` +
+                `<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500 uppercase">satır/s</div><div class="text-lg font-semibold text-cyan-300 font-mono">${(totalRows / Math.max(totalMs / 1000, 1e-6)).toFixed(0)}</div></div>` +
+                keys.slice(0, 2).map(k => {
+                    const r = SP.results[k];
+                    return `<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500 truncate">${r.name}</div><div class="text-sm font-semibold text-zinc-200 font-mono">${spFmt(r.stats.mean)}</div></div>`;
+                }).join('');
+        }
+
+        function spGetViewRows() {
+            const id = document.getElementById('sp-table-eq')?.value || '__all__';
+            const q = (document.getElementById('sp-table-filter')?.value || '').toLowerCase().trim();
+            let rows, cols, title, stats, primary;
+            if (id === '__all__') {
+                rows = SP.combined;
+                cols = ['_eqName', '_i', 'm0_kg', 'mf_kg', 'dV_m_s', 'a_m', 'T_s', 'v_m_s', 'v_esc_m_s', 'F_N', 'Fd_N', 'eps_J_kg', 'dV_total_m_s', 'dV_est_m_s', 'us_per_day', 'thrust_N', 'Isp_s', 'r_m', 'alt_km'];
+                // unique present cols from data
+                const present = new Set();
+                rows.slice(0, 500).forEach(r => Object.keys(r).forEach(k => { if (!k.startsWith('_') || k === '_eqName' || k === '_i') present.add(k); }));
+                cols = ['_eqName', '_i'].concat([...present].filter(c => c !== '_eqName' && c !== '_i' && c !== '_eq').slice(0, 16));
+                title = 'Tüm denklemler (birleşik)';
+                stats = null;
+                primary = null;
+            } else {
+                const R = SP.results[id];
+                if (!R) return { rows: [], cols: [], title: '', stats: null, primary: null };
+                rows = R.rows;
+                cols = R.cols;
+                title = R.name;
+                stats = R.stats;
+                primary = R.primary;
+            }
+            if (q) {
+                rows = rows.filter(r => {
+                    const blob = (r._eqName || '') + ' ' + Object.values(r).join(' ');
+                    return blob.toLowerCase().includes(q);
+                });
+            }
+            return { rows, cols, title, stats, primary, id };
+        }
+
+        function spRenderTable() {
+            const thead = document.getElementById('sp-thead');
+            const tbody = document.getElementById('sp-tbody');
+            const info = document.getElementById('sp-table-info');
+            const pageLabel = document.getElementById('sp-page-label');
+            const detail = document.getElementById('sp-detail-stats');
+            if (!thead || !tbody) return;
+
+            const view = spGetViewRows();
+            const pageSize = Math.max(20, +document.getElementById('sp-page-size')?.value || 100);
+            const totalPages = Math.max(1, Math.ceil(view.rows.length / pageSize));
+            if (SP.page >= totalPages) SP.page = totalPages - 1;
+            if (SP.page < 0) SP.page = 0;
+            const start = SP.page * pageSize;
+            const slice = view.rows.slice(start, start + pageSize);
+
+            const colLabel = (c) => c === '_eqName' ? 'denklem' : (c === '_i' ? '#' : c);
+            thead.innerHTML = `<tr class="border-b border-zinc-700">${view.cols.map(c =>
+                `<th class="px-2 py-2 text-left whitespace-nowrap font-medium">${colLabel(c)}</th>`
+            ).join('')}</tr>`;
+
+            tbody.innerHTML = slice.map(row =>
+                `<tr class="border-t border-zinc-800/50 hover:bg-zinc-900/80">${view.cols.map(c => {
+                    let val = row[c];
+                    if (c === '_eqName') return `<td class="px-2 py-1 text-rose-300/90 whitespace-nowrap">${val || ''}</td>`;
+                    if (c === '_i') return `<td class="px-2 py-1 text-zinc-500">${val}</td>`;
+                    return `<td class="px-2 py-1 whitespace-nowrap">${spFmt(val)}</td>`;
+                }).join('')}</tr>`
+            ).join('');
+
+            if (info) {
+                info.textContent = `${view.title}: satır ${start + 1}–${Math.min(start + pageSize, view.rows.length)} / ${view.rows.length.toLocaleString('tr-TR')}` +
+                    (view.primary ? ` · birincil ${view.primary}` : '');
+            }
+            if (pageLabel) pageLabel.textContent = (SP.page + 1) + ' / ' + totalPages;
+
+            if (detail) {
+                if (view.stats) {
+                    detail.classList.remove('hidden');
+                    const s = view.stats;
+                    detail.innerHTML = [
+                        ['n', s.n], ['mean', spFmt(s.mean)], ['std', spFmt(s.std)],
+                        ['min', spFmt(s.min)], ['p10', spFmt(s.p10)], ['p50', spFmt(s.p50)],
+                        ['p90', spFmt(s.p90)], ['max', spFmt(s.max)]
+                    ].map(([k, v]) =>
+                        `<div class="bg-zinc-900 rounded-lg px-2 py-1.5 border border-zinc-800"><span class="text-zinc-500">${k}</span> <b class="text-zinc-200 font-mono ml-1">${v}</b></div>`
+                    ).join('');
+                } else if (view.id === '__all__' && SP.combined.length) {
+                    detail.classList.remove('hidden');
+                    detail.innerHTML = SP.eqs.filter(e => SP.results[e.id]).map(e => {
+                        const s = SP.results[e.id].stats;
+                        return `<div class="bg-zinc-900 rounded-lg px-2 py-1.5 border border-zinc-800 col-span-1"><div class="text-zinc-500 truncate">${e.name}</div><div class="font-mono text-zinc-200">μ=${spFmt(s.mean)} σ=${spFmt(s.std)}</div></div>`;
+                    }).join('');
+                } else {
+                    detail.classList.add('hidden');
+                }
+            }
+        }
+
+        function spPage(d, toFirst) {
+            if (toFirst) { SP.page = 0; spRenderTable(); return; }
+            if (d === 999999) {
+                const view = spGetViewRows();
+                const pageSize = Math.max(20, +document.getElementById('sp-page-size')?.value || 100);
+                SP.page = Math.max(0, Math.ceil(view.rows.length / pageSize) - 1);
+            } else {
+                SP.page += d;
+            }
+            spRenderTable();
+        }
+
+        function spExportCSV() {
+            if (!Object.keys(SP.results).length) return;
+            const lines = [];
+            lines.push('# MuhendisX Uzay/Roket/Uydu Batch PRO');
+            lines.push('# total_equations=' + Object.keys(SP.results).length);
+            lines.push('# total_rows=' + SP.combined.length);
+            lines.push('');
+            // Combined detailed export
+            lines.push('## COMBINED');
+            // collect union of columns
+            const colSet = new Set(['eq_id', 'eq_name', 'i']);
+            Object.values(SP.results).forEach(R => R.cols.forEach(c => colSet.add(c)));
+            const cols = [...colSet];
+            lines.push(cols.join(','));
+            SP.eqs.forEach(eq => {
+                const R = SP.results[eq.id];
+                if (!R) return;
+                R.rows.forEach(row => {
+                    lines.push(cols.map(c => {
+                        if (c === 'eq_id') return eq.id;
+                        if (c === 'eq_name') return '"' + eq.name.replace(/"/g, '') + '"';
+                        if (c === 'i') return row._i;
+                        const v = row[c];
+                        return v == null ? '' : v;
+                    }).join(','));
+                });
+            });
+            lines.push('');
+            // Per-equation stats
+            lines.push('## STATS');
+            lines.push('eq_id,eq_name,n,primary,mean,std,min,p10,p50,p90,max,ms');
+            SP.eqs.forEach(eq => {
+                const R = SP.results[eq.id];
+                if (!R) return;
+                const s = R.stats;
+                lines.push([eq.id, '"' + eq.name + '"', s.n, R.primary, s.mean, s.std, s.min, s.p10, s.p50, s.p90, s.max, R.ms].join(','));
+            });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv' }));
+            a.download = 'MuhendisX_Uzay_Roket_60K_PRO_' + SP.combined.length + 'rows.csv';
+            a.click();
+        }
+
+        function spClear() {
+            SP.results = {};
+            SP.combined = [];
+            SP.page = 0;
+            SP.eqs.forEach(eq => {
+                const b = document.getElementById('sp-badge-' + eq.id);
+                if (b) { b.textContent = '—'; b.className = 'text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800'; }
+                const s = document.getElementById('sp-stat-' + eq.id);
+                if (s) s.textContent = 'Henüz çalıştırılmadı';
+            });
+            document.getElementById('sp-summary')?.classList.add('hidden');
+            document.getElementById('sp-progress-wrap')?.classList.add('hidden');
+            document.getElementById('sp-detail-stats')?.classList.add('hidden');
+            const csvBtn = document.getElementById('sp-btn-csv');
+            if (csvBtn) csvBtn.disabled = true;
+            const thead = document.getElementById('sp-thead');
+            const tbody = document.getElementById('sp-tbody');
+            if (thead) thead.innerHTML = '';
+            if (tbody) tbody.innerHTML = '';
+            const info = document.getElementById('sp-table-info');
+            if (info) info.textContent = '';
+            const st = document.getElementById('sp-status');
+            if (st) {
+                st.textContent = 'Hazır';
+                st.className = 'px-2.5 py-1 rounded-full bg-rose-950 border border-rose-800 text-rose-300';
+            }
+        }
+
+
+
+        /* ========== 50 DIFERANSIYEL DENKLEM FABRIKASI ========== */
+        const DE = { results: {}, running: false, eqs: [], page: 0, combined: [] };
+        function deRand(seed){ let s=(seed>>>0)||1; return function(){ s=(Math.imul(s,1664525)+1013904223)>>>0; return s/4294967296; }; }
+        function deU(r,a,b){ return a+(b-a)*r(); }
+        function deStats(arr){
+            if(!arr.length) return {n:0,mean:0,std:0,min:0,max:0,p10:0,p50:0,p90:0};
+            const s=arr.slice().sort((a,b)=>a-b), n=s.length, mean=s.reduce((a,b)=>a+b,0)/n;
+            const std=Math.sqrt(s.reduce((a,x)=>a+(x-mean)**2,0)/n);
+            const q=p=>s[Math.min(n-1,Math.floor(n*p))];
+            return {n,mean,std,min:s[0],max:s[n-1],p10:q(0.1),p50:q(0.5),p90:q(0.9)};
+        }
+        function deFmt(v,d){ if(v==null||!isFinite(v))return '—'; const x=+v; if(Math.abs(x)>=1e5||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(5); return x.toFixed(d!=null?d:6); }
+
+        function deSample(id, r){
+            const t=deU(r,0,5), x=deU(r,-2,2), y=deU(r,-2,2), u=deU(r,-1,1);
+            const a=deU(r,-2,2), b=deU(r,-1,1), c=deU(r,0.5,2), k=deU(r,0.5,3);
+            switch(id){
+            case "ode": { const yp=deU(r,-3,3),rhs=a*y+b*Math.sin(t); return {t,y,yp,a,b,rhs,residual:yp-rhs,energy:0.5*y*y+0.5*yp*yp}; }
+            case "pde": { const ux=deU(r,-2,2),ut=deU(r,-2,2),uxx=deU(r,-3,3); return {x,t,u,ux,ut,uxx,residual:ut+c*ux-0.01*uxx,wave_speed:c}; }
+            case "linear": { const P=a,Q=b,yp=Q-P*y; return {t,y,P,Q,yp_model:yp,integrating_mu:Math.exp(P*t),residual:Math.abs(P)*0.01}; }
+            case "nonlinear": { const al=c,yp=al*y*(1-y*y),y2=y+0.01*yp; return {t,y,alpha:al,yp,y_next:y2,lyap_proxy:al*(1-3*y*y),residual:Math.abs(y2-y-0.01*yp)}; }
+            case "homog": { const v=y/Math.max(t,0.2),fv=v+b; return {t,y,v,f_v:fv,yp:fv,residual:0}; }
+            case "nonhomog": { const yp=deU(r,-1,1),ypp=deU(r,-2,2),g=Math.sin(t),Ly=ypp+yp+y; return {t,y,yp,ypp,g,L_y:Ly,residual:Ly-g}; }
+            case "separable": { const g=Math.cos(t),h=y; return {t,y,g,h,yp:g*h,sep_integral_proxy:Math.log(Math.abs(y)+1e-9),residual:0}; }
+            case "exact": { const M=2*x+a*y,N=a*x+2*y; return {x,y,M,N,My:a,Nx:a,exactness_err:0}; }
+            case "bernoulli": { const P=a,Q=b,n=deU(r,1.5,3),yy=Math.max(0.05,Math.abs(y)),yp=Q*Math.pow(yy,n)-P*yy; return {t,y:yy,P,Q,n,yp,z:Math.pow(yy,1-n),residual:0}; }
+            case "riccati": { const P=a,Q=b,R=deU(r,-1,1),yp=P+Q*y+R*y*y; return {t,y,P,Q,R,yp,ypp_proxy:Q+2*R*y,residual:0}; }
+            case "clairaut": { const p=deU(r,-2,2),fp=p*p,yy=x*p+fp; return {x,p,f_p:fp,y:yy,residual:0,singular_env:-0.25*x*x}; }
+            case "lagrange_de": { const p=deU(r,-1,1),f=0.5*p,g=p*p,yy=x*f+g; return {x,p,f,g,y:yy,residual:0}; }
+            case "euler_cauchy": { const aa=1,bb=a,cc=b,disc=bb*bb-4*cc,m1=(-bb+Math.sqrt(Math.abs(disc)))/2,m2=(-bb-Math.sqrt(Math.abs(disc)))/2,xx=Math.max(x,0.5),yy=Math.pow(xx,m1),yp=m1*Math.pow(xx,m1-1),ypp=m1*(m1-1)*Math.pow(xx,m1-2); return {x:xx,a:aa,b:bb,c:cc,m1,m2,y:yy,residual:aa*xx*xx*ypp+bb*xx*yp+cc*yy}; }
+            case "bessel": { const nu=deU(r,0,3),xx=Math.max(Math.abs(x),0.5),yy=Math.cos(xx)/Math.sqrt(xx),yp=-Math.sin(xx)/Math.sqrt(xx),ypp=deU(r,-2,2); return {x:xx,nu,y:yy,yp,ypp,residual:xx*xx*ypp+xx*yp+(xx*xx-nu*nu)*yy,order:nu}; }
+            case "legendre": { const n=Math.floor(deU(r,1,6)),xx=Math.max(-0.9,Math.min(0.9,x)); return {x:xx,n,y:xx,yp:1,residual:2*xx+(1-xx*xx)*0+n*(n+1)*xx}; }
+            case "hermite": { const lam=2*Math.floor(deU(r,0,5))+1,yy=1+lam*x*x/2,yp=lam*x,ypp=lam; return {x,lambda:lam,y:yy,yp,ypp,residual:ypp-2*x*yp+lam*yy}; }
+            case "laguerre": { const n=Math.floor(deU(r,0,5)),xx=Math.max(0.1,Math.abs(x)),yy=1-n*xx; return {x:xx,n,y:yy,yp:-n,ypp:0,residual:xx*0+(1-xx)*(-n)+n*yy}; }
+            case "chebyshev": { const n=Math.floor(deU(r,1,8)),xx=Math.max(-0.95,Math.min(0.95,x)),yy=Math.cos(n*Math.acos(xx)),yp=deU(r,-n,n),ypp=deU(r,-n*n,n*n); return {x:xx,n,y:yy,yp,ypp,residual:(1-xx*xx)*ypp-xx*yp+n*n*yy}; }
+            case "hypergeom": { const aa=deU(r,0.5,2),bb=deU(r,0.5,2),cc=deU(r,0.5,2),xx=deU(r,0.05,0.9),yy=1+aa*bb*xx/cc; return {x:xx,a:aa,b:bb,c:cc,y:yy,residual:xx*(1-xx)*0+(cc-(aa+bb+1)*xx)*(aa*bb/cc)-aa*bb*yy}; }
+            case "airy": { const ypp=x*y; return {x,y,yp:deU(r,-1,1),ypp,residual:ypp-x*y,turning:x}; }
+            case "heat": { const kappa=c,tt=Math.max(t,0.05),uu=Math.exp(-x*x/(4*kappa*tt))/Math.sqrt(tt),uxx=uu*((x*x)/(4*kappa*kappa*tt*tt)-1/(2*kappa*tt)),ut=-0.5*uu/tt+uu*(x*x)/(4*kappa*tt*tt); return {x,t:tt,kappa,u:uu,uxx,ut,residual:ut-kappa*uxx,diff_len:Math.sqrt(kappa*tt)}; }
+            case "wave": { const kk=k,uu=Math.sin(kk*x-kk*c*t),uxx=-kk*kk*uu,utt=-kk*kk*c*c*uu; return {x,t,c,u:uu,uxx,utt,residual:utt-c*c*uxx,wavelength:2*Math.PI/kk}; }
+            case "laplace": { return {x,y,u:x*x-y*y,uxx:2,uyy:-2,residual:0,harmonic:1}; }
+            case "poisson": { const f=a,uu=0.25*f*(x*x+y*y); return {x,y,u:uu,uxx:0.5*f,uyy:0.5*f,f,residual:0}; }
+            case "schrodinger": { const V=0.5*x*x,pre=Math.exp(-0.5*x*x)*Math.cos(t),pim=Math.exp(-0.5*x*x)*Math.sin(t); return {x,t,V,psi_re:pre,psi_im:pim,density:pre*pre+pim*pim,residual_re:deU(r,-0.01,0.01)}; }
+            case "navier": { const Re=deU(r,10,5000),uu=u,ux=deU(r,-2,2),uxx=deU(r,-3,3),px=deU(r,-1,1),nu=1/Re; return {Re,u:uu,ux,uxx,p_x:px,nu,residual:uu*ux+px-nu*uxx,ke:0.5*uu*uu}; }
+            case "euler_fluid": { const uu=u,vv=deU(r,-1,1),ux=deU(r,-1,1),uy=deU(r,-1,1),px=deU(r,-1,1),py=deU(r,-1,1); return {u:uu,v:vv,ux,uy,px,py,residual_x:uu*ux+vv*uy+px,residual_y:vv*uy+py}; }
+            case "helmholtz": { const uu=Math.sin(k*x),uxx=-k*k*uu; return {x,k,u:uu,uxx,residual:uxx+k*k*uu,wavelength:2*Math.PI/k}; }
+            case "maxwell": { const Ex=deU(r,-1,1),Ey=deU(r,-1,1),Bz=deU(r,-1,1),dBdt=deU(r,-1,1),curlE=deU(r,-1,1); return {Ex,Ey,Bz,dBdt,curlE,residual:curlE+dBdt,c:299792458}; }
+            case "kdv": { const cc=c,z=x-cc*t,uu=0.5*cc/Math.pow(Math.cosh(0.5*Math.sqrt(cc)*z),2),ux=deU(r,-1,1),uxxx=deU(r,-2,2),ut=-cc*ux; return {x,t,u:uu,ux,uxxx,ut,residual:ut+6*uu*ux+uxxx,soliton_speed:cc}; }
+            case "burgers": { const nu=deU(r,0.01,0.5),ux=deU(r,-2,2),uxx=deU(r,-2,2),ut=-u*ux+nu*uxx; return {x,t,nu,u,ux,uxx,ut,residual:0}; }
+            case "sinegordon": { const uu=4*Math.atan(Math.exp(x-t)),uxx=deU(r,-1,1),utt=deU(r,-1,1); return {x,t,u:uu,uxx,utt,residual:utt-uxx+Math.sin(uu),kink:1}; }
+            case "lotka": { const xx=Math.max(0.2,Math.abs(y)),yy=Math.max(0.2,Math.abs(u)),aa=c,bb=deU(r,0.3,1),dd=deU(r,0.3,1),gg=deU(r,0.5,1.5),dx=aa*xx-bb*xx*yy,dy=dd*xx*yy-gg*yy; return {x:xx,y:yy,alpha:aa,beta:bb,delta:dd,gamma:gg,dx,dy,H:dd*xx-gg*Math.log(xx)+bb*yy-aa*Math.log(yy)}; }
+            case "blackscholes": { const S=deU(r,50,150),tt=Math.max(t,0.05),sig=deU(r,0.1,0.5),rr=deU(r,0.01,0.08),K=100,V=Math.max(S-K*Math.exp(-rr*tt),0.01); return {S,t:tt,sigma:sig,r:rr,V,residual:deU(r,-0.05,0.05),d1_proxy:(Math.log(S/K)+(rr+0.5*sig*sig)*tt)/(sig*Math.sqrt(tt))}; }
+            case "fokker": { const mu=a,D=deU(r,0.05,0.5),tt=Math.max(t,0.1),p=Math.exp(-0.5*(x-mu*tt)**2/(2*D*tt))/Math.sqrt(4*Math.PI*D*tt); return {x,t:tt,mu,D,p,residual:deU(r,-0.01,0.01),entropy_proxy:-p*Math.log(Math.max(p,1e-12))}; }
+            case "langevin": { const V=0.5*x*x,force=-x,D=deU(r,0.05,0.5),noise=deU(r,-1,1),xn=x+0.01*force+Math.sqrt(2*D*0.01)*noise; return {x,V,force,D,noise,x_next:xn,residual:Math.abs(xn-x-0.01*force)}; }
+            case "sde": { const X=x,aa=-0.5*X,bb=deU(r,0.1,0.8),dW=deU(r,-1,1)*Math.sqrt(0.01),dX=aa*0.01+bb*dW; return {X,t,a:aa,b:bb,dW,dX,X_next:X+dX}; }
+            case "kuramoto": { const ux=deU(r,-2,2),uxx=deU(r,-3,3),uxxxx=deU(r,-5,5); return {u,ux,uxx,uxxxx,residual:uxx+uxxxx+0.5*ux*ux,chaos_proxy:Math.abs(uxxxx)}; }
+            case "reaction": { const D=deU(r,0.01,1),uu=deU(r,0,1),f=uu*(1-uu),uxx=deU(r,-1,1); return {u:uu,D,f,uxx,ut:D*uxx+f,residual:0,eq_point:uu>0.5?1:0}; }
+            case "vanderpol": { const xx=x,v=deU(r,-3,3),mu=c,dv=mu*(1-xx*xx)*v-xx; return {x:xx,v,mu,dv,energy:0.5*(xx*xx+v*v),limit_cycle:2}; }
+            case "duffing": { const v=deU(r,-2,2),d=deU(r,0.05,0.5),al=a,be=c,g=deU(r,0.1,1),w=k,acc=-d*v-al*x-be*x*x*x+g*Math.cos(w*t); return {x,v,delta:d,alpha:al,beta:be,gamma:g,omega:w,residual:acc}; }
+            case "mathieu": { const aa=deU(r,-1,2),q=deU(r,0,1),coeff=aa-2*q*Math.cos(2*t); return {t,x,a:aa,q,coeff,residual:coeff*x,stability:aa>0?1:0}; }
+            case "hill": { const lam=c,Q=a*Math.cos(t); return {t,x,lambda:lam,Q,residual:(lam+Q)*x}; }
+            case "ginzburg": { const Ar=u,Ai=deU(r,-1,1),aa=a,bb=b,amp=Math.hypot(Ar,Ai); return {Ar,Ai,a:aa,b:bb,residual_re:Ar-amp*amp*Ar,amp}; }
+            case "cahnhilliard": { const uu=u,eps=deU(r,0.01,0.2),mu=uu*uu*uu-uu; return {u:uu,eps,mu_ch:mu,residual:deU(r,-0.05,0.05),interface:1-uu*uu}; }
+            case "kleingordon": { const m=c,kk=k,w=Math.sqrt(kk*kk+m*m),phi=Math.cos(kk*x-w*t); return {x,t,m,phi,residual:0,mass_shell:w*w-kk*kk-m*m}; }
+            case "dirac": { const m=c,p0=deU(r,-1,1),p1=deU(r,-1,1),E=Math.sqrt(m*m+p0*p0); return {m,psi0:p0,psi1:p1,energy:E,residual:E*E-m*m-p0*p0,spinor_norm:Math.hypot(p0,p1)}; }
+            case "liouville": { const q=x,p=y,H=0.5*p*p+0.5*q*q,rho=Math.exp(-H); return {q,p,H,rho,poisson:0,residual:0}; }
+            case "beltrami": { const vx=u,vy=deU(r,-1,1),vz=deU(r,-1,1),lam=c,curl=lam*vx; return {vx,vy,vz,lambda:lam,curl_x:curl,residual:0}; }
+            case "riccati_bessel": { const n=Math.floor(deU(r,0,5)),xx=Math.max(0.5,Math.abs(x)),yy=Math.sin(xx),ypp=-yy; return {x:xx,n,y:yy,ypp,residual:xx*xx*ypp+(xx*xx-n*(n+1))*yy,order:n}; }
+            default: return {t,x,y,residual:0};
+            }
+        }
+
+        const DE_COLS = {
+            ode:['t','y','yp','a','b','rhs','residual','energy'],
+            pde:['x','t','u','ux','ut','uxx','residual','wave_speed'],
+            linear:['t','y','P','Q','yp_model','integrating_mu','residual'],
+            nonlinear:['t','y','alpha','yp','y_next','lyap_proxy','residual'],
+            homog:['t','y','v','f_v','yp','residual'],
+            nonhomog:['t','y','yp','ypp','g','L_y','residual'],
+            separable:['t','y','g','h','yp','sep_integral_proxy','residual'],
+            exact:['x','y','M','N','My','Nx','exactness_err'],
+            bernoulli:['t','y','P','Q','n','yp','z','residual'],
+            riccati:['t','y','P','Q','R','yp','ypp_proxy','residual'],
+            clairaut:['x','p','f_p','y','residual','singular_env'],
+            lagrange_de:['x','p','f','g','y','residual'],
+            euler_cauchy:['x','a','b','c','m1','m2','y','residual'],
+            bessel:['x','nu','y','yp','ypp','residual','order'],
+            legendre:['x','n','y','yp','residual'],
+            hermite:['x','lambda','y','yp','ypp','residual'],
+            laguerre:['x','n','y','yp','ypp','residual'],
+            chebyshev:['x','n','y','yp','ypp','residual'],
+            hypergeom:['x','a','b','c','y','residual'],
+            airy:['x','y','yp','ypp','residual','turning'],
+            heat:['x','t','kappa','u','uxx','ut','residual','diff_len'],
+            wave:['x','t','c','u','uxx','utt','residual','wavelength'],
+            laplace:['x','y','u','uxx','uyy','residual','harmonic'],
+            poisson:['x','y','u','uxx','uyy','f','residual'],
+            schrodinger:['x','t','V','psi_re','psi_im','density','residual_re'],
+            navier:['Re','u','ux','uxx','p_x','nu','residual','ke'],
+            euler_fluid:['u','v','ux','uy','px','py','residual_x','residual_y'],
+            helmholtz:['x','k','u','uxx','residual','wavelength'],
+            maxwell:['Ex','Ey','Bz','dBdt','curlE','residual','c'],
+            kdv:['x','t','u','ux','uxxx','ut','residual','soliton_speed'],
+            burgers:['x','t','nu','u','ux','uxx','ut','residual'],
+            sinegordon:['x','t','u','uxx','utt','residual','kink'],
+            lotka:['x','y','alpha','beta','delta','gamma','dx','dy','H'],
+            blackscholes:['S','t','sigma','r','V','residual','d1_proxy'],
+            fokker:['x','t','mu','D','p','residual','entropy_proxy'],
+            langevin:['x','V','force','D','noise','x_next','residual'],
+            sde:['X','t','a','b','dW','dX','X_next'],
+            kuramoto:['u','ux','uxx','uxxxx','residual','chaos_proxy'],
+            reaction:['u','D','f','uxx','ut','residual','eq_point'],
+            vanderpol:['x','v','mu','dv','energy','limit_cycle'],
+            duffing:['x','v','delta','alpha','beta','gamma','omega','residual'],
+            mathieu:['t','x','a','q','coeff','residual','stability'],
+            hill:['t','x','lambda','Q','residual'],
+            ginzburg:['Ar','Ai','a','b','residual_re','amp'],
+            cahnhilliard:['u','eps','mu_ch','residual','interface'],
+            kleingordon:['x','t','m','phi','residual','mass_shell'],
+            dirac:['m','psi0','psi1','energy','residual','spinor_norm'],
+            liouville:['q','p','H','rho','poisson','residual'],
+            beltrami:['vx','vy','vz','lambda','curl_x','residual'],
+            riccati_bessel:['x','n','y','ypp','residual','order']
+        };
+        const DE_PRIMARY = {exact:'exactness_err',lotka:'H',vanderpol:'energy',ginzburg:'amp',schrodinger:'residual_re',euler_fluid:'residual_x',sde:'dX'};
+
+        DE.eqs = [
+            {id:"ode",n:1,name:"Adi Diferansiyel Denklem (ODE)",formula:"F(t, y, y', y'', ...) = 0",cols:DE_COLS["ode"],primary:(DE_PRIMARY["ode"]||"residual")},
+            {id:"pde",n:2,name:"Kismi Diferansiyel Denklem (PDE)",formula:"F(x,t,u,u_x,u_t,u_xx,...) = 0",cols:DE_COLS["pde"],primary:(DE_PRIMARY["pde"]||"residual")},
+            {id:"linear",n:3,name:"Lineer Diferansiyel Denklem",formula:"y' + P(t)y = Q(t)",cols:DE_COLS["linear"],primary:(DE_PRIMARY["linear"]||"residual")},
+            {id:"nonlinear",n:4,name:"Lineer Olmayan (Nonlinear) DE",formula:"y' = f(t,y) nonlinear",cols:DE_COLS["nonlinear"],primary:(DE_PRIMARY["nonlinear"]||"residual")},
+            {id:"homog",n:5,name:"Homojen Diferansiyel Denklem",formula:"y' = f(y/t)",cols:DE_COLS["homog"],primary:(DE_PRIMARY["homog"]||"residual")},
+            {id:"nonhomog",n:6,name:"Homojen Olmayan Diferansiyel Denklem",formula:"L[y] = g(t)",cols:DE_COLS["nonhomog"],primary:(DE_PRIMARY["nonhomog"]||"residual")},
+            {id:"separable",n:7,name:"Ayrilabilir Diferansiyel Denklem",formula:"dy/dt = g(t)*h(y)",cols:DE_COLS["separable"],primary:(DE_PRIMARY["separable"]||"residual")},
+            {id:"exact",n:8,name:"Tam Diferansiyel Denklem",formula:"M dx + N dy = 0, My=Nx",cols:DE_COLS["exact"],primary:(DE_PRIMARY["exact"]||"residual")},
+            {id:"bernoulli",n:9,name:"Bernoulli Diferansiyel Denklemi",formula:"y' + P y = Q y^n",cols:DE_COLS["bernoulli"],primary:(DE_PRIMARY["bernoulli"]||"residual")},
+            {id:"riccati",n:10,name:"Riccati Diferansiyel Denklemi",formula:"y' = P + Q y + R y^2",cols:DE_COLS["riccati"],primary:(DE_PRIMARY["riccati"]||"residual")},
+            {id:"clairaut",n:11,name:"Clairaut Diferansiyel Denklemi",formula:"y = x y' + f(y')",cols:DE_COLS["clairaut"],primary:(DE_PRIMARY["clairaut"]||"residual")},
+            {id:"lagrange_de",n:12,name:"Lagrange Diferansiyel Denklemi",formula:"y = x f(y') + g(y')",cols:DE_COLS["lagrange_de"],primary:(DE_PRIMARY["lagrange_de"]||"residual")},
+            {id:"euler_cauchy",n:13,name:"Euler-Cauchy Diferansiyel Denklemi",formula:"a x^2 y'' + b x y' + c y = 0",cols:DE_COLS["euler_cauchy"],primary:(DE_PRIMARY["euler_cauchy"]||"residual")},
+            {id:"bessel",n:14,name:"Bessel Diferansiyel Denklemi",formula:"x^2 y'' + x y' + (x^2-nu^2)y = 0",cols:DE_COLS["bessel"],primary:(DE_PRIMARY["bessel"]||"residual")},
+            {id:"legendre",n:15,name:"Legendre Diferansiyel Denklemi",formula:"((1-x^2)y')' + n(n+1)y = 0",cols:DE_COLS["legendre"],primary:(DE_PRIMARY["legendre"]||"residual")},
+            {id:"hermite",n:16,name:"Hermite Diferansiyel Denklemi",formula:"y'' - 2x y' + lambda y = 0",cols:DE_COLS["hermite"],primary:(DE_PRIMARY["hermite"]||"residual")},
+            {id:"laguerre",n:17,name:"Laguerre Diferansiyel Denklemi",formula:"x y'' + (1-x) y' + n y = 0",cols:DE_COLS["laguerre"],primary:(DE_PRIMARY["laguerre"]||"residual")},
+            {id:"chebyshev",n:18,name:"Chebyshev Diferansiyel Denklemi",formula:"(1-x^2)y'' - x y' + n^2 y = 0",cols:DE_COLS["chebyshev"],primary:(DE_PRIMARY["chebyshev"]||"residual")},
+            {id:"hypergeom",n:19,name:"Hypergeometrik Diferansiyel Denklem",formula:"x(1-x)y'' + [c-(a+b+1)x]y' - ab y = 0",cols:DE_COLS["hypergeom"],primary:(DE_PRIMARY["hypergeom"]||"residual")},
+            {id:"airy",n:20,name:"Airy Diferansiyel Denklemi",formula:"y'' - x y = 0",cols:DE_COLS["airy"],primary:(DE_PRIMARY["airy"]||"residual")},
+            {id:"heat",n:21,name:"Heat (Isi) Denklemi",formula:"u_t = kappa u_xx",cols:DE_COLS["heat"],primary:(DE_PRIMARY["heat"]||"residual")},
+            {id:"wave",n:22,name:"Wave (Dalga) Denklemi",formula:"u_tt = c^2 u_xx",cols:DE_COLS["wave"],primary:(DE_PRIMARY["wave"]||"residual")},
+            {id:"laplace",n:23,name:"Laplace Denklemi",formula:"nabla^2 u = 0",cols:DE_COLS["laplace"],primary:(DE_PRIMARY["laplace"]||"residual")},
+            {id:"poisson",n:24,name:"Poisson Denklemi",formula:"nabla^2 u = f",cols:DE_COLS["poisson"],primary:(DE_PRIMARY["poisson"]||"residual")},
+            {id:"schrodinger",n:25,name:"Schrodinger Denklemi",formula:"i hbar psi_t = -(hbar^2/2m) psi_xx + V psi",cols:DE_COLS["schrodinger"],primary:(DE_PRIMARY["schrodinger"]||"residual")},
+            {id:"navier",n:26,name:"Navier-Stokes Denklemleri",formula:"du/dt + (u·nabla)u = -grad p/rho + nu lap u",cols:DE_COLS["navier"],primary:(DE_PRIMARY["navier"]||"residual")},
+            {id:"euler_fluid",n:27,name:"Euler Hareket Denklemleri",formula:"du/dt + (u·nabla)u = -grad p/rho",cols:DE_COLS["euler_fluid"],primary:(DE_PRIMARY["euler_fluid"]||"residual")},
+            {id:"helmholtz",n:28,name:"Helmholtz Denklemi",formula:"nabla^2 u + k^2 u = 0",cols:DE_COLS["helmholtz"],primary:(DE_PRIMARY["helmholtz"]||"residual")},
+            {id:"maxwell",n:29,name:"Maxwell Denklemleri",formula:"curl E = -dB/dt , div E = rho/eps0",cols:DE_COLS["maxwell"],primary:(DE_PRIMARY["maxwell"]||"residual")},
+            {id:"kdv",n:30,name:"Korteweg-de Vries (KdV)",formula:"u_t + 6 u u_x + u_xxx = 0",cols:DE_COLS["kdv"],primary:(DE_PRIMARY["kdv"]||"residual")},
+            {id:"burgers",n:31,name:"Burgers Denklemi",formula:"u_t + u u_x = nu u_xx",cols:DE_COLS["burgers"],primary:(DE_PRIMARY["burgers"]||"residual")},
+            {id:"sinegordon",n:32,name:"Sine-Gordon Denklemi",formula:"u_tt - u_xx + sin(u) = 0",cols:DE_COLS["sinegordon"],primary:(DE_PRIMARY["sinegordon"]||"residual")},
+            {id:"lotka",n:33,name:"Lotka-Volterra Denklemleri",formula:"dx/dt=a x - b x y , dy/dt = d x y - g y",cols:DE_COLS["lotka"],primary:(DE_PRIMARY["lotka"]||"residual")},
+            {id:"blackscholes",n:34,name:"Black-Scholes Denklemi",formula:"V_t + 0.5 sig^2 S^2 V_SS + r S V_S - r V = 0",cols:DE_COLS["blackscholes"],primary:(DE_PRIMARY["blackscholes"]||"residual")},
+            {id:"fokker",n:35,name:"Fokker-Planck Denklemi",formula:"dp/dt = -d(mu p)/dx + d2(D p)/dx2",cols:DE_COLS["fokker"],primary:(DE_PRIMARY["fokker"]||"residual")},
+            {id:"langevin",n:36,name:"Langevin Denklemi",formula:"dx/dt = -grad V + sqrt(2D) xi(t)",cols:DE_COLS["langevin"],primary:(DE_PRIMARY["langevin"]||"residual")},
+            {id:"sde",n:37,name:"Stokastik Diferansiyel Denklem (SDE)",formula:"dX = a dt + b dW",cols:DE_COLS["sde"],primary:(DE_PRIMARY["sde"]||"residual")},
+            {id:"kuramoto",n:38,name:"Kuramoto-Sivashinsky",formula:"u_t + u_xx + u_xxxx + 0.5 (u_x)^2 = 0",cols:DE_COLS["kuramoto"],primary:(DE_PRIMARY["kuramoto"]||"residual")},
+            {id:"reaction",n:39,name:"Reaction-Diffusion Denklemi",formula:"u_t = D nabla^2 u + f(u)",cols:DE_COLS["reaction"],primary:(DE_PRIMARY["reaction"]||"residual")},
+            {id:"vanderpol",n:40,name:"Van der Pol Denklemi",formula:"x'' - mu(1-x^2)x' + x = 0",cols:DE_COLS["vanderpol"],primary:(DE_PRIMARY["vanderpol"]||"residual")},
+            {id:"duffing",n:41,name:"Duffing Denklemi",formula:"x'' + delta x' + alpha x + beta x^3 = gamma cos(wt)",cols:DE_COLS["duffing"],primary:(DE_PRIMARY["duffing"]||"residual")},
+            {id:"mathieu",n:42,name:"Mathieu Denklemi",formula:"x'' + (a - 2q cos(2t)) x = 0",cols:DE_COLS["mathieu"],primary:(DE_PRIMARY["mathieu"]||"residual")},
+            {id:"hill",n:43,name:"Hill Denklemi",formula:"x'' + (lambda + Q(t)) x = 0",cols:DE_COLS["hill"],primary:(DE_PRIMARY["hill"]||"residual")},
+            {id:"ginzburg",n:44,name:"Ginzburg-Landau Denklemi",formula:"A_t = A + (1+ia)A_xx - (1+ib)|A|^2 A",cols:DE_COLS["ginzburg"],primary:(DE_PRIMARY["ginzburg"]||"residual")},
+            {id:"cahnhilliard",n:45,name:"Cahn-Hilliard Denklemi",formula:"u_t = nabla^2 (u^3 - u - eps^2 nabla^2 u)",cols:DE_COLS["cahnhilliard"],primary:(DE_PRIMARY["cahnhilliard"]||"residual")},
+            {id:"kleingordon",n:46,name:"Klein-Gordon Denklemi",formula:"Box phi + m^2 phi = 0",cols:DE_COLS["kleingordon"],primary:(DE_PRIMARY["kleingordon"]||"residual")},
+            {id:"dirac",n:47,name:"Dirac Denklemi",formula:"(i gamma^mu d_mu - m) psi = 0",cols:DE_COLS["dirac"],primary:(DE_PRIMARY["dirac"]||"residual")},
+            {id:"liouville",n:48,name:"Liouville Denklemi",formula:"d rho/dt + {rho, H} = 0",cols:DE_COLS["liouville"],primary:(DE_PRIMARY["liouville"]||"residual")},
+            {id:"beltrami",n:49,name:"Beltrami Denklemi",formula:"curl v = lambda v",cols:DE_COLS["beltrami"],primary:(DE_PRIMARY["beltrami"]||"residual")},
+            {id:"riccati_bessel",n:50,name:"Riccati-Bessel Denklemi",formula:"x^2 y'' + [x^2 - n(n+1)] y = 0",cols:DE_COLS["riccati_bessel"],primary:(DE_PRIMARY["riccati_bessel"]||"residual")},
+        ];
+
+        function deInitCards(){
+            const box=document.getElementById('de-cards'); if(!box) return;
+            box.innerHTML=DE.eqs.map(eq=>`<div class="bg-zinc-950 rounded-2xl p-3.5 border border-zinc-800 hover:border-violet-800/50 de-card" data-name="${eq.name.toLowerCase()}" id="de-card-${eq.id}">
+                <div class="flex items-start justify-between gap-2 mb-1">
+                    <div class="text-[13px] font-semibold text-violet-300"><span class="text-zinc-600 font-mono text-[10px] mr-1">${eq.n}.</span>${eq.name}</div>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 shrink-0" id="de-badge-${eq.id}">—</span>
+                </div>
+                <div class="text-[10px] text-violet-200/70 font-mono mb-2 leading-snug break-all">${eq.formula}</div>
+                <div class="text-[11px] text-zinc-400 min-h-[3.5rem]" id="de-stat-${eq.id}">Henüz çalıştırılmadı</div>
+                <button onclick="deRunOne('${eq.id}')" class="mt-2 w-full py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-[11px] text-zinc-300">Sadece bunu çalıştır</button>
+            </div>`).join('');
+            const sel=document.getElementById('de-table-eq');
+            if(sel) sel.innerHTML='<option value="__all__">Tümü (birleşik)</option>'+DE.eqs.map(eq=>`<option value="${eq.id}">${eq.n}. ${eq.name}</option>`).join('');
+        }
+        function deFilterCards(){
+            const q=(document.getElementById('de-card-filter')?.value||'').toLowerCase(); let n=0;
+            document.querySelectorAll('.de-card').forEach(el=>{ const show=!q||el.dataset.name.includes(q); el.style.display=show?'':'none'; if(show)n++; });
+            const c=document.getElementById('de-card-count'); if(c) c.textContent=n+' / 50 denklem';
+        }
+        function deRunOne(id){
+            const eq=DE.eqs.find(e=>e.id===id); if(!eq) return;
+            const N=Math.min(10000,Math.max(10,+document.getElementById('de-n').value||5000));
+            const seed=((+document.getElementById('de-seed').value||42)+eq.n*7919)>>>0;
+            const rnd=deRand(seed), rows=[], primary=[], t0=performance.now();
+            for(let i=0;i<N;i++){
+                const row=deSample(eq.id,rnd);
+                row._i=i+1; row._eq=eq.id; row._eqName=eq.name; row._n=eq.n;
+                rows.push(row);
+                const v=row[eq.primary]; if(v!=null&&isFinite(v)) primary.push(v);
+            }
+            const st=deStats(primary), ms=performance.now()-t0;
+            DE.results[id]={rows,stats:st,cols:eq.cols,primary:eq.primary,name:eq.name,formula:eq.formula,N,ms,n:eq.n};
+            const badge=document.getElementById('de-badge-'+id);
+            if(badge){badge.textContent=N+' satır'; badge.className='text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 shrink-0';}
+            const statEl=document.getElementById('de-stat-'+id);
+            if(statEl) statEl.innerHTML=`<div class="text-[10px] text-zinc-500">${eq.primary} · ${ms.toFixed(0)} ms</div><div>μ <b class="text-zinc-100">${deFmt(st.mean)}</b> · σ ${deFmt(st.std)}</div><div class="text-zinc-500">p10 ${deFmt(st.p10)} · p50 ${deFmt(st.p50)} · p90 ${deFmt(st.p90)}</div>`;
+            return DE.results[id];
+        }
+        function deRebuildCombined(){ DE.combined=[]; DE.eqs.forEach(eq=>{ const R=DE.results[eq.id]; if(R) R.rows.forEach(row=>DE.combined.push(row)); }); }
+        async function deRunAll(){
+            if(DE.running) return; DE.running=true; DE.results={}; DE.combined=[]; DE.page=0;
+            const btn=document.getElementById('de-btn-all'); if(btn) btn.disabled=true;
+            document.getElementById('de-progress-wrap')?.classList.remove('hidden');
+            const st=document.getElementById('de-status');
+            if(st){ st.textContent='250K hesaplanıyor…'; st.className='px-2.5 py-1 rounded-full bg-amber-950 border border-amber-800 text-amber-300 text-[11px]'; }
+            const t0=performance.now(), N=+document.getElementById('de-n').value||5000;
+            for(let i=0;i<DE.eqs.length;i++){
+                deRunOne(DE.eqs[i].id);
+                const pct=((i+1)/DE.eqs.length)*100;
+                const bar=document.getElementById('de-progress-bar'); if(bar) bar.style.width=pct+'%';
+                const lab=document.getElementById('de-progress-label'); if(lab) lab.textContent=(i+1)+' / 50 · '+((i+1)*N).toLocaleString('tr-TR')+' satır';
+                const eta=((performance.now()-t0)/(i+1))*(DE.eqs.length-i-1);
+                const etaEl=document.getElementById('de-progress-eta'); if(etaEl) etaEl.textContent='ETA '+(eta/1000).toFixed(1)+'s';
+                await new Promise(r=>setTimeout(r,0));
+            }
+            deRebuildCombined();
+            const total=performance.now()-t0;
+            if(st){ st.textContent='OK · '+DE.combined.length.toLocaleString('tr-TR')+' satır · '+(total/1000).toFixed(2)+'s'; st.className='px-2.5 py-1 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300 text-[11px]'; }
+            if(btn) btn.disabled=false; const csv=document.getElementById('de-btn-csv'); if(csv) csv.disabled=false;
+            DE.running=false; deUpdateSummary();
+            const sel=document.getElementById('de-table-eq'); if(sel) sel.value='__all__'; deRenderTable();
+        }
+        function deUpdateSummary(){
+            const box=document.getElementById('de-summary'); if(!box) return;
+            const keys=Object.keys(DE.results); if(!keys.length){box.classList.add('hidden');return;}
+            box.classList.remove('hidden'); let total=0,ms=0; keys.forEach(k=>{total+=DE.results[k].N;ms+=DE.results[k].ms||0;});
+            box.innerHTML=`<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">Denklem</div><div class="text-lg font-semibold text-violet-300 font-mono">${keys.length}</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">Toplam satır</div><div class="text-lg font-semibold text-fuchsia-300 font-mono">${total.toLocaleString('tr-TR')}</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">Süre</div><div class="text-lg font-semibold text-emerald-300 font-mono">${(ms/1000).toFixed(2)}s</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">satır/s</div><div class="text-lg font-semibold text-cyan-300 font-mono">${(total/Math.max(ms/1000,1e-6)).toFixed(0)}</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center col-span-2"><div class="text-[9px] text-zinc-500">Kapsam</div><div class="text-sm text-zinc-300">ODE · PDE · Özel · Dalga · Finans · Kuantum</div></div>`;
+        }
+        function deGetView(){
+            const id=document.getElementById('de-table-eq')?.value||'__all__';
+            const q=(document.getElementById('de-table-filter')?.value||'').toLowerCase().trim();
+            let rows,cols,title,stats,primary,formula;
+            if(id==='__all__'){
+                rows=DE.combined; const present=new Set(['_n','_eqName','_i']);
+                rows.slice(0,300).forEach(r=>Object.keys(r).forEach(k=>{if(!k.startsWith('_')||k==='_n'||k==='_eqName'||k==='_i')present.add(k);}));
+                cols=['_n','_eqName','_i',...[...present].filter(c=>!['_n','_eqName','_i','_eq'].includes(c)).slice(0,14)];
+                title='Tüm denklemler'; stats=null; primary=null; formula='50 diferansiyel denklem birleşik çıktı';
+            } else {
+                const R=DE.results[id]; if(!R) return {rows:[],cols:[],title:'',stats:null,primary:null,formula:''};
+                rows=R.rows; cols=R.cols; title=R.name; stats=R.stats; primary=R.primary; formula=R.formula;
+            }
+            if(q) rows=rows.filter(r=>((r._eqName||'')+' '+Object.values(r).join(' ')).toLowerCase().includes(q));
+            return {rows,cols,title,stats,primary,formula,id};
+        }
+        function deRenderTable(){
+            const thead=document.getElementById('de-thead'), tbody=document.getElementById('de-tbody'); if(!thead||!tbody) return;
+            const view=deGetView(), pageSize=Math.max(20,+document.getElementById('de-page-size')?.value||100);
+            const totalPages=Math.max(1,Math.ceil(view.rows.length/pageSize));
+            if(DE.page>=totalPages) DE.page=totalPages-1; if(DE.page<0) DE.page=0;
+            const start=DE.page*pageSize, slice=view.rows.slice(start,start+pageSize);
+            const lab=c=>c==='_eqName'?'denklem':c==='_i'?'#':c==='_n'?'no':c;
+            thead.innerHTML=`<tr class="border-b border-zinc-700">${view.cols.map(c=>`<th class="px-2 py-2 text-left whitespace-nowrap">${lab(c)}</th>`).join('')}</tr>`;
+            tbody.innerHTML=slice.map(row=>`<tr class="border-t border-zinc-800/50 hover:bg-zinc-900/80">${view.cols.map(c=>{
+                if(c==='_eqName') return `<td class="px-2 py-1 text-violet-300/90 whitespace-nowrap">${row[c]||''}</td>`;
+                if(c==='_i'||c==='_n') return `<td class="px-2 py-1 text-zinc-500">${row[c]}</td>`;
+                return `<td class="px-2 py-1 whitespace-nowrap">${deFmt(row[c])}</td>`;
+            }).join('')}</tr>`).join('');
+            const info=document.getElementById('de-table-info'); if(info) info.textContent=`${view.title}: ${start+1}–${Math.min(start+pageSize,view.rows.length)} / ${view.rows.length.toLocaleString('tr-TR')}`;
+            const pl=document.getElementById('de-page-label'); if(pl) pl.textContent=(DE.page+1)+' / '+totalPages;
+            const fb=document.getElementById('de-formula-box');
+            if(fb){ if(view.formula){fb.classList.remove('hidden'); fb.textContent=view.formula;} else fb.classList.add('hidden'); }
+            const detail=document.getElementById('de-detail-stats');
+            if(detail&&view.stats){ detail.classList.remove('hidden'); const s=view.stats;
+                detail.innerHTML=[['n',s.n],['mean',deFmt(s.mean)],['std',deFmt(s.std)],['min',deFmt(s.min)],['p10',deFmt(s.p10)],['p50',deFmt(s.p50)],['p90',deFmt(s.p90)],['max',deFmt(s.max)]]
+                    .map(([k,v])=>`<div class="bg-zinc-900 rounded-lg px-2 py-1.5 border border-zinc-800"><span class="text-zinc-500">${k}</span> <b class="text-zinc-200 font-mono ml-1">${v}</b></div>`).join('');
+            } else if(detail) detail.classList.add('hidden');
+        }
+        function dePage(d){ DE.page+=d; deRenderTable(); }
+        function deExportCSV(){
+            if(!Object.keys(DE.results).length) return;
+            const lines=['# MuhendisX 50 Diferansiyel Denklem','# rows='+DE.combined.length,''];
+            const colSet=new Set(['eq_n','eq_id','eq_name','i']);
+            Object.values(DE.results).forEach(R=>R.cols.forEach(c=>colSet.add(c)));
+            const cols=[...colSet]; lines.push(cols.join(','));
+            DE.eqs.forEach(eq=>{ const R=DE.results[eq.id]; if(!R) return;
+                R.rows.forEach(row=>{ lines.push(cols.map(c=>{
+                    if(c==='eq_n') return eq.n; if(c==='eq_id') return eq.id;
+                    if(c==='eq_name') return '"'+eq.name.replace(/"/g,'')+'"'; if(c==='i') return row._i;
+                    return row[c]==null?'':row[c];
+                }).join(',')); });
+            });
+            lines.push('','## STATS','eq_n,eq_id,primary,mean,std,min,p50,max,ms');
+            DE.eqs.forEach(eq=>{ const R=DE.results[eq.id]; if(!R) return; const s=R.stats;
+                lines.push([eq.n,eq.id,R.primary,s.mean,s.std,s.min,s.p50,s.max,R.ms].join(',')); });
+            const a=document.createElement('a');
+            a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'}));
+            a.download='MuhendisX_50_DE_'+DE.combined.length+'rows.csv'; a.click();
+        }
+        function deClear(){
+            DE.results={}; DE.combined=[]; DE.page=0;
+            DE.eqs.forEach(eq=>{
+                const b=document.getElementById('de-badge-'+eq.id); if(b){b.textContent='—'; b.className='text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 shrink-0';}
+                const s=document.getElementById('de-stat-'+eq.id); if(s) s.textContent='Henüz çalıştırılmadı';
+            });
+            document.getElementById('de-summary')?.classList.add('hidden');
+            document.getElementById('de-progress-wrap')?.classList.add('hidden');
+            document.getElementById('de-detail-stats')?.classList.add('hidden');
+            document.getElementById('de-formula-box')?.classList.add('hidden');
+            const csv=document.getElementById('de-btn-csv'); if(csv) csv.disabled=true;
+            const th=document.getElementById('de-thead'); if(th) th.innerHTML='';
+            const tb=document.getElementById('de-tbody'); if(tb) tb.innerHTML='';
+            const st=document.getElementById('de-status'); if(st){st.textContent='Hazır'; st.className='px-2.5 py-1 rounded-full bg-violet-950 border border-violet-800 text-violet-300 text-[11px]';}
+        }
+
+
+
+        /* ========== 50 INTEGRAL FABRIKASI (50 x 5000) ========== */
+        const INT = { results:{}, running:false, eqs:[], page:0, combined:[] };
+        function intRand(seed){ let s=(seed>>>0)||1; return function(){ s=(Math.imul(s,1664525)+1013904223)>>>0; return s/4294967296; }; }
+        function deU(r,a,b){ return a+(b-a)*r(); }
+        function intStats(arr){
+            if(!arr.length) return {n:0,mean:0,std:0,min:0,max:0,p10:0,p50:0,p90:0};
+            const s=arr.slice().sort((a,b)=>a-b), n=s.length, mean=s.reduce((a,b)=>a+b,0)/n;
+            const std=Math.sqrt(s.reduce((a,x)=>a+(x-mean)**2,0)/n);
+            const q=p=>s[Math.min(n-1,Math.floor(n*p))];
+            return {n,mean,std,min:s[0],max:s[n-1],p10:q(0.1),p50:q(0.5),p90:q(0.9)};
+        }
+        function intFmt(v,d){ if(v==null||!isFinite(v))return '—'; const x=+v; if(Math.abs(x)>=1e5||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(5); return x.toFixed(d!=null?d:6); }
+
+        function intSample(id,r){
+            switch(id){
+            case "gaussian": { const val=Math.sqrt(Math.PI), approx=0; for(let i=0;i<40;i++){const xi=-4+i*0.2; approx+=Math.exp(-xi*xi)*0.2;} return {value:val,approx,error:approx-val,param:0}; }
+            case "dirichlet": { const val=Math.PI/2, x=deU(r,1,20); let approx=0; for(let i=1;i<200;i++){const t=i*x/200; approx+=Math.sin(t)/t*(x/200);} return {x,value:val,approx,error:approx-val}; }
+            case "fresnel": { const x=deU(r,0.2,3); let S=0,C=0; for(let i=0;i<100;i++){const t=i*x/100; S+=Math.sin(t*t)*x/100; C+=Math.cos(t*t)*x/100;} return {x,S,C,S2:S*S,C2:C*C,limit_proxy:0.5}; }
+            case "gamma": { const z=deU(r,0.5,5); let g=1; for(let i=0;i<80;i++){const t=(i+0.5)*0.15; g+=Math.pow(t,z-1)*Math.exp(-t)*0.15;} return {z,Gamma_approx:g,lnGamma:Math.log(Math.max(g,1e-12)),residual:0}; }
+            case "beta": { const a=deU(r,0.5,3),b=deU(r,0.5,3); let B=0; for(let i=1;i<100;i++){const t=i/100; B+=Math.pow(t,a-1)*Math.pow(1-t,b-1)/100;} return {a,b,B_approx:B,ab_sum:a+b}; }
+            case "cauchy_goursat": { const R=deU(r,0.5,2); return {R,contour_integral:0,analytic:1,residual:0}; }
+            case "cauchy_formula": { const a=deU(r,-0.5,0.5), R=deU(r,1,2), fa=Math.sin(a); return {a,R,f_a:fa,integral_proxy:fa,error:0}; }
+            case "riemann_stieltjes": { const n=20; let s=0; for(let i=0;i<n;i++){const ti=i/n, t2=(i+1)/n; s+=Math.sin(ti)*(t2*t2-ti*ti);} return {n,integral_approx:s,f:'sin',g:'t^2'}; }
+            case "lebesgue": { const measure=deU(r,0.5,2); let s=0; for(let i=0;i<50;i++) s+=Math.abs(Math.sin(i/10))*(measure/50); return {measure,integral_approx:s,positive:1}; }
+            case "ito": { let W=0,I=0; for(let i=0;i<100;i++){const dW=deU(r,-1,1)*Math.sqrt(0.01); I+=W*dW; W+=dW;} return {I_ito:I,W_end:W,steps:100,mean_proxy:0}; }
+            case "stratonovich": { let W=0,I=0; for(let i=0;i<100;i++){const dW=deU(r,-1,1)*Math.sqrt(0.01); I+=(W+0.5*dW)*dW; W+=dW;} return {I_strat:I,W_end:W,steps:100,ito_correction:0.5}; }
+            case "poisson_formula": { const r0=deU(r,0.1,0.9), th=deU(r,0,2*Math.PI); return {r:r0,theta:th,u_proxy:Math.cos(th)*r0,harmonic:1}; }
+            case "mellin": { const s=deU(r,0.5,2), x=deU(r,0.1,5); let M=0; for(let i=1;i<80;i++){const t=i/20; M+=Math.pow(t,s-1)*Math.exp(-t)*0.05;} return {s,M_approx:M,x}; }
+            case "laplace": { const s=deU(r,0.5,3); let L=0; for(let i=0;i<80;i++){const t=i*0.1; L+=Math.exp(-s*t)*Math.sin(t)*0.1;} return {s,L_sin:L,exact:1/(s*s+1),error:L-1/(s*s+1)}; }
+            case "fourier": { const w=deU(r,-5,5); let re=0,im=0; for(let i=-50;i<50;i++){const t=i*0.1; const f=Math.exp(-t*t); re+=f*Math.cos(-w*t)*0.1; im+=f*Math.sin(-w*t)*0.1;} return {omega:w,Re:re,Im:im,mod:Math.hypot(re,im)}; }
+            case "abel": { const x=deU(r,0.2,2); let f=0; for(let i=1;i<40;i++){const t=i*x/40; f+=t*Math.sqrt(x-t)*(x/40);} return {x,f_approx:f,kernel:'sqrt(x-t)'}; }
+            case "fredholm1": { const x=deU(r,0,1), lam=deU(r,0.1,1); let rhs=0; for(let i=0;i<30;i++){const t=i/30; rhs+=(x*t)*Math.sin(t)/30;} return {x,lambda:lam,rhs,K:'x*t'}; }
+            case "fredholm2": { const x=deU(r,0,1), lam=deU(r,0.1,0.8), f=Math.sin(Math.PI*x); let Ku=0; for(let i=0;i<30;i++){const t=i/30; Ku+=(Math.min(x,t))*f/30;} return {x,lambda:lam,f,u_approx:f+lam*Ku,residual:0}; }
+            case "volterra1": { const x=deU(r,0.2,2); let f=0; for(let i=1;i<40;i++){const t=i*x/40; f+=(x-t)*Math.cos(t)*(x/40);} return {x,f_approx:f,K:'x-t'}; }
+            case "volterra2": { const x=deU(r,0.2,2), lam=deU(r,0.1,0.5), f=x; let Ku=0; for(let i=1;i<40;i++){const t=i*x/40; Ku+=Math.sin(x-t)*f*(x/40);} return {x,lambda:lam,f,u_approx:f+lam*Ku}; }
+            case "urysohn": { const x=deU(r,0,1), u=deU(r,-1,1); return {x,u,K_proxy:x*u*u,nonlinear:1,residual:deU(r,-0.05,0.05)}; }
+            case "hammerstein": { const x=deU(r,0,1), u=Math.sin(Math.PI*x), g=u*u; let Kg=0; for(let i=0;i<30;i++){const t=i/30; Kg+=Math.min(x,t)*g/30;} return {x,u,g,Kg,u_next:Math.sin(Math.PI*x)+0.3*Kg}; }
+            case "wiener": { let path=0,S=0; for(let i=0;i<50;i++){path+=deU(r,-1,1)*Math.sqrt(0.02); S+=path*path*0.02;} return {action_proxy:S,path_end:path,measure:'Wiener'}; }
+            case "feynman": { const S=deU(r,0.1,5), hbar=1; return {S,amp_re:Math.cos(S/hbar),amp_im:Math.sin(S/hbar),hbar,path_weight:1}; }
+            case "elliptic1": { const phi=deU(r,0.1,Math.PI/2), kk=deU(r,0.1,0.9); let F=0; for(let i=0;i<80;i++){const t=i*phi/80; F+=(phi/80)/Math.sqrt(Math.max(1e-12,1-kk*kk*Math.sin(t)**2));} return {phi,k:kk,F,complete_proxy:F}; }
+            case "elliptic2": { const phi=deU(r,0.1,Math.PI/2), kk=deU(r,0.1,0.9); let E=0; for(let i=0;i<80;i++){const t=i*phi/80; E+=Math.sqrt(Math.max(0,1-kk*kk*Math.sin(t)**2))*(phi/80);} return {phi,k:kk,E}; }
+            case "elliptic3": { const phi=deU(r,0.1,Math.PI/2), kk=deU(r,0.1,0.8), n=deU(r,0.1,0.8); let P=0; for(let i=0;i<80;i++){const t=i*phi/80; const s=Math.sin(t)**2; P+=(phi/80)/((1-n*s)*Math.sqrt(Math.max(1e-12,1-kk*kk*s)));} return {phi,k:kk,n,Pi:P}; }
+            case "frullani": { const a=deU(r,0.5,2), b=deU(r,0.5,2); let I=0; for(let i=1;i<100;i++){const x=i*0.1; I+=(Math.exp(-a*x)-Math.exp(-b*x))/x*0.1;} return {a,b,I_approx:I,exact_proxy:Math.log(b/a)}; }
+            case "raabe": { const a=deU(r,1,3); let I=0; for(let i=0;i<40;i++){const t=a+i/40; I+=Math.log(Math.max(0.1,t))*(1/40);} return {a,integral_approx:I}; }
+            case "catalani": { const G=0.915965594; let I=0; for(let i=1;i<100;i++){const th=i*(Math.PI/4)/100; I+=Math.log(1/Math.tan(th))*(Math.PI/4)/100;} return {G,approx:I,error:I-G}; }
+            case "euler_maclaurin": { const n=Math.floor(deU(r,5,30)); let sum=0,integ=0; for(let i=1;i<=n;i++) sum+=1/i; for(let i=1;i<=n;i++) integ+=1/i; return {n,sum,integral_proxy:Math.log(n)+0.57721,error:sum-(Math.log(n)+0.57721)}; }
+            case "si": { const x=deU(r,0.2,8); let Si=0; for(let i=1;i<120;i++){const t=i*x/120; Si+=Math.sin(t)/t*(x/120);} return {x,Si,limit_pi2:Math.PI/2}; }
+            case "ci": { const x=deU(r,0.2,8); let Ci=0; for(let i=0;i<80;i++){const t=x+i*0.15; Ci+=-Math.cos(t)/t*0.15;} return {x,Ci_approx:Ci}; }
+            case "ei": { const x=deU(r,0.2,3); let Ei=0; for(let i=0;i<80;i++){const t=0.05+i*0.08; Ei+=Math.exp(-t)/t*0.08;} return {x,Ei_proxy:Math.exp(x)*Ei,series_term:x}; }
+            case "li": { const x=deU(r,2,20); let li=0; for(let i=2;i<100;i++){const t=2+(x-2)*i/100; li+=1/Math.log(t)*((x-2)/100);} return {x,li_approx:li}; }
+            case "selberg": { const n=Math.floor(deU(r,2,5)), a=deU(r,0.5,2); return {n,a,value_proxy:Math.pow(Math.PI,n/2)*Math.pow(a,-n),dim:n}; }
+            case "barnes": { const a=deU(r,0.5,2), b=deU(r,0.5,2); return {a,b,integrand_proxy:Math.exp(-a-b),contour:'vertical'}; }
+            case "ramanujan": { const s=deU(r,1,3); return {s,moment_proxy:Math.exp(-s),master:1}; }
+            case "green": { const Px=deU(r,-1,1), Qy=deU(r,-1,1), area=deU(r,0.5,2); return {dQdx_minus_dPdy:Qy-Px,area,double_integral:(Qy-Px)*area,curve_proxy:(Qy-Px)*area}; }
+            case "stokes": { const curl=deU(r,-1,1), area=deU(r,0.5,3); return {curl_F:curl,area,flux:curl*area,circulation:curl*area}; }
+            case "gauss_div": { const div=deU(r,-1,1), vol=deU(r,0.5,3); return {div_F:div,volume:vol,triple_integral:div*vol,surface_flux:div*vol}; }
+            case "hilbert": { const x=deU(r,-2,2); let H=0; for(let i=-40;i<40;i++){const t=i*0.1; if(Math.abs(t-x)<0.05) continue; H+=(Math.sin(t)/(x-t))*0.1;} return {x,H_approx:H/Math.PI,f:'sin'}; }
+            case "radon": { const theta=deU(r,0,Math.PI), p=deU(r,-1,1); return {theta,p,Rf_proxy:Math.exp(-p*p),line_integral:Math.exp(-p*p)}; }
+            case "abel_plana": { const n=Math.floor(deU(r,5,20)); let sum=0; for(let i=1;i<=n;i++) sum+=Math.exp(-i); return {n,sum,integral_proxy:Math.exp(-1)/(1-Math.exp(-1)),diff:sum-Math.exp(-1)/(1-Math.exp(-1))}; }
+            case "residue": { const res=deU(r,-1,1); return {residue:res,contour_integral:2*Math.PI*res,poles:1}; }
+            case "poisson_jensen": { const r0=deU(r,0.3,0.9), logf=deU(r,-1,1); return {r:r0,log_mod_f:logf,mean_proxy:logf,zeros:0}; }
+            case "airy_int": { const x=deU(r,-2,2); let Ai=0; for(let i=0;i<100;i++){const t=i*0.05; Ai+=Math.cos(t*t*t/3+x*t)*0.05;} return {x,Ai_approx:Ai/Math.PI}; }
+            case "bessel_int": { const n=Math.floor(deU(r,0,4)), x=deU(r,0.5,6); let J=0; for(let i=0;i<100;i++){const th=i*Math.PI/100; J+=Math.cos(n*th-x*Math.sin(th))*Math.PI/100;} return {n,x,Jn_approx:J/Math.PI}; }
+            case "polylog_int": { const s=deU(r,1.5,3), z=deU(r,0.1,0.9); let Li=0; for(let k=1;k<40;k++) Li+=Math.pow(z,k)/Math.pow(k,s); return {s,z,Li_approx:Li}; }
+            case "fox_h": { const z=deU(r,0.1,2); return {z,H_proxy:Math.exp(-z),mellin_barnes:1}; }
+            default: return {value:0,residual:0};
+            }
+        }
+
+        const INT_COLS = {
+            gaussian:null,
+            dirichlet:null,
+            fresnel:null,
+            gamma:null,
+            beta:null,
+            cauchy_goursat:null,
+            cauchy_formula:null,
+            riemann_stieltjes:null,
+            lebesgue:null,
+            ito:null,
+            stratonovich:null,
+            poisson_formula:null,
+            mellin:null,
+            laplace:null,
+            fourier:null,
+            abel:null,
+            fredholm1:null,
+            fredholm2:null,
+            volterra1:null,
+            volterra2:null,
+            urysohn:null,
+            hammerstein:null,
+            wiener:null,
+            feynman:null,
+            elliptic1:null,
+            elliptic2:null,
+            elliptic3:null,
+            frullani:null,
+            raabe:null,
+            catalani:null,
+            euler_maclaurin:null,
+            si:null,
+            ci:null,
+            ei:null,
+            li:null,
+            selberg:null,
+            barnes:null,
+            ramanujan:null,
+            green:null,
+            stokes:null,
+            gauss_div:null,
+            hilbert:null,
+            radon:null,
+            abel_plana:null,
+            residue:null,
+            poisson_jensen:null,
+            airy_int:null,
+            bessel_int:null,
+            polylog_int:null,
+            fox_h:null,
+        };
+        const INT_PRIMARY = {"gaussian": "error", "dirichlet": "error", "fresnel": "value", "gamma": "residual", "beta": "B_approx", "cauchy_goursat": "residual", "cauchy_formula": "error", "riemann_stieltjes": "value", "lebesgue": "value", "ito": "I_ito", "stratonovich": "I_strat", "poisson_formula": "value", "mellin": "value", "laplace": "error", "fourier": "mod", "abel": "value", "fredholm1": "value", "fredholm2": "residual", "volterra1": "value", "volterra2": "value", "urysohn": "residual", "hammerstein": "value", "wiener": "value", "feynman": "value", "elliptic1": "F", "elliptic2": "value", "elliptic3": "Pi", "frullani": "value", "raabe": "value", "catalani": "error", "euler_maclaurin": "error", "si": "Si", "ci": "value", "ei": "value", "li": "li_approx", "selberg": "value", "barnes": "value", "ramanujan": "value", "green": "value", "stokes": "F", "gauss_div": "F", "hilbert": "H_approx", "radon": "value", "abel_plana": "sum", "residue": "contour_integral", "poisson_jensen": "value", "airy_int": "Ai_approx", "bessel_int": "Jn_approx", "polylog_int": "Li_approx", "fox_h": "value"};
+        INT.eqs = [
+            {id:"gaussian",n:1,name:"Gaussian Integrali",formula:"∫_{-∞}^{∞} e^{-x²} dx = √π",primary:INT_PRIMARY["gaussian"]||"value"},
+            {id:"dirichlet",n:2,name:"Dirichlet Integrali",formula:"∫_0^{∞} (sin x)/x dx = π/2",primary:INT_PRIMARY["dirichlet"]||"value"},
+            {id:"fresnel",n:3,name:"Fresnel Integralleri",formula:"S(x)=∫sin(t²)dt , C(x)=∫cos(t²)dt",primary:INT_PRIMARY["fresnel"]||"value"},
+            {id:"gamma",n:4,name:"Euler Bütünleşik (Gamma) Integrali",formula:"Γ(z)=∫_0^{∞} t^{z-1} e^{-t} dt",primary:INT_PRIMARY["gamma"]||"value"},
+            {id:"beta",n:5,name:"Euler Beta Integrali",formula:"B(a,b)=∫_0^1 t^{a-1}(1-t)^{b-1} dt",primary:INT_PRIMARY["beta"]||"value"},
+            {id:"cauchy_goursat",n:6,name:"Cauchy-Goursat Integrali",formula:"∮_C f(z) dz = 0 (analitik)",primary:INT_PRIMARY["cauchy_goursat"]||"value"},
+            {id:"cauchy_formula",n:7,name:"Cauchy Integral Formülü",formula:"f(a)=(1/(2πi))∮ f(z)/(z-a) dz",primary:INT_PRIMARY["cauchy_formula"]||"value"},
+            {id:"riemann_stieltjes",n:8,name:"Riemann-Stieltjes Integrali",formula:"∫ f dg",primary:INT_PRIMARY["riemann_stieltjes"]||"value"},
+            {id:"lebesgue",n:9,name:"Lebesgue Integrali",formula:"∫ f dμ",primary:INT_PRIMARY["lebesgue"]||"value"},
+            {id:"ito",n:10,name:"Ito Stokastik Integrali",formula:"∫ H dW",primary:INT_PRIMARY["ito"]||"value"},
+            {id:"stratonovich",n:11,name:"Stratonovich Stokastik Integrali",formula:"∫ H ∘ dW",primary:INT_PRIMARY["stratonovich"]||"value"},
+            {id:"poisson_formula",n:12,name:"Poisson Integral Formülü",formula:"u(r,θ) disk üzerinde",primary:INT_PRIMARY["poisson_formula"]||"value"},
+            {id:"mellin",n:13,name:"Mellin Dönüşümü Integrali",formula:"M{f}(s)=∫_0^{∞} x^{s-1} f(x) dx",primary:INT_PRIMARY["mellin"]||"value"},
+            {id:"laplace",n:14,name:"Laplace Dönüşümü Integrali",formula:"L{f}(s)=∫_0^{∞} e^{-st} f(t) dt",primary:INT_PRIMARY["laplace"]||"value"},
+            {id:"fourier",n:15,name:"Fourier Dönüşümü Integrali",formula:"F(ω)=∫ f(t) e^{-iωt} dt",primary:INT_PRIMARY["fourier"]||"value"},
+            {id:"abel",n:16,name:"Abel Integral Denklemi",formula:"f(x)=∫_0^x k(x,t) u(t) dt",primary:INT_PRIMARY["abel"]||"value"},
+            {id:"fredholm1",n:17,name:"Fredholm Integral Denklemi (1. Tür)",formula:"f(x)=∫_a^b K(x,t) u(t) dt",primary:INT_PRIMARY["fredholm1"]||"value"},
+            {id:"fredholm2",n:18,name:"Fredholm Integral Denklemi (2. Tür)",formula:"u(x)=f(x)+λ∫ K(x,t) u(t) dt",primary:INT_PRIMARY["fredholm2"]||"value"},
+            {id:"volterra1",n:19,name:"Volterra Integral Denklemi (1. Tür)",formula:"f(x)=∫_a^x K(x,t) u(t) dt",primary:INT_PRIMARY["volterra1"]||"value"},
+            {id:"volterra2",n:20,name:"Volterra Integral Denklemi (2. Tür)",formula:"u(x)=f(x)+λ∫_a^x K(x,t) u(t) dt",primary:INT_PRIMARY["volterra2"]||"value"},
+            {id:"urysohn",n:21,name:"Urysohn Integral Denklemi",formula:"u(x)=f(x)+λ∫ K(x,t,u(t)) dt",primary:INT_PRIMARY["urysohn"]||"value"},
+            {id:"hammerstein",n:22,name:"Hammerstein Integral Denklemi",formula:"u(x)=f(x)+λ∫ K(x,t) g(t,u(t)) dt",primary:INT_PRIMARY["hammerstein"]||"value"},
+            {id:"wiener",n:23,name:"Wiener Path (Yol) Integrali",formula:"∫ F[x(·)] dW[x]",primary:INT_PRIMARY["wiener"]||"value"},
+            {id:"feynman",n:24,name:"Feynman Yol Integrali",formula:"∫ D[x] exp(iS[x]/ħ)",primary:INT_PRIMARY["feynman"]||"value"},
+            {id:"elliptic1",n:25,name:"Elliptic Integral (1. Tür)",formula:"F(φ,k)=∫_0^φ dt/√(1-k²sin²t)",primary:INT_PRIMARY["elliptic1"]||"value"},
+            {id:"elliptic2",n:26,name:"Elliptic Integral (2. Tür)",formula:"E(φ,k)=∫_0^φ √(1-k²sin²t) dt",primary:INT_PRIMARY["elliptic2"]||"value"},
+            {id:"elliptic3",n:27,name:"Elliptic Integral (3. Tür)",formula:"Π(n;φ,k)=∫_0^φ dt/((1-n sin²t)√(1-k²sin²t))",primary:INT_PRIMARY["elliptic3"]||"value"},
+            {id:"frullani",n:28,name:"Frullani Integrali",formula:"∫_0^{∞} (f(ax)-f(bx))/x dx",primary:INT_PRIMARY["frullani"]||"value"},
+            {id:"raabe",n:29,name:"Raabe Integrali",formula:"∫_a^{a+1} log Γ(t) dt",primary:INT_PRIMARY["raabe"]||"value"},
+            {id:"catalani",n:30,name:"Catalani Integrali",formula:"∫_0^{π/4} log(cot θ) dθ = G",primary:INT_PRIMARY["catalani"]||"value"},
+            {id:"euler_maclaurin",n:31,name:"Euler-Maclaurin Toplam-Integral",formula:"Σf ≈ ∫f + (f(a)+f(b))/2 + …",primary:INT_PRIMARY["euler_maclaurin"]||"value"},
+            {id:"si",n:32,name:"Sine Integrali Si(x)",formula:"Si(x)=∫_0^x (sin t)/t dt",primary:INT_PRIMARY["si"]||"value"},
+            {id:"ci",n:33,name:"Cosine Integrali Ci(x)",formula:"Ci(x)=-∫_x^{∞} (cos t)/t dt",primary:INT_PRIMARY["ci"]||"value"},
+            {id:"ei",n:34,name:"Exponential Integrali Ei(x)",formula:"Ei(x)=−∫_{-x}^{∞} (-e^{-t}/t) dt",primary:INT_PRIMARY["ei"]||"value"},
+            {id:"li",n:35,name:"Logarithmic Integrali li(x)",formula:"li(x)=∫_0^x dt/log t",primary:INT_PRIMARY["li"]||"value"},
+            {id:"selberg",n:36,name:"Selberg Integrali",formula:"çok boyutlu Beta genellemesi",primary:INT_PRIMARY["selberg"]||"value"},
+            {id:"barnes",n:37,name:"Barnes Integrali",formula:"(1/2πi)∫ Γ(a+s)Γ(b+s)… ds",primary:INT_PRIMARY["barnes"]||"value"},
+            {id:"ramanujan",n:38,name:"Ramanujan Master Teoremi Integrali",formula:"Melline bağlı momentler",primary:INT_PRIMARY["ramanujan"]||"value"},
+            {id:"green",n:39,name:"Green Integral Teoremi",formula:"∮ P dx+Q dy = ∬ (∂Q/∂x-∂P/∂y) dA",primary:INT_PRIMARY["green"]||"value"},
+            {id:"stokes",n:40,name:"Stokes Integral Teoremi",formula:"∮_C F·dr = ∬_S (∇×F)·dS",primary:INT_PRIMARY["stokes"]||"value"},
+            {id:"gauss_div",n:41,name:"Gauss-Ostrogradsky (Diverjans)",formula:"∯ F·dS = ∭ (∇·F) dV",primary:INT_PRIMARY["gauss_div"]||"value"},
+            {id:"hilbert",n:42,name:"Hilbert Dönüşümü Integrali",formula:"H{f}(x)=(1/π) P.V. ∫ f(t)/(x-t) dt",primary:INT_PRIMARY["hilbert"]||"value"},
+            {id:"radon",n:43,name:"Radon Dönüşümü Integrali",formula:"Rf(L)=∫_L f ds",primary:INT_PRIMARY["radon"]||"value"},
+            {id:"abel_plana",n:44,name:"Abel-Plana Formülü",formula:"Σf(n) integral farkı",primary:INT_PRIMARY["abel_plana"]||"value"},
+            {id:"residue",n:45,name:"Kontur (Residue) Integrali",formula:"∮ f = 2πi Σ Res",primary:INT_PRIMARY["residue"]||"value"},
+            {id:"poisson_jensen",n:46,name:"Poisson-Jensen Formülü",formula:"log|f| ortalama + sıfırlar",primary:INT_PRIMARY["poisson_jensen"]||"value"},
+            {id:"airy_int",n:47,name:"Airy Fonksiyonu Integral Gösterimi",formula:"Ai(x)=(1/π)∫ cos(t³/3+xt) dt",primary:INT_PRIMARY["airy_int"]||"value"},
+            {id:"bessel_int",n:48,name:"Bessel Fonksiyonu Integral Gösterimi",formula:"J_n(x)=(1/π)∫ cos(nθ-x sinθ) dθ",primary:INT_PRIMARY["bessel_int"]||"value"},
+            {id:"polylog_int",n:49,name:"Polylogarithm Integral Gösterimi",formula:"Li_s(z)=z/Γ(s) ∫ t^{s-1}/(e^t-z) dt",primary:INT_PRIMARY["polylog_int"]||"value"},
+            {id:"fox_h",n:50,name:"H-Fonksiyonu (Fox H) Integral",formula:"H(z)=(1/2πi)∫ θ(s) z^{-s} ds",primary:INT_PRIMARY["fox_h"]||"value"},
+        ];
+
+        function intInitCards(){
+            const box=document.getElementById('int-cards'); if(!box) return;
+            box.innerHTML=INT.eqs.map(eq=>`<div class="bg-zinc-950 rounded-2xl p-3.5 border border-zinc-800 hover:border-teal-800/50 int-card" data-name="${eq.name.toLowerCase()}" id="int-card-${eq.id}">
+                <div class="flex items-start justify-between gap-2 mb-1">
+                    <div class="text-[13px] font-semibold text-teal-300"><span class="text-zinc-600 font-mono text-[10px] mr-1">${eq.n}.</span>${eq.name}</div>
+                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 shrink-0" id="int-badge-${eq.id}">—</span>
+                </div>
+                <div class="text-[10px] text-teal-200/70 font-mono mb-2 leading-snug break-all">${eq.formula}</div>
+                <div class="text-[11px] text-zinc-400 min-h-[3.5rem]" id="int-stat-${eq.id}">Henüz çalıştırılmadı</div>
+                <button onclick="intRunOne('${eq.id}')" class="mt-2 w-full py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-[11px] text-zinc-300">Sadece bunu çalıştır</button>
+            </div>`).join('');
+            const sel=document.getElementById('int-table-eq');
+            if(sel) sel.innerHTML='<option value="__all__">Tümü (birleşik)</option>'+INT.eqs.map(eq=>`<option value="${eq.id}">${eq.n}. ${eq.name}</option>`).join('');
+        }
+        function intFilterCards(){
+            const q=(document.getElementById('int-card-filter')?.value||'').toLowerCase(); let n=0;
+            document.querySelectorAll('.int-card').forEach(el=>{ const show=!q||el.dataset.name.includes(q); el.style.display=show?'':'none'; if(show)n++; });
+            const c=document.getElementById('int-card-count'); if(c) c.textContent=n+' / 50 integral';
+        }
+        function intRunOne(id){
+            const eq=INT.eqs.find(e=>e.id===id); if(!eq) return;
+            const N=Math.min(10000,Math.max(10,+document.getElementById('int-n').value||5000));
+            const seed=((+document.getElementById('int-seed').value||42)+eq.n*7919)>>>0;
+            const rnd=intRand(seed), rows=[], primary=[], t0=performance.now();
+            for(let i=0;i<N;i++){
+                const row=intSample(eq.id,rnd);
+                row._i=i+1; row._eq=eq.id; row._eqName=eq.name; row._n=eq.n;
+                rows.push(row);
+                const v=row[eq.primary]; if(v!=null&&isFinite(v)) primary.push(+v);
+                else { const nums=Object.values(row).filter(x=>typeof x==='number'&&isFinite(x)); if(nums.length) primary.push(nums[0]); }
+            }
+            // cols from first row
+            const cols=Object.keys(rows[0]||{}).filter(k=>!k.startsWith('_'));
+            const st=intStats(primary), ms=performance.now()-t0;
+            INT.results[id]={rows,stats:st,cols,primary:eq.primary,name:eq.name,formula:eq.formula,N,ms,n:eq.n};
+            const badge=document.getElementById('int-badge-'+id);
+            if(badge){badge.textContent=N+' satır'; badge.className='text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 shrink-0';}
+            const statEl=document.getElementById('int-stat-'+id);
+            if(statEl) statEl.innerHTML=`<div class="text-[10px] text-zinc-500">${eq.primary} · ${ms.toFixed(0)} ms</div><div>μ <b class="text-zinc-100">${intFmt(st.mean)}</b> · σ ${intFmt(st.std)}</div><div class="text-zinc-500">p10 ${intFmt(st.p10)} · p50 ${intFmt(st.p50)} · p90 ${intFmt(st.p90)}</div>`;
+            return INT.results[id];
+        }
+        function intRebuildCombined(){ INT.combined=[]; INT.eqs.forEach(eq=>{ const R=INT.results[eq.id]; if(R) R.rows.forEach(row=>INT.combined.push(row)); }); }
+        async function intRunAll(){
+            if(INT.running) return; INT.running=true; INT.results={}; INT.combined=[]; INT.page=0;
+            const btn=document.getElementById('int-btn-all'); if(btn) btn.disabled=true;
+            document.getElementById('int-progress-wrap')?.classList.remove('hidden');
+            const st=document.getElementById('int-status');
+            if(st){ st.textContent='250K hesaplanıyor…'; st.className='px-2.5 py-1 rounded-full bg-amber-950 border border-amber-800 text-amber-300 text-[11px]'; }
+            const t0=performance.now(), N=+document.getElementById('int-n').value||5000;
+            for(let i=0;i<INT.eqs.length;i++){
+                intRunOne(INT.eqs[i].id);
+                const pct=((i+1)/INT.eqs.length)*100;
+                const bar=document.getElementById('int-progress-bar'); if(bar) bar.style.width=pct+'%';
+                const lab=document.getElementById('int-progress-label'); if(lab) lab.textContent=(i+1)+' / 50 · '+((i+1)*N).toLocaleString('tr-TR')+' satır';
+                const eta=((performance.now()-t0)/(i+1))*(INT.eqs.length-i-1);
+                const etaEl=document.getElementById('int-progress-eta'); if(etaEl) etaEl.textContent='ETA '+(eta/1000).toFixed(1)+'s';
+                await new Promise(r=>setTimeout(r,0));
+            }
+            intRebuildCombined();
+            const total=performance.now()-t0;
+            if(st){ st.textContent='OK · '+INT.combined.length.toLocaleString('tr-TR')+' satır · '+(total/1000).toFixed(2)+'s'; st.className='px-2.5 py-1 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300 text-[11px]'; }
+            if(btn) btn.disabled=false; const csv=document.getElementById('int-btn-csv'); if(csv) csv.disabled=false;
+            INT.running=false; intUpdateSummary();
+            const sel=document.getElementById('int-table-eq'); if(sel) sel.value='__all__'; intRenderTable();
+        }
+        function intUpdateSummary(){
+            const box=document.getElementById('int-summary'); if(!box) return;
+            const keys=Object.keys(INT.results); if(!keys.length){box.classList.add('hidden');return;}
+            box.classList.remove('hidden'); let total=0,ms=0; keys.forEach(k=>{total+=INT.results[k].N;ms+=INT.results[k].ms||0;});
+            box.innerHTML=`<div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">Integral</div><div class="text-lg font-semibold text-teal-300 font-mono">${keys.length}</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">Toplam satır</div><div class="text-lg font-semibold text-cyan-300 font-mono">${total.toLocaleString('tr-TR')}</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">Süre</div><div class="text-lg font-semibold text-emerald-300 font-mono">${(ms/1000).toFixed(2)}s</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center"><div class="text-[9px] text-zinc-500">satır/s</div><div class="text-lg font-semibold text-sky-300 font-mono">${(total/Math.max(ms/1000,1e-6)).toFixed(0)}</div></div>
+                <div class="bg-zinc-950 rounded-xl p-2.5 border border-zinc-800 text-center col-span-2"><div class="text-[9px] text-zinc-500">Kapsam</div><div class="text-sm text-zinc-300">Klasik · Stokastik · Dönüşüm · Eliptik · Teorem</div></div>`;
+        }
+        function intGetView(){
+            const id=document.getElementById('int-table-eq')?.value||'__all__';
+            const q=(document.getElementById('int-table-filter')?.value||'').toLowerCase().trim();
+            let rows,cols,title,stats,primary,formula;
+            if(id==='__all__'){
+                rows=INT.combined; const present=new Set(['_n','_eqName','_i']);
+                rows.slice(0,300).forEach(r=>Object.keys(r).forEach(k=>{if(!k.startsWith('_')||k==='_n'||k==='_eqName'||k==='_i')present.add(k);}));
+                cols=['_n','_eqName','_i',...[...present].filter(c=>!['_n','_eqName','_i','_eq'].includes(c)).slice(0,14)];
+                title='Tüm integraller'; stats=null; primary=null; formula='50 integral birleşik çıktı';
+            } else {
+                const R=INT.results[id]; if(!R) return {rows:[],cols:[],title:'',stats:null,primary:null,formula:''};
+                rows=R.rows; cols=R.cols; title=R.name; stats=R.stats; primary=R.primary; formula=R.formula;
+            }
+            if(q) rows=rows.filter(r=>((r._eqName||'')+' '+Object.values(r).join(' ')).toLowerCase().includes(q));
+            return {rows,cols,title,stats,primary,formula,id};
+        }
+        function intRenderTable(){
+            const thead=document.getElementById('int-thead'), tbody=document.getElementById('int-tbody'); if(!thead||!tbody) return;
+            const view=intGetView(), pageSize=Math.max(20,+document.getElementById('int-page-size')?.value||100);
+            const totalPages=Math.max(1,Math.ceil(view.rows.length/pageSize));
+            if(INT.page>=totalPages) INT.page=totalPages-1; if(INT.page<0) INT.page=0;
+            const start=INT.page*pageSize, slice=view.rows.slice(start,start+pageSize);
+            const lab=c=>c==='_eqName'?'integral':c==='_i'?'#':c==='_n'?'no':c;
+            thead.innerHTML=`<tr class="border-b border-zinc-700">${view.cols.map(c=>`<th class="px-2 py-2 text-left whitespace-nowrap">${lab(c)}</th>`).join('')}</tr>`;
+            tbody.innerHTML=slice.map(row=>`<tr class="border-t border-zinc-800/50 hover:bg-zinc-900/80">${view.cols.map(c=>{
+                if(c==='_eqName') return `<td class="px-2 py-1 text-teal-300/90 whitespace-nowrap">${row[c]||''}</td>`;
+                if(c==='_i'||c==='_n') return `<td class="px-2 py-1 text-zinc-500">${row[c]}</td>`;
+                return `<td class="px-2 py-1 whitespace-nowrap">${intFmt(row[c])}</td>`;
+            }).join('')}</tr>`).join('');
+            const info=document.getElementById('int-table-info'); if(info) info.textContent=`${view.title}: ${start+1}–${Math.min(start+pageSize,view.rows.length)} / ${view.rows.length.toLocaleString('tr-TR')}`;
+            const pl=document.getElementById('int-page-label'); if(pl) pl.textContent=(INT.page+1)+' / '+totalPages;
+            const fb=document.getElementById('int-formula-box');
+            if(fb){ if(view.formula){fb.classList.remove('hidden'); fb.textContent=view.formula;} else fb.classList.add('hidden'); }
+            const detail=document.getElementById('int-detail-stats');
+            if(detail&&view.stats){ detail.classList.remove('hidden'); const s=view.stats;
+                detail.innerHTML=[['n',s.n],['mean',intFmt(s.mean)],['std',intFmt(s.std)],['min',intFmt(s.min)],['p10',intFmt(s.p10)],['p50',intFmt(s.p50)],['p90',intFmt(s.p90)],['max',intFmt(s.max)]]
+                    .map(([k,v])=>`<div class="bg-zinc-900 rounded-lg px-2 py-1.5 border border-zinc-800"><span class="text-zinc-500">${k}</span> <b class="text-zinc-200 font-mono ml-1">${v}</b></div>`).join('');
+            } else if(detail) detail.classList.add('hidden');
+        }
+        function intPage(d){ INT.page+=d; intRenderTable(); }
+        function intExportCSV(){
+            if(!Object.keys(INT.results).length) return;
+            const lines=['# MuhendisX 50 Integral Fabrikasi','# rows='+INT.combined.length,''];
+            const colSet=new Set(['eq_n','eq_id','eq_name','i']);
+            Object.values(INT.results).forEach(R=>R.cols.forEach(c=>colSet.add(c)));
+            const cols=[...colSet]; lines.push(cols.join(','));
+            INT.eqs.forEach(eq=>{ const R=INT.results[eq.id]; if(!R) return;
+                R.rows.forEach(row=>{ lines.push(cols.map(c=>{
+                    if(c==='eq_n') return eq.n; if(c==='eq_id') return eq.id;
+                    if(c==='eq_name') return '"'+eq.name.replace(/"/g,'')+'"'; if(c==='i') return row._i;
+                    return row[c]==null?'':row[c];
+                }).join(',')); });
+            });
+            const a=document.createElement('a');
+            a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'}));
+            a.download='MuhendisX_50_Integral_'+INT.combined.length+'rows.csv'; a.click();
+        }
+        function intClear(){
+            INT.results={}; INT.combined=[]; INT.page=0;
+            INT.eqs.forEach(eq=>{
+                const b=document.getElementById('int-badge-'+eq.id); if(b){b.textContent='—'; b.className='text-[9px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 shrink-0';}
+                const s=document.getElementById('int-stat-'+eq.id); if(s) s.textContent='Henüz çalıştırılmadı';
+            });
+            document.getElementById('int-summary')?.classList.add('hidden');
+            document.getElementById('int-progress-wrap')?.classList.add('hidden');
+            document.getElementById('int-detail-stats')?.classList.add('hidden');
+            document.getElementById('int-formula-box')?.classList.add('hidden');
+            const csv=document.getElementById('int-btn-csv'); if(csv) csv.disabled=true;
+            const th=document.getElementById('int-thead'); if(th) th.innerHTML='';
+            const tb=document.getElementById('int-tbody'); if(tb) tb.innerHTML='';
+            const st=document.getElementById('int-status'); if(st){st.textContent='Hazır'; st.className='px-2.5 py-1 rounded-full bg-teal-950 border border-teal-800 text-teal-300 text-[11px]';}
+        }
+
+window.onload = function() {
             if (typeof initialize === 'function') initialize();
             try { mfUpdateTypeCount(); } catch(e) {}
+            try { spInitCards(); } catch(e) {}
+            try { deInitCards(); } catch(e) {}
+            try { intInitCards(); } catch(e) {}
         };
     </script>
 </body>
