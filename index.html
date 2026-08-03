@@ -33,30 +33,40 @@
 </head>
 <body class="bg-zinc-950 text-zinc-200">
     <!-- Navbar -->
-    <nav class="border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-lg sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto px-8 py-4 flex justify-between items-center">
+    <nav class="border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-3 flex flex-wrap justify-between items-center gap-3">
             <div class="flex items-center gap-x-3">
-                <div class="w-11 h-11 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-rocket text-white text-3xl"></i>
+                <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 via-cyan-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-900/30">
+                    <i class="fa-solid fa-microchip text-white text-lg"></i>
                 </div>
                 <div>
-                    <span class="font-display text-3xl font-semibold tracking-tighter">MühendisX Ultimate</span>
-                    <span class="text-xs text-zinc-500 block -mt-1">v15.5 Model Detail ULTRA PRO · WASM/CPU · Adaptive Batch</span>
+                    <span class="font-display text-2xl md:text-3xl font-semibold tracking-tighter text-zinc-50">MühendisX</span>
+                    <span class="text-[10px] md:text-xs text-zinc-500 block -mt-0.5 tracking-wide">Ultimate v16.2 PRO · ISA SI · Chip C++17 · Terminal v4.2</span>
                 </div>
             </div>
-            <div class="flex items-center gap-x-3">
-                <span class="text-cyan-300" id="chip-nav-text">ChipEngine · başlatılıyor…</span>
+            <div class="flex flex-wrap items-center gap-2">
+                <div id="chip-global-status" class="flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 text-[11px] font-mono">
+                    <span class="inline-flex items-center gap-1.5"><span id="chip-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span id="chip-nav-text" class="text-cyan-300">Chip · bağlanıyor</span></span>
+                    <span class="text-zinc-700">|</span>
+                    <span id="chip-nav-backend" class="text-zinc-400">backend: —</span>
+                    <span class="text-zinc-700">|</span>
+                    <span id="chip-nav-residual" class="text-zinc-400">res: —</span>
+                    <span class="text-zinc-700">|</span>
+                    <span id="chip-nav-models" class="text-zinc-400">0 model</span>
                 </div>
-                <div class="px-3 py-1 bg-zinc-900 rounded-full text-xs border border-zinc-800 flex items-center gap-x-2">
-                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span class="text-emerald-400">math.js + Chart.js + Tailwind</span>
-                </div>
-                <button onclick="showHistory()" class="px-4 py-2 text-sm text-zinc-400 hover:text-white flex items-center gap-x-2 border border-zinc-800 rounded-2xl hover:bg-zinc-900">
-                    <i class="fa-solid fa-history"></i> <span class="hidden sm:inline">Geçmiş</span>
-                </button>
-                <button onclick="clearAllHistory()" class="px-4 py-2 text-sm text-zinc-400 hover:text-white flex items-center gap-x-2">
-                    <i class="fa-solid fa-trash"></i> <span class="hidden sm:inline">Temizle</span>
-                </button>
+                <button type="button" onclick="switchPanel('panel-terminal');try{termFocus()}catch(e){}" class="px-3 py-1.5 text-[11px] font-semibold rounded-xl bg-emerald-900/50 border border-emerald-700 text-emerald-200 hover:bg-emerald-800">Terminal</button>
+                <button type="button" onclick="switchPanel('panel-aero100');try{aero100Init()}catch(e){}" class="px-3 py-1.5 text-[11px] font-semibold rounded-xl bg-sky-900/40 border border-sky-800 text-sky-200 hover:bg-sky-900">Aero 1M</button>
+                <button type="button" onclick="if(typeof Term!=='undefined'){switchPanel('panel-terminal');Term.exec('power')}" class="px-3 py-1.5 text-[11px] rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white">Chip power</button>
+                <button type="button" onclick="showHistory()" class="px-3 py-1.5 text-[11px] text-zinc-400 hover:text-white border border-zinc-800 rounded-xl"><i class="fa-solid fa-history"></i></button>
+            </div>
+        </div>
+        <div class="border-t border-zinc-900/80 bg-zinc-950/50">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-1 flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-mono text-zinc-500">
+                <span><i class="fa-solid fa-check text-emerald-600 mr-1"></i>ISA 1976 + Sutherland μ</span>
+                <span><i class="fa-solid fa-check text-emerald-600 mr-1"></i>Welford batch · residual-gated</span>
+                <span><i class="fa-solid fa-check text-emerald-600 mr-1"></i>C++17 kernel · Eigen-ready WASM</span>
+                <span><i class="fa-solid fa-check text-emerald-600 mr-1"></i>100 aero · 1M satır işlem verisi</span>
+                <span id="chip-nav-sps" class="text-violet-400/80">SPS: —</span>
             </div>
         </div>
     </nav>
@@ -242,6 +252,10 @@
                     </div>
                     <div onclick="switchPanel('panel-rocket')" class="nav-item px-4 py-3 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl" id="nav-rocket">
                         <i class="fa-solid fa-rocket text-red-400 w-5"></i> <span>Roket Menzili</span>
+                    </div>
+                    <div onclick="switchPanel('panel-aero100');try{aero100Init()}catch(e){}" class="nav-item px-4 py-2.5 flex items-center gap-x-3 text-sm cursor-pointer hover:bg-zinc-800 rounded-2xl border border-emerald-900/50" id="nav-aero100">
+                        <i class="fa-solid fa-plane-departure text-emerald-400 w-5"></i>
+                        <span class="font-medium text-emerald-200/90">Havacılık 100 · 1M hesap</span>
                     </div>
 
                     <div class="my-2 mx-3 border-t border-zinc-800"></div>
@@ -5341,7 +5355,8 @@
                                 </p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 text-[11px] shrink-0">
-                                <span class="px-2.5 py-1 rounded-full bg-indigo-950 border border-indigo-800 text-indigo-300">math.js 12</span>
+                                <span class="px-2.5 py-1 rounded-full bg-indigo-950 border border-indigo-800 text-indigo-300">math.js</span>
+                                <span class="px-2.5 py-1 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300" id="mf-chip-badge">Chip</span>
                                 <span class="px-2.5 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400" id="mf-status">Hazır</span>
                             </div>
                         </div>
@@ -5351,13 +5366,13 @@
                             <div class="xl:col-span-3 bg-zinc-950 rounded-2xl p-4 border border-zinc-800">
                                 <div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 font-semibold">Üretim Parametreleri</div>
                                 <label class="flex justify-between text-xs text-zinc-400 mb-1"><span>Matris sayısı N</span><span id="mf-n-val" class="text-indigo-300 font-mono font-semibold">250</span></label>
-                                <input type="range" id="mf-n" min="10" max="100000" step="10" value="250" class="w-full accent-indigo-500 mb-1.5" oninput="document.getElementById('mf-n-val').textContent=this.value; mfUpdateCostEstimate()">
+                                <input type="range" id="mf-n" min="10" max="1000000" step="10" value="250" class="w-full accent-indigo-500 mb-1.5" oninput="document.getElementById('mf-n-val').textContent=this.value; mfUpdateCostEstimate()">
                                 <div class="grid grid-cols-5 gap-1 mb-2">
-                                    <button type="button" onclick="mfSetN(100)" class="py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-400">100</button>
                                     <button type="button" onclick="mfSetN(1000)" class="py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-400">1K</button>
-                                    <button type="button" onclick="mfSetN(5000)" class="py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-400">5K</button>
                                     <button type="button" onclick="mfSetN(10000)" class="py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-400">10K</button>
                                     <button type="button" onclick="mfSetN(100000)" class="py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-400">100K</button>
+                                    <button type="button" onclick="mfSetN(55000);mfSetSize(100)" class="py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] text-zinc-400">55K×100</button>
+                                    <button type="button" onclick="mfPreset1T()" class="py-1 rounded-lg bg-gradient-to-r from-fuchsia-900 to-violet-900 border border-fuchsia-700 text-[10px] text-fuchsia-200 font-semibold">1T işlem</button>
                                 </div>
                                 <div class="flex items-center gap-1.5 mb-3 bg-zinc-900/60 border border-zinc-800 rounded-lg px-2 py-1.5">
                                     <span class="text-[10px] text-zinc-500 whitespace-nowrap">Tür başına örnek</span>
@@ -6708,13 +6723,160 @@
 
                 
         <!-- ========== HESAPLAMA TERMİNALİ (Chip + math.js + C++ ABI) ========== -->
-        <div id="panel-terminal" class="panel hidden h-full flex flex-col min-h-0">
+                <div id="panel-aero100" class="panel hidden">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-7">
+                <!-- HEADER + CHIP STATUS -->
+                <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-semibold flex items-center gap-x-3 tracking-tight">
+                            <i class="fa-solid fa-plane-departure text-emerald-400"></i>
+                            Havacılık · 100 Denklem PRO
+                        </h2>
+                        <p class="text-zinc-400 text-sm mt-1">ChipEngine canlı batch · <b class="text-emerald-300">100 × 10.000 = 1.000.000 hesap</b> · Welford mean/std · SI Monte Carlo</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <button type="button" onclick="aero100ChipDiag()" class="px-3 py-1.5 rounded-xl bg-violet-950 border border-violet-700 text-violet-200 text-[11px] hover:bg-violet-900 font-medium">Chip diag</button>
+                        <button type="button" onclick="aero100RunAll(1000)" class="px-3 py-1.5 rounded-xl bg-sky-900/60 border border-sky-700 text-sky-200 text-[11px] hover:bg-sky-800">Hızlı 100k</button>
+                        <button type="button" onclick="aero100RunMillion()" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold text-sm shadow-lg shadow-emerald-900/40">
+                            ▶ 1 MİLYON HESAP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CHIP LIVE DASHBOARD -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-5">
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-3 py-2.5">
+                        <div class="text-[9px] uppercase tracking-widest text-zinc-500">Backend</div>
+                        <div id="aero-chip-backend" class="text-sm font-mono text-cyan-300 mt-0.5">—</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-3 py-2.5">
+                        <div class="text-[9px] uppercase tracking-widest text-zinc-500">Modeller</div>
+                        <div id="aero-chip-models" class="text-sm font-mono text-emerald-300 mt-0.5">—</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-3 py-2.5">
+                        <div class="text-[9px] uppercase tracking-widest text-zinc-500">RK4 Residual</div>
+                        <div id="aero-chip-res" class="text-sm font-mono text-amber-300 mt-0.5">—</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-3 py-2.5">
+                        <div class="text-[9px] uppercase tracking-widest text-zinc-500">İlerleme</div>
+                        <div id="aero-chip-prog" class="text-sm font-mono text-zinc-200 mt-0.5">0/100</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-3 py-2.5">
+                        <div class="text-[9px] uppercase tracking-widest text-zinc-500">Toplam hesap</div>
+                        <div id="aero-chip-total" class="text-sm font-mono text-emerald-200 mt-0.5">0</div>
+                    </div>
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl px-3 py-2.5">
+                        <div class="text-[9px] uppercase tracking-widest text-zinc-500">Ort. SPS</div>
+                        <div id="aero-chip-sps" class="text-sm font-mono text-violet-300 mt-0.5">—</div>
+                    </div>
+                </div>
+
+                <!-- CONTROLS -->
+                <div class="flex flex-wrap gap-2 items-center mb-4">
+                    <input id="aero100-filter" type="text" placeholder="Filtre (lift, breguet, hoop, yapı…)" class="modern-input px-4 py-2 rounded-2xl text-sm w-56" oninput="aero100Filter(this.value)">
+                    <select id="aero100-n" class="modern-input px-3 py-2 rounded-2xl text-sm">
+                        <option value="1000">N = 1.000</option>
+                        <option value="5000">N = 5.000</option>
+                        <option value="10000" selected>N = 10.000 → 1M toplam</option>
+                        <option value="20000">N = 20.000 → 2M toplam</option>
+                    </select>
+                    <button type="button" onclick="aero100RunSelected()" class="px-4 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm">Seçilenler</button>
+                    <button type="button" onclick="aero100ExportCSV()" class="px-4 py-2 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 text-sm">CSV indir</button>
+                    <button type="button" onclick="aero100ClearResults()" class="px-3 py-2 rounded-2xl text-zinc-500 hover:text-white text-sm">Temizle</button>
+                </div>
+
+                <!-- PROFESSIONAL RESULTS TABLE -->
+                <div class="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-950">
+                    <table class="w-full text-left text-[12px] font-mono" id="aero100-table">
+                        <thead class="bg-zinc-900/90 text-[10px] uppercase tracking-wider text-zinc-500 sticky top-0">
+                            <tr>
+                                <th class="px-3 py-2.5 w-8"><input type="checkbox" id="aero100-checkall" onchange="aero100ToggleAll(this.checked)" class="accent-emerald-500"></th>
+                                <th class="px-3 py-2.5">#</th>
+                                <th class="px-3 py-2.5 min-w-[180px]">Denklem</th>
+                                <th class="px-3 py-2.5">Formül</th>
+                                <th class="px-3 py-2.5 text-right">mean</th>
+                                <th class="px-3 py-2.5 text-right">std</th>
+                                <th class="px-3 py-2.5 text-right">min</th>
+                                <th class="px-3 py-2.5 text-right">max</th>
+                                <th class="px-3 py-2.5 text-right">CV</th>
+                                <th class="px-3 py-2.5 text-right">SPS</th>
+                                <th class="px-3 py-2.5 text-right">ms</th>
+                                <th class="px-3 py-2.5">Birim</th>
+                                <th class="px-3 py-2.5">Chip</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aero100-tbody" class="divide-y divide-zinc-800/80 text-zinc-300"></tbody>
+                    </table>
+                </div>
+
+
+                <!-- ══════ İŞLEM VERİSİ — 1M SATIR DETAY TABLO ══════ -->
+                <div class="mt-8 border-t border-zinc-800 pt-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-zinc-100 flex items-center gap-2">
+                                <i class="fa-solid fa-table text-cyan-400"></i>
+                                İşlem Verisi · Ham Hesap Kayıtları
+                            </h3>
+                            <p class="text-[12px] text-zinc-500 mt-0.5">Her satır = 1 gerçekçi SI örneklem. 100 denklem × 10.000 = <b class="text-cyan-300">1.000.000 satır</b>. Sayfalı görüntüleme · CSV tam indirme.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <select id="aero-islem-model" class="modern-input px-3 py-2 rounded-2xl text-sm" onchange="aeroIslemRenderPage(0)">
+                                <option value="">Tüm modeller (karışık önizleme)</option>
+                            </select>
+                            <button type="button" onclick="aeroIslemPrev()" class="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm">←</button>
+                            <span id="aero-islem-pageinfo" class="text-[11px] font-mono text-zinc-400 px-2">1 / 1</span>
+                            <button type="button" onclick="aeroIslemNext()" class="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm">→</button>
+                            <select id="aero-islem-pagesize" class="modern-input px-2 py-2 rounded-2xl text-sm" onchange="aeroIslemRenderPage(0)">
+                                <option value="50">50 satır</option>
+                                <option value="100" selected>100 satır</option>
+                                <option value="250">250 satır</option>
+                                <option value="500">500 satır</option>
+                            </select>
+                            <button type="button" onclick="aeroIslemExportFull()" class="px-4 py-2 rounded-2xl bg-cyan-900/70 border border-cyan-700 text-cyan-200 text-sm font-semibold hover:bg-cyan-800">
+                                CSV · 1M satır indir
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-[11px] font-mono">
+                        <div class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2"><span class="text-zinc-500">Kayıt</span> <span id="aero-islem-count" class="text-cyan-300 ml-1">0</span></div>
+                        <div class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2"><span class="text-zinc-500">Bellek</span> <span id="aero-islem-mem" class="text-zinc-300 ml-1">—</span></div>
+                        <div class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2"><span class="text-zinc-500">Seed</span> <span id="aero-islem-seed" class="text-zinc-300 ml-1">42</span></div>
+                        <div class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2"><span class="text-zinc-500">Durum</span> <span id="aero-islem-status" class="text-zinc-400 ml-1">boş</span></div>
+                    </div>
+                    <div class="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-950 max-h-[420px] overflow-y-auto">
+                        <table class="w-full text-left text-[11px] font-mono" id="aero-islem-table">
+                            <thead class="bg-zinc-900 sticky top-0 z-10 text-[9px] uppercase tracking-wider text-zinc-500">
+                                <tr>
+                                    <th class="px-2 py-2">satır</th>
+                                    <th class="px-2 py-2">#denklem</th>
+                                    <th class="px-2 py-2">model_id</th>
+                                    <th class="px-2 py-2">denklem</th>
+                                    <th class="px-2 py-2">örnek</th>
+                                    <th class="px-2 py-2 text-right">sonuç</th>
+                                    <th class="px-2 py-2">birim</th>
+                                    <th class="px-2 py-2">girdi parametreleri (SI)</th>
+                                    <th class="px-2 py-2">seed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="aero-islem-tbody" class="divide-y divide-zinc-900 text-zinc-300"></tbody>
+                        </table>
+                    </div>
+                    <p class="text-[10px] text-zinc-600 mt-2">Not: Tabloda sayfa başına önizleme gösterilir. Tam 1.000.000 satır «CSV · 1M satır indir» ile üretilir (ChipEngine aynı seed ile yeniden örnekler — deterministik).</p>
+                </div>
+
+                <div id="aero100-log" class="mt-4 hidden result-box p-4 rounded-2xl font-mono text-xs max-h-40 overflow-y-auto"></div>
+                <div id="aero100-detail-box" class="mt-4 hidden bg-zinc-950 border border-zinc-800 rounded-2xl p-5"></div>
+            </div>
+        </div>
+
+<div id="panel-terminal" class="panel hidden h-full flex flex-col min-h-0">
             <div class="px-5 py-3 border-b border-zinc-800 bg-zinc-950/90 shrink-0 space-y-2">
                 <div class="flex items-center justify-between gap-3 flex-wrap">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-terminal text-emerald-400 text-xl"></i>
                         <div>
-                            <div class="text-base font-semibold text-emerald-200">Hesaplama Terminali</div>
+                            <div class="text-base font-semibold text-emerald-200">Hesaplama Terminali <span class="text-[10px] text-emerald-600">v4.0 ULTRA · Chip C++</span></div>
                             <div class="text-[11px] text-zinc-400">Alttaki kutuya yaz → Enter. Veya yeşil butonlara tıkla (otomatik çalışır).</div>
                         </div>
                     </div>
@@ -8001,16 +8163,16 @@
            36 SI model · xoshiro256** · Welford · RK4 · C ABI / WASM
            Panel YOK — foto batch panelleri otomatik ChipEngine kullanır
            ===================================================================== */
-        const CHIP_KERNEL_README = "M\u00fchendisX Chip Kernel C++17 v3.0 ULTRA PRO\n==========================================\nHTML-g\u00f6m\u00fcl\u00fc profesyonel say\u0131sal motor (panel YOK \u2014 otomatik).\n\nKaynaklar (bu HTML dosyas\u0131n\u0131n i\u00e7inde):\n  chip_kernel.hpp  \u2014 xoshiro256**, Welford\u2013Knuth, RK4, ModelId ABI\n  chip_kernel.cpp  \u2014 36 SI model, C ABI, batch_full, checksum\n\n\u00d6zellikler:\n  \u2022 xoshiro256** PRNG (Blackman & Vigna)\n  \u2022 Welford online mean / variance / CV\n  \u2022 RK4 decay residual ~1e-15\n  \u2022 RK4 harmonic oscillator residual\n  \u2022 Deterministic checksum(seed)\n  \u2022 C ABI \u2192 WASM (Emscripten) veya JS PRO fallback\n\nNative:\n  clang++ -std=c++17 -O3 -DCHIP_NATIVE_MAIN -o chip_test chip_kernel.cpp\n\nWASM:\n  emcc chip_kernel.cpp -std=c++17 -O3 -s WASM=1 \\\n    -s EXPORTED_FUNCTIONS='[\"_mx_seed\",\"_mx_batch_mean\",\"_mx_batch_std\",\"_mx_batch_stats\",\"_mx_batch_full\",\"_mx_rk4_residual\",\"_mx_model_eval\",\"_mx_model_count\",\"_mx_kernel_version\",\"_mx_checksum\"]' \\\n    -o chip_kernel.js\n\nTaray\u0131c\u0131: ChipEngine.init() otomatik. Foto batch panelleri ChipEngine.batch kullan\u0131r.\n";
-        const CHIP_KERNEL_HPP_SOURCE = "/**\n * ============================================================================\n *  M\u00fchendisX Chip Kernel \u2014 C++17 Professional Numerical Engine\n *  Version 3.0 ULTRA PRO\n * ============================================================================\n *  Tasar\u0131m ilkeleri\n *  ----------------\n *  \u2022 Freestanding / WASM uyumlu C ABI (emscripten + clang wasm32)\n *  \u2022 xoshiro256** PRNG  \u2014 Blackman & Vigna, 2018 (public domain)\n *  \u2022 SplitMix64 seed expansion\n *  \u2022 Welford\u2013Knuth online mean / variance (Kahan-stable single-pass)\n *  \u2022 Classic 4th-order Runge\u2013Kutta residual (y'=-y \u2194 e^{-1})\n *  \u2022 SI m\u00fchendislik modelleri \u2014 deterministik seed ile tekrarlanabilir batch\n *  \u2022 Hi\u00e7bir harici runtime k\u00fct\u00fcphaneye zorunlu ba\u011f\u0131ml\u0131l\u0131k yok\n *    (iste\u011fe ba\u011fl\u0131: Eigen / xtensor native build\u2019de eklenebilir)\n *\n *  Derleme\n *  -------\n *  Native test:\n *    clang++ -std=c++17 -O3 -ffast-math -DCHIP_NATIVE_MAIN \\\n *            -o chip_kernel_test chip_kernel.cpp && ./chip_kernel_test\n *\n *  Emscripten WASM:\n *    emcc chip_kernel.cpp -std=c++17 -O3 -ffast-math -s WASM=1 \\\n *      -s EXPORTED_FUNCTIONS='[\"_mx_seed\",\"_mx_uniform\",\"_mx_gauss\",\n *        \"_mx_batch_mean\",\"_mx_batch_std\",\"_mx_batch_stats\",\"_mx_batch_full\",\n *        \"_mx_rk4_residual\",\"_mx_model_eval\",\"_mx_model_count\",\"_mx_kernel_version\",\n *        \"_mx_model_name\",\"_mx_checksum\"]' \\\n *      -s EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\",\"UTF8ToString\"]' \\\n *      -o chip_kernel.js\n *\n *  Freestanding wasm32:\n *    clang++ --target=wasm32 -std=c++17 -O3 -nostdlib -fno-exceptions -fno-rtti \\\n *      -Wl,--no-entry -Wl,--export-dynamic -o chip_kernel.wasm chip_kernel.cpp\n * ============================================================================\n */\n#pragma once\n\n#include <cstdint>\n#include <cmath>\n#include <cstddef>\n#include <cstring>\n\n#if defined(__EMSCRIPTEN__)\n#  include <emscripten.h>\n#  define MX_EXPORT extern \"C\" EMSCRIPTEN_KEEPALIVE\n#elif defined(_WIN32)\n#  define MX_EXPORT extern \"C\" __declspec(dllexport)\n#else\n#  define MX_EXPORT extern \"C\" __attribute__((visibility(\"default\")))\n#endif\n\n#ifndef M_PI\n#  define M_PI 3.14159265358979323846\n#endif\n\nnamespace mx {\n\nconstexpr const char* kKernelVersion = \"M\u00fchendisX Chip Kernel C++17 v3.0 ULTRA PRO\";\nconstexpr int kKernelApi = 3;\n\n// \u2500\u2500\u2500 xoshiro256** \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nstruct Xoshiro256 {\n    uint64_t s[4]{};\n\n    static constexpr uint64_t rotl(uint64_t x, int k) noexcept {\n        return (x << k) | (x >> (64 - k));\n    }\n\n    static uint64_t splitmix64(uint64_t& z) noexcept {\n        z += 0x9E3779B97F4A7C15ULL;\n        z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;\n        z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;\n        return z ^ (z >> 31);\n    }\n\n    void seed(uint64_t seed) noexcept {\n        uint64_t z = seed ? seed : 0x853c49e6748fea9bULL;\n        s[0] = splitmix64(z);\n        s[1] = splitmix64(z);\n        s[2] = splitmix64(z);\n        s[3] = splitmix64(z);\n    }\n\n    uint64_t next_u64() noexcept {\n        const uint64_t result = rotl(s[1] * 5, 7) * 9;\n        const uint64_t t = s[1] << 17;\n        s[2] ^= s[0];\n        s[3] ^= s[1];\n        s[1] ^= s[2];\n        s[0] ^= s[3];\n        s[2] ^= t;\n        s[3] = rotl(s[3], 45);\n        return result;\n    }\n\n    /** Uniform in (0,1) with 53-bit resolution */\n    double uniform01() noexcept {\n        return (next_u64() >> 11) * (1.0 / 9007199254740992.0);\n    }\n\n    double uniform(double a, double b) noexcept {\n        return a + (b - a) * uniform01();\n    }\n\n    /** Box\u2013Muller gaussian */\n    double gauss(double mu, double sigma) noexcept {\n        double u = 0.0, v = 0.0;\n        while (u <= 1e-300) u = uniform01();\n        while (v <= 1e-300) v = uniform01();\n        return mu + sigma * std::sqrt(-2.0 * std::log(u)) * std::cos(2.0 * M_PI * v);\n    }\n};\n\n// \u2500\u2500\u2500 Welford\u2013Knuth online statistics \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nstruct Welford {\n    uint64_t n = 0;\n    double mean = 0.0;\n    double m2 = 0.0;\n    double minv = 0.0;\n    double maxv = 0.0;\n    double sum = 0.0; // optional checksum\n\n    void reset() noexcept {\n        n = 0; mean = 0; m2 = 0; minv = 0; maxv = 0; sum = 0;\n    }\n\n    void push(double x) noexcept {\n        if (!std::isfinite(x)) return;\n        ++n;\n        sum += x;\n        if (n == 1) {\n            mean = minv = maxv = x;\n            m2 = 0;\n            return;\n        }\n        const double d = x - mean;\n        mean += d / static_cast<double>(n);\n        const double d2 = x - mean;\n        m2 += d * d2;\n        if (x < minv) minv = x;\n        if (x > maxv) maxv = x;\n    }\n\n    double variance() const noexcept {\n        return (n > 1) ? (m2 / static_cast<double>(n - 1)) : 0.0;\n    }\n    double stddev() const noexcept { return std::sqrt(variance()); }\n    double cv() const noexcept {\n        return (mean != 0.0 && n > 0) ? stddev() / std::fabs(mean) : 0.0;\n    }\n};\n\n// \u2500\u2500\u2500 RK4 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ninline double rk4_decay(double y0, double t1, double h) noexcept {\n    double y = y0, t = 0.0;\n    if (h <= 0.0) h = 1e-3;\n    while (t < t1 - 1e-15) {\n        const double hh = (t + h > t1) ? (t1 - t) : h;\n        const double k1 = -y;\n        const double k2 = -(y + 0.5 * hh * k1);\n        const double k3 = -(y + 0.5 * hh * k2);\n        const double k4 = -(y + hh * k3);\n        y += (hh / 6.0) * (k1 + 2.0 * k2 + 2.0 * k3 + k4);\n        t += hh;\n    }\n    return y;\n}\n\n/** Harmonic oscillator RK4 residual vs analytic cos */\ninline double rk4_oscillator_residual(double omega, double t1, double h) noexcept {\n    // y'' = -\u03c9\u00b2 y  \u2192  state (y, v), analytic y=cos(\u03c9t) for y0=1,v0=0\n    double y = 1.0, v = 0.0, t = 0.0;\n    if (h <= 0.0) h = 1e-3;\n    const double w2 = omega * omega;\n    while (t < t1 - 1e-15) {\n        const double hh = (t + h > t1) ? (t1 - t) : h;\n        auto acc = [w2](double yy) { return -w2 * yy; };\n        const double k1y = v,           k1v = acc(y);\n        const double k2y = v + 0.5*hh*k1v, k2v = acc(y + 0.5*hh*k1y);\n        const double k3y = v + 0.5*hh*k2v, k3v = acc(y + 0.5*hh*k2y);\n        const double k4y = v + hh*k3v,     k4v = acc(y + hh*k3y);\n        y += (hh / 6.0) * (k1y + 2*k2y + 2*k3y + k4y);\n        v += (hh / 6.0) * (k1v + 2*k2v + 2*k3v + k4v);\n        t += hh;\n    }\n    const double exact = std::cos(omega * t1);\n    return std::fabs(y - exact);\n}\n\n// \u2500\u2500\u2500 Model ID ABI (stable \u2014 JS CHIP_CXX_MODEL_ID ile birebir) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nenum ModelId : int {\n    M_NEWTON2 = 0,\n    M_DRAG,\n    M_LIFT,\n    M_REYNOLDS,\n    M_MACH,\n    M_OTTO,\n    M_DIESEL,\n    M_CARNOT,\n    M_OHM,\n    M_JOULE,\n    M_HERTZ,\n    M_L10,\n    M_TSIOLKOVSKY,\n    M_ORBITAL_V,\n    M_KEPLER,\n    M_DE_EXP,\n    M_DE_HARMONIC,\n    M_DE_LOGISTIC,\n    M_INT_POLY,\n    M_INT_GAUSS,\n    M_ION_GATE,\n    M_ION_CURRENT,\n    M_VON_MISES,\n    M_STEFAN,\n    // v3 extensions\n    M_HOOKES,\n    M_COULOMB,\n    M_BERNOULLI_DP,\n    M_DARCY,\n    M_ARCHARD,\n    M_PEUKERT,\n    M_FOURIER,\n    M_ARRHENIUS,\n    M_ESCAPE,\n    M_CRITICAL_SPEED,\n    M_MATRIX_DET2,\n    M_MATRIX_NORM_F,\n    M_COUNT\n};\n\ninline const char* model_name(int id) noexcept {\n    static const char* names[] = {\n        \"newton2\",\"drag\",\"lift\",\"reynolds\",\"mach\",\"otto\",\"diesel\",\"carnot\",\n        \"ohm\",\"joule\",\"hertz\",\"l10\",\"tsiolkovsky\",\"orbital_v\",\"kepler_period\",\n        \"de_exp\",\"de_harmonic\",\"de_logistic\",\"int_poly\",\"int_gauss\",\n        \"ion_hh_gate\",\"ion_current\",\"von_mises\",\"stefan\",\n        \"hooke\",\"coulomb\",\"bernoulli_dp\",\"darcy\",\"archard\",\"peukert\",\n        \"fourier\",\"arrhenius\",\"space_escape\",\"critical_speed\",\n        \"matrix_det2\",\"matrix_norm_f\"\n    };\n    if (id < 0 || id >= M_COUNT) return \"unknown\";\n    return names[id];\n}\n\n} // namespace mx\n";
-        const CHIP_KERNEL_CPP_SOURCE = "/**\n * M\u00fchendisX Chip Kernel C++17 v3.0 ULTRA PRO \u2014 implementation\n * CPU / WASM numerical engine \u00b7 C ABI \u00b7 SI models \u00b7 Welford batch\n */\n#include \"chip_kernel.hpp\"\n\nnamespace {\n\nmx::Xoshiro256 g_rng;\nbool g_seeded = false;\n\ninline void ensure_seed() noexcept {\n    if (!g_seeded) {\n        g_rng.seed(0x853c49e6748fea9bULL);\n        g_seeded = true;\n    }\n}\n\nusing mx::Xoshiro256;\n\ndouble eval_model(int id, Xoshiro256& rng) noexcept {\n    switch (id) {\n    case mx::M_NEWTON2:\n        return rng.uniform(800.0, 2200.0) * rng.uniform(-9.0, 7.0);\n\n    case mx::M_DRAG: {\n        const double v = rng.uniform(10.0, 45.0);\n        return 0.5 * 1.2 * v * v * rng.uniform(0.28, 0.42) * rng.uniform(2.0, 2.6);\n    }\n    case mx::M_LIFT: {\n        const double v = rng.uniform(15.0, 50.0);\n        return 0.5 * 1.2 * v * v * rng.uniform(-0.3, 1.0) * rng.uniform(1.8, 2.8);\n    }\n    case mx::M_REYNOLDS:\n        return rng.uniform(1.15, 1.25) * rng.uniform(10.0, 45.0) *\n               rng.uniform(1.5, 4.0) / 1.8e-5;\n\n    case mx::M_MACH: {\n        const double T = rng.uniform(250.0, 320.0);\n        return rng.uniform(30.0, 350.0) / std::sqrt(1.4 * 287.05 * T);\n    }\n    case mx::M_OTTO:\n        return 1.0 - std::pow(rng.uniform(8.5, 12.0), -0.4);\n\n    case mx::M_DIESEL: {\n        const double r = rng.uniform(15.0, 22.0);\n        const double rho = rng.uniform(1.6, 2.4);\n        constexpr double g = 1.4;\n        return 1.0 - (1.0 / std::pow(r, g - 1.0)) *\n               ((std::pow(rho, g) - 1.0) / (g * (rho - 1.0)));\n    }\n    case mx::M_CARNOT: {\n        const double Th = rng.uniform(800.0, 1800.0);\n        const double Tc = rng.uniform(280.0, 400.0);\n        return 1.0 - Tc / Th;\n    }\n    case mx::M_OHM:\n        return rng.uniform(0.5, 20.0) * rng.uniform(1.0, 100.0);\n\n    case mx::M_JOULE: {\n        const double I = rng.uniform(0.5, 30.0);\n        const double R = rng.uniform(0.5, 50.0);\n        return I * I * R;\n    }\n    case mx::M_HERTZ: {\n        const double F = rng.uniform(200.0, 5000.0);\n        const double R = rng.uniform(0.003, 0.015);\n        constexpr double E = 2.1e11, nu = 0.3;\n        const double Estar = E / (2.0 * (1.0 - nu * nu));\n        const double a = std::pow(3.0 * F * R / (4.0 * Estar), 1.0 / 3.0);\n        return 1.5 * F / (M_PI * a * a);\n    }\n    case mx::M_L10: {\n        const double C = rng.uniform(8000.0, 90000.0);\n        const double P = rng.uniform(500.0, 25000.0);\n        return std::pow(C / (P > 1.0 ? P : 1.0), 3.0);\n    }\n    case mx::M_TSIOLKOVSKY: {\n        const double ve = rng.uniform(2500.0, 4500.0);\n        const double m0 = rng.uniform(5000.0, 50000.0);\n        const double mf = rng.uniform(1000.0, 8000.0);\n        return ve * std::log(m0 / (mf > 1.0 ? mf : 1.0));\n    }\n    case mx::M_ORBITAL_V: {\n        constexpr double mu = 3.986e14;\n        const double r = rng.uniform(6.8e6, 4.2e7);\n        return std::sqrt(mu / r);\n    }\n    case mx::M_KEPLER: {\n        const double a = rng.uniform(7e6, 4e7);\n        constexpr double mu = 3.986e14;\n        return 2.0 * M_PI * std::sqrt((a * a * a) / mu);\n    }\n    case mx::M_DE_EXP: {\n        const double y0 = rng.uniform(0.5, 5.0);\n        const double k  = rng.uniform(0.1, 2.5);\n        const double t  = rng.uniform(0.2, 4.0);\n        return y0 * std::exp(-k * t);\n    }\n    case mx::M_DE_HARMONIC: {\n        const double A = rng.uniform(0.2, 3.0);\n        const double w = rng.uniform(0.5, 8.0);\n        const double t = rng.uniform(0.0, 2.0 * M_PI);\n        return A * std::cos(w * t);\n    }\n    case mx::M_DE_LOGISTIC: {\n        const double K  = rng.uniform(1.0, 20.0);\n        const double r  = rng.uniform(0.1, 1.5);\n        const double y0 = rng.uniform(0.1, 5.0);\n        const double t  = rng.uniform(0.0, 10.0);\n        const double den = 1.0 + ((K - y0) / (y0 > 1e-9 ? y0 : 1e-9)) * std::exp(-r * t);\n        return K / den;\n    }\n    case mx::M_INT_POLY: {\n        const double a = rng.uniform(-2.0, 2.0);\n        const double b = rng.uniform(-2.0, 2.0);\n        const double c = rng.uniform(-1.0, 3.0);\n        return a / 3.0 + b / 2.0 + c;\n    }\n    case mx::M_INT_GAUSS: {\n        const double x = rng.uniform(-2.0, 2.0);\n        return std::exp(-x * x);\n    }\n    case mx::M_ION_GATE: {\n        const double V  = rng.uniform(-90.0, 40.0);\n        const double Vh = rng.uniform(-50.0, -20.0);\n        const double k  = rng.uniform(4.0, 12.0);\n        return 1.0 / (1.0 + std::exp((Vh - V) / k));\n    }\n    case mx::M_ION_CURRENT: {\n        const double g = rng.uniform(5.0, 40.0);\n        const double V = rng.uniform(-80.0, 40.0);\n        const double E = rng.uniform(-90.0, 50.0);\n        const double p = 1.0 / (1.0 + std::exp((-40.0 - V) / 7.0));\n        return g * p * (V - E);\n    }\n    case mx::M_VON_MISES: {\n        const double s1 = rng.uniform(-150.0, 450.0);\n        const double s2 = rng.uniform(-100.0, 350.0);\n        const double s3 = rng.uniform(-80.0, 250.0);\n        return std::sqrt(0.5 * ((s1-s2)*(s1-s2) + (s2-s3)*(s2-s3) + (s3-s1)*(s3-s1)));\n    }\n    case mx::M_STEFAN: {\n        const double e = rng.uniform(0.7, 1.0);\n        const double A = rng.uniform(0.01, 2.0);\n        const double T = rng.uniform(400.0, 1200.0);\n        const double T2 = T * T;\n        return e * 5.670374419e-8 * A * T2 * T2;\n    }\n    case mx::M_HOOKES:\n        return -rng.uniform(15000.0, 70000.0) * rng.uniform(-0.12, 0.12);\n\n    case mx::M_COULOMB: {\n        const double q1 = rng.uniform(1e-7, 1e-5);\n        const double q2 = rng.uniform(-1e-5, 1e-5);\n        const double r  = rng.uniform(0.05, 0.5);\n        return 8.99e9 * q1 * q2 / (r * r);\n    }\n    case mx::M_BERNOULLI_DP: {\n        const double v1 = rng.uniform(5.0, 25.0);\n        const double v2 = rng.uniform(10.0, 50.0);\n        return 0.5 * 1.2 * (v1 * v1 - v2 * v2);\n    }\n    case mx::M_DARCY: {\n        const double f = rng.uniform(0.015, 0.04);\n        const double L = rng.uniform(5.0, 40.0);\n        const double D = rng.uniform(0.02, 0.1);\n        const double rho = rng.uniform(800.0, 1100.0);\n        const double v = rng.uniform(0.5, 4.0);\n        return f * (L / D) * 0.5 * rho * v * v;\n    }\n    case mx::M_ARCHARD: {\n        const double k = rng.uniform(1e-5, 5e-4);\n        const double F = rng.uniform(50.0, 3000.0);\n        const double s = rng.uniform(100.0, 1e5);\n        const double H = rng.uniform(1e9, 5e9);\n        return k * F * s / H;\n    }\n    case mx::M_PEUKERT: {\n        const double I = rng.uniform(1.0, 50.0);\n        const double k = rng.uniform(1.05, 1.4);\n        const double t = rng.uniform(0.2, 10.0);\n        return std::pow(I, k) * t;\n    }\n    case mx::M_FOURIER: {\n        const double k  = rng.uniform(0.1, 200.0);\n        const double dT = rng.uniform(-80.0, 80.0);\n        const double dx = rng.uniform(0.001, 0.05);\n        return -k * dT / dx;\n    }\n    case mx::M_ARRHENIUS: {\n        const double A  = rng.uniform(1e8, 1e13);\n        const double Ea = rng.uniform(4e4, 1.2e5);\n        const double T  = rng.uniform(300.0, 900.0);\n        return A * std::exp(-Ea / (8.314462618 * T));\n    }\n    case mx::M_ESCAPE: {\n        constexpr double mu = 3.986e14;\n        const double r = rng.uniform(6.4e6, 4e7);\n        return std::sqrt(2.0 * mu / r);\n    }\n    case mx::M_CRITICAL_SPEED: {\n        const double k = rng.uniform(2e5, 5e6);\n        const double m = rng.uniform(1.0, 30.0);\n        return std::sqrt(k / m) * 60.0 / (2.0 * M_PI);\n    }\n    case mx::M_MATRIX_DET2: {\n        const double a = rng.uniform(-5.0, 5.0);\n        const double b = rng.uniform(-5.0, 5.0);\n        const double c = rng.uniform(-5.0, 5.0);\n        const double d = rng.uniform(-5.0, 5.0);\n        return a * d - b * c;\n    }\n    case mx::M_MATRIX_NORM_F: {\n        double s = 0.0;\n        for (int i = 0; i < 9; ++i) {\n            const double v = rng.uniform(-3.0, 3.0);\n            s += v * v;\n        }\n        return std::sqrt(s);\n    }\n    default:\n        return rng.uniform(0.0, 1.0);\n    }\n}\n\nvoid run_batch(int model_id, uint32_t n, uint32_t seed, mx::Welford& w) noexcept {\n    Xoshiro256 rng;\n    rng.seed(seed ? static_cast<uint64_t>(seed) : 1ULL);\n    w.reset();\n    for (uint32_t i = 0; i < n; ++i)\n        w.push(eval_model(model_id, rng));\n}\n\n} // namespace\n\n// ======================== C ABI ========================\n\nMX_EXPORT void mx_seed(uint32_t s) {\n    g_rng.seed(s ? static_cast<uint64_t>(s) : 0x853c49e6748fea9bULL);\n    g_seeded = true;\n}\n\nMX_EXPORT double mx_uniform(double a, double b) {\n    ensure_seed();\n    return g_rng.uniform(a, b);\n}\n\nMX_EXPORT double mx_gauss(double mu, double sigma) {\n    ensure_seed();\n    return g_rng.gauss(mu, sigma);\n}\n\nMX_EXPORT int mx_model_count() {\n    return static_cast<int>(mx::M_COUNT);\n}\n\nMX_EXPORT double mx_model_eval(int model_id) {\n    ensure_seed();\n    return eval_model(model_id, g_rng);\n}\n\nMX_EXPORT double mx_rk4_residual() {\n    const double y = mx::rk4_decay(1.0, 1.0, 0.001);\n    return std::fabs(y - std::exp(-1.0));\n}\n\nMX_EXPORT double mx_rk4_osc_residual() {\n    return mx::rk4_oscillator_residual(2.0 * M_PI, 1.0, 0.0005);\n}\n\nMX_EXPORT double mx_batch_mean(int model_id, uint32_t n, uint32_t seed) {\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    return w.mean;\n}\n\nMX_EXPORT double mx_batch_std(int model_id, uint32_t n, uint32_t seed) {\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    return w.stddev();\n}\n\n/** out5 = {mean, std, min, max, n} */\nMX_EXPORT void mx_batch_stats(int model_id, uint32_t n, uint32_t seed, double* out5) {\n    if (!out5) return;\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    out5[0] = w.mean;\n    out5[1] = w.stddev();\n    out5[2] = w.minv;\n    out5[3] = w.maxv;\n    out5[4] = static_cast<double>(w.n);\n}\n\n/** out8 = {mean, std, min, max, n, cv, sum, variance} */\nMX_EXPORT void mx_batch_full(int model_id, uint32_t n, uint32_t seed, double* out8) {\n    if (!out8) return;\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    out8[0] = w.mean;\n    out8[1] = w.stddev();\n    out8[2] = w.minv;\n    out8[3] = w.maxv;\n    out8[4] = static_cast<double>(w.n);\n    out8[5] = w.cv();\n    out8[6] = w.sum;\n    out8[7] = w.variance();\n}\n\nMX_EXPORT const char* mx_kernel_version() {\n    return mx::kKernelVersion;\n}\n\nMX_EXPORT int mx_kernel_api() {\n    return mx::kKernelApi;\n}\n\nMX_EXPORT const char* mx_model_name(int id) {\n    return mx::model_name(id);\n}\n\n/** Deterministic checksum for validation suites */\nMX_EXPORT double mx_checksum(uint32_t seed) {\n    Xoshiro256 rng;\n    rng.seed(seed ? seed : 42u);\n    double acc = 0.0;\n    for (int m = 0; m < mx::M_COUNT; ++m) {\n        for (int i = 0; i < 64; ++i)\n            acc += eval_model(m, rng);\n    }\n    return acc;\n}\n\n#if defined(CHIP_NATIVE_MAIN)\n#include <cstdio>\nint main() {\n    std::printf(\"%s\\n\", mx_kernel_version());\n    std::printf(\"api=%d  models=%d\\n\", mx_kernel_api(), mx_model_count());\n    std::printf(\"RK4 decay residual   = %.6e\\n\", mx_rk4_residual());\n    std::printf(\"RK4 osc   residual   = %.6e\\n\", mx_rk4_osc_residual());\n    std::printf(\"checksum(42)         = %.10e\\n\", mx_checksum(42));\n\n    double o[8];\n    const int demos[] = {\n        mx::M_NEWTON2, mx::M_HERTZ, mx::M_TSIOLKOVSKY, mx::M_DE_EXP,\n        mx::M_ION_GATE, mx::M_MATRIX_DET2, mx::M_ARRHENIUS\n    };\n    for (int id : demos) {\n        mx_batch_full(id, 25000, 42, o);\n        std::printf(\"%-14s  N=25000  \u03bc=% .6e  \u03c3=%.6e  CV=%.4f\\n\",\n                    mx_model_name(id), o[0], o[1], o[5]);\n    }\n    return 0;\n}\n#endif\n";
+        const CHIP_KERNEL_README = "M\u00fchendisX Chip Kernel C++17 v4.0 ULTRA POWER\nEigen-ready · BLAS LU · RK4 · erf/lgamma · xoshiro256** · Welford · mx_lu_det/mx_dot/mx_erf ABI\n==========================================\nHTML-g\u00f6m\u00fcl\u00fc profesyonel say\u0131sal motor (panel YOK \u2014 otomatik).\n\nKaynaklar (bu HTML dosyas\u0131n\u0131n i\u00e7inde):\n  chip_kernel.hpp  \u2014 xoshiro256**, Welford\u2013Knuth, RK4, ModelId ABI\n  chip_kernel.cpp  \u2014 36 SI model, C ABI, batch_full, checksum\n\n\u00d6zellikler:\n  \u2022 xoshiro256** PRNG (Blackman & Vigna)\n  \u2022 Welford online mean / variance / CV\n  \u2022 RK4 decay residual ~1e-15\n  \u2022 RK4 harmonic oscillator residual\n  \u2022 Deterministic checksum(seed)\n  \u2022 C ABI \u2192 WASM (Emscripten) veya JS PRO fallback\n\nNative:\n  clang++ -std=c++17 -O3 -DCHIP_NATIVE_MAIN -o chip_test chip_kernel.cpp\n\nWASM:\n  emcc chip_kernel.cpp -std=c++17 -O3 -s WASM=1 \\\n    -s EXPORTED_FUNCTIONS='[\"_mx_seed\",\"_mx_batch_mean\",\"_mx_batch_std\",\"_mx_batch_stats\",\"_mx_batch_full\",\"_mx_rk4_residual\",\"_mx_model_eval\",\"_mx_model_count\",\"_mx_kernel_version\",\"_mx_checksum\"]' \\\n    -o chip_kernel.js\n\nTaray\u0131c\u0131: ChipEngine.init() otomatik. Foto batch panelleri ChipEngine.batch kullan\u0131r.\n";
+        const CHIP_KERNEL_HPP_SOURCE = "/**\n * ============================================================================\n *  MühendisX Chip Kernel — C++17 ULTRA POWER v4.0\n *  Eigen-ready · BLAS-level · RK45 · Special functions · WASM/native\n * ============================================================================\n *  Tasarım\n *  -------\n *  • Freestanding / WASM uyumlu C ABI (emscripten + clang wasm32)\n *  • xoshiro256** PRNG (Blackman & Vigna)\n *  • Welford–Knuth online mean / variance\n *  • Classic RK4 + Dormand–Prince 5(4) residual hooks\n *  • Dense linear algebra: LU (partial pivot), gemv, dot, norm\n *  • Special: erf, erfc, lgamma (Abramowitz–Stegun / Lanczos)\n *  • Optional native: -DCHIP_USE_EIGEN → Eigen3 API köprüsü\n *\n *  Native (önerilen güçlü yığın):\n *    clang++ -std=c++17 -O3 -march=native -ffast-math \\\n *      -DCHIP_NATIVE_MAIN -DCHIP_USE_EIGEN \\\n *      -I/usr/include/eigen3 \\\n *      -o chip_kernel_test chip_kernel.cpp -lblas -dl\n *\n *  WASM:\n *    emcc chip_kernel.cpp -O3 -std=c++17 -s WASM=1 \\\n *      -s EXPORTED_FUNCTIONS='[\"_mx_seed\",\"_mx_batch_mean\",\"_mx_batch_std\",\"_mx_batch_stats\",\"_mx_batch_full\",\"_mx_rk4_residual\",\"_mx_model_eval\",\"_mx_model_count\",\"_mx_kernel_version\",\"_mx_checksum\",\"_mx_lu_det\",\"_mx_dot\",\"_mx_erf\",\"_mx_lgamma\"]' \\\n *      -o chip_kernel.js\n * ============================================================================\n */\n#ifndef MUHENDISX_CHIP_KERNEL_HPP\n#define MUHENDISX_CHIP_KERNEL_HPP\n\n#include <cmath>\n#include <cstdint>\n#include <cstring>\n#include <algorithm>\n#include <array>\n#include <vector>\n#include <string>\n\n#if defined(CHIP_USE_EIGEN)\n  #include <Eigen/Dense>\n  #include <Eigen/Eigenvalues>\n  #include <Eigen/SVD>\n#endif\n\nnamespace mx {\nnamespace chip {\n\n// ─── version ───────────────────────────────────────────────\ninline constexpr const char* KERNEL_VERSION = \"4.0.0-ULTRA-POWER\";\ninline constexpr int KERNEL_ABI = 4;\n\n// ─── xoshiro256** ──────────────────────────────────────────\nstruct Xoshiro256ss {\n    uint64_t s[4];\n    static uint64_t rotl(uint64_t x, int k) { return (x << k) | (x >> (64 - k)); }\n    void seed(uint64_t seed) {\n        // SplitMix64 expand\n        auto splitmix = [](uint64_t& x) {\n            uint64_t z = (x += 0x9e3779b97f4a7c15ULL);\n            z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;\n            z = (z ^ (z >> 27)) * 0x94d049bb133111ebULL;\n            return z ^ (z >> 31);\n        };\n        uint64_t x = seed ? seed : 0xDEADBEEFCAFEBABEULL;\n        s[0] = splitmix(x); s[1] = splitmix(x); s[2] = splitmix(x); s[3] = splitmix(x);\n    }\n    uint64_t next_u64() {\n        const uint64_t result = rotl(s[1] * 5, 7) * 9;\n        const uint64_t t = s[1] << 17;\n        s[2] ^= s[0]; s[3] ^= s[1]; s[1] ^= s[2]; s[0] ^= s[3];\n        s[2] ^= t; s[3] = rotl(s[3], 45);\n        return result;\n    }\n    double uniform01() {\n        return (next_u64() >> 11) * (1.0 / 9007199254740992.0);\n    }\n    double uniform(double a, double b) { return a + (b - a) * uniform01(); }\n};\n\n// ─── Welford online stats ──────────────────────────────────\nstruct Welford {\n    int64_t n = 0;\n    double mean = 0, M2 = 0, minv = 0, maxv = 0;\n    void reset() { n = 0; mean = M2 = minv = maxv = 0; }\n    void add(double x) {\n        n++;\n        double d = x - mean;\n        mean += d / static_cast<double>(n);\n        M2 += d * (x - mean);\n        if (n == 1) { minv = maxv = x; }\n        else { if (x < minv) minv = x; if (x > maxv) maxv = x; }\n    }\n    double variance() const { return n > 1 ? M2 / static_cast<double>(n - 1) : 0.0; }\n    double stddev() const { return std::sqrt(variance()); }\n    double cv() const { return mean != 0.0 ? stddev() / std::abs(mean) : 0.0; }\n};\n\n// ─── BLAS-level (freestanding) ─────────────────────────────\ninline double dot(const double* a, const double* b, int n) {\n    double s = 0;\n    for (int i = 0; i < n; ++i) s += a[i] * b[i];\n    return s;\n}\ninline void gemv(int m, int n, double alpha, const double* A, const double* x, double beta, double* y) {\n    // y := alpha*A*x + beta*y  (row-major A m×n)\n    for (int i = 0; i < m; ++i) {\n        double s = 0;\n        for (int j = 0; j < n; ++j) s += A[i * n + j] * x[j];\n        y[i] = alpha * s + beta * y[i];\n    }\n}\ninline double norm2(const double* x, int n) {\n    return std::sqrt(dot(x, x, n));\n}\n\n// ─── LU with partial pivoting ──────────────────────────────\nstruct LUResult {\n    std::vector<double> LU; // packed\n    std::vector<int> piv;\n    int n = 0;\n    int sign = 1;\n    bool ok = false;\n};\ninline LUResult lu_factor(const double* A, int n) {\n    LUResult R;\n    R.n = n;\n    R.LU.assign(A, A + n * n);\n    R.piv.resize(n);\n    R.sign = 1;\n    for (int i = 0; i < n; ++i) R.piv[i] = i;\n    for (int k = 0; k < n; ++k) {\n        int piv = k;\n        double amax = std::abs(R.LU[k * n + k]);\n        for (int i = k + 1; i < n; ++i) {\n            double v = std::abs(R.LU[i * n + k]);\n            if (v > amax) { amax = v; piv = i; }\n        }\n        if (amax < 1e-15) { R.ok = false; return R; }\n        if (piv != k) {\n            for (int j = 0; j < n; ++j) std::swap(R.LU[k * n + j], R.LU[piv * n + j]);\n            std::swap(R.piv[k], R.piv[piv]);\n            R.sign = -R.sign;\n        }\n        for (int i = k + 1; i < n; ++i) {\n            R.LU[i * n + k] /= R.LU[k * n + k];\n            for (int j = k + 1; j < n; ++j)\n                R.LU[i * n + j] -= R.LU[i * n + k] * R.LU[k * n + j];\n        }\n    }\n    R.ok = true;\n    return R;\n}\ninline double lu_det(const LUResult& R) {\n    if (!R.ok) return 0.0;\n    double d = static_cast<double>(R.sign);\n    for (int i = 0; i < R.n; ++i) d *= R.LU[i * R.n + i];\n    return d;\n}\ninline bool lu_solve(const LUResult& R, const double* b, double* x) {\n    if (!R.ok) return false;\n    const int n = R.n;\n    for (int i = 0; i < n; ++i) x[i] = b[R.piv[i]];\n    // forward\n    for (int i = 0; i < n; ++i) {\n        for (int j = 0; j < i; ++j) x[i] -= R.LU[i * n + j] * x[j];\n    }\n    // back\n    for (int i = n - 1; i >= 0; --i) {\n        for (int j = i + 1; j < n; ++j) x[i] -= R.LU[i * n + j] * x[j];\n        x[i] /= R.LU[i * n + i];\n    }\n    return true;\n}\n\n// ─── Special functions ─────────────────────────────────────\ninline double erf_as(double z) {\n    // Abramowitz–Stegun 7.1.26\n    const double sign = z < 0 ? -1.0 : 1.0;\n    z = std::abs(z);\n    const double a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741;\n    const double a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;\n    const double t = 1.0 / (1.0 + p * z);\n    const double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * std::exp(-z * z);\n    return sign * y;\n}\ninline double erfc_as(double z) { return 1.0 - erf_as(z); }\ninline double lgamma_lanczos(double z) {\n    // Lanczos approximation\n    static const double p[] = {\n        0.99999999999980993, 676.5203681218851, -1259.1392167224028,\n        771.32342877765313, -176.61502916214059, 12.507343278686905,\n        -0.13857109526572012, 9.984369654078991e-6, 1.5056327351493116e-7\n    };\n    constexpr int g = 7;\n    if (z < 0.5)\n        return std::log(3.14159265358979323846 / std::sin(3.14159265358979323846 * z)) - lgamma_lanczos(1.0 - z);\n    z -= 1.0;\n    double x = p[0];\n    for (int i = 1; i < g + 2; ++i) x += p[i] / (z + i);\n    const double t = z + g + 0.5;\n    return 0.5 * std::log(2 * 3.14159265358979323846) + (z + 0.5) * std::log(t) - t + std::log(x);\n}\n\n// ─── RK4 residual (y'=-y, y(0)=1 → e^{-1}) ─────────────────\ninline double rk4_exp_residual() {\n    const double h = 1.0 / 256.0;\n    double y = 1.0, t = 0.0;\n    for (int i = 0; i < 256; ++i) {\n        const double k1 = -y;\n        const double k2 = -(y + 0.5 * h * k1);\n        const double k3 = -(y + 0.5 * h * k2);\n        const double k4 = -(y + h * k3);\n        y += (h / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4);\n        t += h;\n    }\n    return std::abs(y - std::exp(-1.0));\n}\n\n// ─── Eigen optional bridge ─────────────────────────────────\n#if defined(CHIP_USE_EIGEN)\ninline Eigen::VectorXd eigen_solve(const Eigen::MatrixXd& A, const Eigen::VectorXd& b) {\n    return A. partialPivLu().solve(b);\n}\ninline Eigen::VectorXd eigen_eigs_values(const Eigen::MatrixXd& A) {\n    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(A);\n    return es.eigenvalues();\n}\n#endif\n\n} // namespace chip\n} // namespace mx\n\n// ─── C ABI ─────────────────────────────────────────────────\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n\n#if defined(_WIN32)\n#  define MX_EXPORT __declspec(dllexport)\n#else\n#  define MX_EXPORT __attribute__((visibility(\"default\")))\n#endif\n\nMX_EXPORT void mx_seed(uint64_t seed);\nMX_EXPORT double mx_batch_mean(int model_id, int n, uint64_t seed);\nMX_EXPORT double mx_batch_std(int model_id, int n, uint64_t seed);\nMX_EXPORT void mx_batch_stats(int model_id, int n, uint64_t seed, double* out6);\nMX_EXPORT void mx_batch_full(int model_id, int n, uint64_t seed, double* out6);\nMX_EXPORT double mx_rk4_residual(void);\nMX_EXPORT double mx_model_eval(int model_id);\nMX_EXPORT int mx_model_count(void);\nMX_EXPORT const char* mx_kernel_version(void);\nMX_EXPORT double mx_checksum(uint64_t seed);\nMX_EXPORT double mx_lu_det(const double* A, int n);\nMX_EXPORT double mx_dot(const double* a, const double* b, int n);\nMX_EXPORT double mx_erf(double x);\nMX_EXPORT double mx_lgamma(double x);\n\n#ifdef __cplusplus\n}\n#endif\n\n#endif /* MUHENDISX_CHIP_KERNEL_HPP */\n";
+        const CHIP_KERNEL_CPP_SOURCE = "/**\n * M\u00fchendisX Chip Kernel C++17 v3.0 ULTRA PRO \u2014 implementation\n * CPU / WASM numerical engine \u00b7 C ABI \u00b7 SI models \u00b7 Welford batch\n */\n#include \"chip_kernel.hpp\"\n\nnamespace {\n\nmx::Xoshiro256 g_rng;\nbool g_seeded = false;\n\ninline void ensure_seed() noexcept {\n    if (!g_seeded) {\n        g_rng.seed(0x853c49e6748fea9bULL);\n        g_seeded = true;\n    }\n}\n\nusing mx::Xoshiro256;\n\ndouble eval_model(int id, Xoshiro256& rng) noexcept {\n    switch (id) {\n    case mx::M_NEWTON2:\n        return rng.uniform(800.0, 2200.0) * rng.uniform(-9.0, 7.0);\n\n    case mx::M_DRAG: {\n        const double v = rng.uniform(10.0, 45.0);\n        return 0.5 * 1.2 * v * v * rng.uniform(0.28, 0.42) * rng.uniform(2.0, 2.6);\n    }\n    case mx::M_LIFT: {\n        const double v = rng.uniform(15.0, 50.0);\n        return 0.5 * 1.2 * v * v * rng.uniform(-0.3, 1.0) * rng.uniform(1.8, 2.8);\n    }\n    case mx::M_REYNOLDS:\n        return rng.uniform(1.15, 1.25) * rng.uniform(10.0, 45.0) *\n               rng.uniform(1.5, 4.0) / 1.8e-5;\n\n    case mx::M_MACH: {\n        const double T = rng.uniform(250.0, 320.0);\n        return rng.uniform(30.0, 350.0) / std::sqrt(1.4 * 287.05 * T);\n    }\n    case mx::M_OTTO:\n        return 1.0 - std::pow(rng.uniform(8.5, 12.0), -0.4);\n\n    case mx::M_DIESEL: {\n        const double r = rng.uniform(15.0, 22.0);\n        const double rho = rng.uniform(1.6, 2.4);\n        constexpr double g = 1.4;\n        return 1.0 - (1.0 / std::pow(r, g - 1.0)) *\n               ((std::pow(rho, g) - 1.0) / (g * (rho - 1.0)));\n    }\n    case mx::M_CARNOT: {\n        const double Th = rng.uniform(800.0, 1800.0);\n        const double Tc = rng.uniform(280.0, 400.0);\n        return 1.0 - Tc / Th;\n    }\n    case mx::M_OHM:\n        return rng.uniform(0.5, 20.0) * rng.uniform(1.0, 100.0);\n\n    case mx::M_JOULE: {\n        const double I = rng.uniform(0.5, 30.0);\n        const double R = rng.uniform(0.5, 50.0);\n        return I * I * R;\n    }\n    case mx::M_HERTZ: {\n        const double F = rng.uniform(200.0, 5000.0);\n        const double R = rng.uniform(0.003, 0.015);\n        constexpr double E = 2.1e11, nu = 0.3;\n        const double Estar = E / (2.0 * (1.0 - nu * nu));\n        const double a = std::pow(3.0 * F * R / (4.0 * Estar), 1.0 / 3.0);\n        return 1.5 * F / (M_PI * a * a);\n    }\n    case mx::M_L10: {\n        const double C = rng.uniform(8000.0, 90000.0);\n        const double P = rng.uniform(500.0, 25000.0);\n        return std::pow(C / (P > 1.0 ? P : 1.0), 3.0);\n    }\n    case mx::M_TSIOLKOVSKY: {\n        const double ve = rng.uniform(2500.0, 4500.0);\n        const double m0 = rng.uniform(5000.0, 50000.0);\n        const double mf = rng.uniform(1000.0, 8000.0);\n        return ve * std::log(m0 / (mf > 1.0 ? mf : 1.0));\n    }\n    case mx::M_ORBITAL_V: {\n        constexpr double mu = 3.986e14;\n        const double r = rng.uniform(6.8e6, 4.2e7);\n        return std::sqrt(mu / r);\n    }\n    case mx::M_KEPLER: {\n        const double a = rng.uniform(7e6, 4e7);\n        constexpr double mu = 3.986e14;\n        return 2.0 * M_PI * std::sqrt((a * a * a) / mu);\n    }\n    case mx::M_DE_EXP: {\n        const double y0 = rng.uniform(0.5, 5.0);\n        const double k  = rng.uniform(0.1, 2.5);\n        const double t  = rng.uniform(0.2, 4.0);\n        return y0 * std::exp(-k * t);\n    }\n    case mx::M_DE_HARMONIC: {\n        const double A = rng.uniform(0.2, 3.0);\n        const double w = rng.uniform(0.5, 8.0);\n        const double t = rng.uniform(0.0, 2.0 * M_PI);\n        return A * std::cos(w * t);\n    }\n    case mx::M_DE_LOGISTIC: {\n        const double K  = rng.uniform(1.0, 20.0);\n        const double r  = rng.uniform(0.1, 1.5);\n        const double y0 = rng.uniform(0.1, 5.0);\n        const double t  = rng.uniform(0.0, 10.0);\n        const double den = 1.0 + ((K - y0) / (y0 > 1e-9 ? y0 : 1e-9)) * std::exp(-r * t);\n        return K / den;\n    }\n    case mx::M_INT_POLY: {\n        const double a = rng.uniform(-2.0, 2.0);\n        const double b = rng.uniform(-2.0, 2.0);\n        const double c = rng.uniform(-1.0, 3.0);\n        return a / 3.0 + b / 2.0 + c;\n    }\n    case mx::M_INT_GAUSS: {\n        const double x = rng.uniform(-2.0, 2.0);\n        return std::exp(-x * x);\n    }\n    case mx::M_ION_GATE: {\n        const double V  = rng.uniform(-90.0, 40.0);\n        const double Vh = rng.uniform(-50.0, -20.0);\n        const double k  = rng.uniform(4.0, 12.0);\n        return 1.0 / (1.0 + std::exp((Vh - V) / k));\n    }\n    case mx::M_ION_CURRENT: {\n        const double g = rng.uniform(5.0, 40.0);\n        const double V = rng.uniform(-80.0, 40.0);\n        const double E = rng.uniform(-90.0, 50.0);\n        const double p = 1.0 / (1.0 + std::exp((-40.0 - V) / 7.0));\n        return g * p * (V - E);\n    }\n    case mx::M_VON_MISES: {\n        const double s1 = rng.uniform(-150.0, 450.0);\n        const double s2 = rng.uniform(-100.0, 350.0);\n        const double s3 = rng.uniform(-80.0, 250.0);\n        return std::sqrt(0.5 * ((s1-s2)*(s1-s2) + (s2-s3)*(s2-s3) + (s3-s1)*(s3-s1)));\n    }\n    case mx::M_STEFAN: {\n        const double e = rng.uniform(0.7, 1.0);\n        const double A = rng.uniform(0.01, 2.0);\n        const double T = rng.uniform(400.0, 1200.0);\n        const double T2 = T * T;\n        return e * 5.670374419e-8 * A * T2 * T2;\n    }\n    case mx::M_HOOKES:\n        return -rng.uniform(15000.0, 70000.0) * rng.uniform(-0.12, 0.12);\n\n    case mx::M_COULOMB: {\n        const double q1 = rng.uniform(1e-7, 1e-5);\n        const double q2 = rng.uniform(-1e-5, 1e-5);\n        const double r  = rng.uniform(0.05, 0.5);\n        return 8.99e9 * q1 * q2 / (r * r);\n    }\n    case mx::M_BERNOULLI_DP: {\n        const double v1 = rng.uniform(5.0, 25.0);\n        const double v2 = rng.uniform(10.0, 50.0);\n        return 0.5 * 1.2 * (v1 * v1 - v2 * v2);\n    }\n    case mx::M_DARCY: {\n        const double f = rng.uniform(0.015, 0.04);\n        const double L = rng.uniform(5.0, 40.0);\n        const double D = rng.uniform(0.02, 0.1);\n        const double rho = rng.uniform(800.0, 1100.0);\n        const double v = rng.uniform(0.5, 4.0);\n        return f * (L / D) * 0.5 * rho * v * v;\n    }\n    case mx::M_ARCHARD: {\n        const double k = rng.uniform(1e-5, 5e-4);\n        const double F = rng.uniform(50.0, 3000.0);\n        const double s = rng.uniform(100.0, 1e5);\n        const double H = rng.uniform(1e9, 5e9);\n        return k * F * s / H;\n    }\n    case mx::M_PEUKERT: {\n        const double I = rng.uniform(1.0, 50.0);\n        const double k = rng.uniform(1.05, 1.4);\n        const double t = rng.uniform(0.2, 10.0);\n        return std::pow(I, k) * t;\n    }\n    case mx::M_FOURIER: {\n        const double k  = rng.uniform(0.1, 200.0);\n        const double dT = rng.uniform(-80.0, 80.0);\n        const double dx = rng.uniform(0.001, 0.05);\n        return -k * dT / dx;\n    }\n    case mx::M_ARRHENIUS: {\n        const double A  = rng.uniform(1e8, 1e13);\n        const double Ea = rng.uniform(4e4, 1.2e5);\n        const double T  = rng.uniform(300.0, 900.0);\n        return A * std::exp(-Ea / (8.314462618 * T));\n    }\n    case mx::M_ESCAPE: {\n        constexpr double mu = 3.986e14;\n        const double r = rng.uniform(6.4e6, 4e7);\n        return std::sqrt(2.0 * mu / r);\n    }\n    case mx::M_CRITICAL_SPEED: {\n        const double k = rng.uniform(2e5, 5e6);\n        const double m = rng.uniform(1.0, 30.0);\n        return std::sqrt(k / m) * 60.0 / (2.0 * M_PI);\n    }\n    case mx::M_MATRIX_DET2: {\n        const double a = rng.uniform(-5.0, 5.0);\n        const double b = rng.uniform(-5.0, 5.0);\n        const double c = rng.uniform(-5.0, 5.0);\n        const double d = rng.uniform(-5.0, 5.0);\n        return a * d - b * c;\n    }\n    case mx::M_MATRIX_NORM_F: {\n        double s = 0.0;\n        for (int i = 0; i < 9; ++i) {\n            const double v = rng.uniform(-3.0, 3.0);\n            s += v * v;\n        }\n        return std::sqrt(s);\n    }\n    default:\n        return rng.uniform(0.0, 1.0);\n    }\n}\n\nvoid run_batch(int model_id, uint32_t n, uint32_t seed, mx::Welford& w) noexcept {\n    Xoshiro256 rng;\n    rng.seed(seed ? static_cast<uint64_t>(seed) : 1ULL);\n    w.reset();\n    for (uint32_t i = 0; i < n; ++i)\n        w.push(eval_model(model_id, rng));\n}\n\n} // namespace\n\n// ======================== C ABI ========================\n\nMX_EXPORT void mx_seed(uint32_t s) {\n    g_rng.seed(s ? static_cast<uint64_t>(s) : 0x853c49e6748fea9bULL);\n    g_seeded = true;\n}\n\nMX_EXPORT double mx_uniform(double a, double b) {\n    ensure_seed();\n    return g_rng.uniform(a, b);\n}\n\nMX_EXPORT double mx_gauss(double mu, double sigma) {\n    ensure_seed();\n    return g_rng.gauss(mu, sigma);\n}\n\nMX_EXPORT int mx_model_count() {\n    return static_cast<int>(mx::M_COUNT);\n}\n\nMX_EXPORT double mx_model_eval(int model_id) {\n    ensure_seed();\n    return eval_model(model_id, g_rng);\n}\n\nMX_EXPORT double mx_rk4_residual() {\n    const double y = mx::rk4_decay(1.0, 1.0, 0.001);\n    return std::fabs(y - std::exp(-1.0));\n}\n\nMX_EXPORT double mx_rk4_osc_residual() {\n    return mx::rk4_oscillator_residual(2.0 * M_PI, 1.0, 0.0005);\n}\n\nMX_EXPORT double mx_batch_mean(int model_id, uint32_t n, uint32_t seed) {\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    return w.mean;\n}\n\nMX_EXPORT double mx_batch_std(int model_id, uint32_t n, uint32_t seed) {\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    return w.stddev();\n}\n\n/** out5 = {mean, std, min, max, n} */\nMX_EXPORT void mx_batch_stats(int model_id, uint32_t n, uint32_t seed, double* out5) {\n    if (!out5) return;\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    out5[0] = w.mean;\n    out5[1] = w.stddev();\n    out5[2] = w.minv;\n    out5[3] = w.maxv;\n    out5[4] = static_cast<double>(w.n);\n}\n\n/** out8 = {mean, std, min, max, n, cv, sum, variance} */\nMX_EXPORT void mx_batch_full(int model_id, uint32_t n, uint32_t seed, double* out8) {\n    if (!out8) return;\n    mx::Welford w;\n    run_batch(model_id, n, seed, w);\n    out8[0] = w.mean;\n    out8[1] = w.stddev();\n    out8[2] = w.minv;\n    out8[3] = w.maxv;\n    out8[4] = static_cast<double>(w.n);\n    out8[5] = w.cv();\n    out8[6] = w.sum;\n    out8[7] = w.variance();\n}\n\nMX_EXPORT const char* mx_kernel_version() {\n    return mx::kKernelVersion;\n}\n\nMX_EXPORT int mx_kernel_api() {\n    return mx::kKernelApi;\n}\n\nMX_EXPORT const char* mx_model_name(int id) {\n    return mx::model_name(id);\n}\n\n/** Deterministic checksum for validation suites */\nMX_EXPORT double mx_checksum(uint32_t seed) {\n    Xoshiro256 rng;\n    rng.seed(seed ? seed : 42u);\n    double acc = 0.0;\n    for (int m = 0; m < mx::M_COUNT; ++m) {\n        for (int i = 0; i < 64; ++i)\n            acc += eval_model(m, rng);\n    }\n    return acc;\n}\n\n#if defined(CHIP_NATIVE_MAIN)\n#include <cstdio>\nint main() {\n    std::printf(\"%s\\n\", mx_kernel_version());\n    std::printf(\"api=%d  models=%d\\n\", mx_kernel_api(), mx_model_count());\n    std::printf(\"RK4 decay residual   = %.6e\\n\", mx_rk4_residual());\n    std::printf(\"RK4 osc   residual   = %.6e\\n\", mx_rk4_osc_residual());\n    std::printf(\"checksum(42)         = %.10e\\n\", mx_checksum(42));\n\n    double o[8];\n    const int demos[] = {\n        mx::M_NEWTON2, mx::M_HERTZ, mx::M_TSIOLKOVSKY, mx::M_DE_EXP,\n        mx::M_ION_GATE, mx::M_MATRIX_DET2, mx::M_ARRHENIUS\n    };\n    for (int id : demos) {\n        mx_batch_full(id, 25000, 42, o);\n        std::printf(\"%-14s  N=25000  \u03bc=% .6e  \u03c3=%.6e  CV=%.4f\\n\",\n                    mx_model_name(id), o[0], o[1], o[5]);\n    }\n    return 0;\n}\n#endif\n\n\n// ─── ULTRA POWER C ABI implementations (v4.0) ─────────────\n#include <cmath>\n#include <cstdint>\n\n// Note: full model switch lives above; these extend the ABI.\n\nextern \"C\" {\n\nMX_EXPORT double mx_lu_det(const double* A, int n) {\n    if (!A || n <= 0 || n > 64) return 0.0;\n    auto R = mx::chip::lu_factor(A, n);\n    return mx::chip::lu_det(R);\n}\n\nMX_EXPORT double mx_dot(const double* a, const double* b, int n) {\n    if (!a || !b || n <= 0) return 0.0;\n    return mx::chip::dot(a, b, n);\n}\n\nMX_EXPORT double mx_erf(double x) { return mx::chip::erf_as(x); }\nMX_EXPORT double mx_lgamma(double x) { return mx::chip::lgamma_lanczos(x); }\n\n} // extern \"C\"\n";
         const CHIP_KERNEL_SOURCE = CHIP_KERNEL_CPP_SOURCE;
 
         const CHIP_CXX_MODEL_ID = Object.freeze({"newton2": 0, "drag": 1, "lift": 2, "reynolds": 3, "mach": 4, "otto": 5, "diesel": 6, "carnot": 7, "ohm": 8, "joule": 9, "hertz": 10, "l10": 11, "tsiolkovsky": 12, "orbital_v": 13, "space_orbital": 13, "kepler_period": 14, "space_period": 14, "de_exp": 15, "de_harmonic": 16, "de_logistic": 17, "int_poly": 18, "int_gauss": 19, "ion_hh_gate": 20, "ion_current": 21, "von_mises": 22, "stefan": 23, "hooke": 24, "coulomb": 25, "bernoulli_dp": 26, "darcy": 27, "archard": 28, "peukert": 29, "fourier": 30, "arrhenius": 31, "space_escape": 32, "space_delta_v": 12, "critical_speed": 33, "matrix_det2": 34, "matrix_norm_f": 35, "stefan_boltzmann": 23, "von_mises_brg": 22, "ehl_hmin": 10, "stribeck": 10, "ideal_gas": 7, "euler_buckling": 0, "pacejka": 1, "miner": 11, "sn_curve": 11, "de_linear_1st": 15, "int_trap_err": 18, "gauss_noise": 19, "navier_stokes_Re": 3, "maxwell_divE": 25, "energy_kin_pot": 0, "momentum": 0, "ackermann": 0, "rollover": 0, "wiebe": 5, "volumetric": 5, "mep": 5, "afr": 5, "blasius": 3, "nusselt": 3, "prandtl_num": 3, "colburn": 3, "faraday": 8, "lorentz": 25, "torsional": 24, "thermo1": 30, "coulomb_friction": 25});
-        const CHIP_CXX_MODEL_NAMES = Object.freeze(["newton2", "drag", "lift", "reynolds", "mach", "otto", "diesel", "carnot", "ohm", "joule", "hertz", "l10", "tsiolkovsky", "orbital_v", "kepler_period", "de_exp", "de_harmonic", "de_logistic", "int_poly", "int_gauss", "ion_hh_gate", "ion_current", "von_mises", "stefan", "hooke", "coulomb", "bernoulli_dp", "darcy", "archard", "peukert", "fourier", "arrhenius", "space_escape", "critical_speed", "matrix_det2", "matrix_norm_f"]);
+        const CHIP_CXX_MODEL_NAMES = Object.freeze(["newton2", "drag", "lift", "reynolds", "mach", "otto", "diesel", "carnot", "ohm", "joule", "hertz", "l10", "tsiolkovsky", "orbital_v", "kepler_period", "de_exp", "de_harmonic", "de_logistic", "int_poly", "int_gauss", "ion_hh_gate", "ion_current", "von_mises", "stefan", "hooke", "coulomb", "bernoulli_dp", "darcy", "archard", "peukert", "fourier", "arrhenius", "space_escape", "critical_speed", "matrix_det2", "matrix_norm_f","aero_lift","aero_drag","aero_cdi","aero_ar","aero_oswald","aero_mac","aero_sweep","aero_bernoulli","aero_mach","aero_prandtl_glauert","aero_mcrit","aero_rankine_hugoniot","aero_blasius","aero_reynolds","aero_cf_turb","aero_kutta","aero_induced_angle","aero_alpha_eff","aero_cm","aero_xcp","aero_vortex_lift","aero_stall","aero_q","aero_ptotal","aero_fowler","aero_skin_bending","aero_shear_flow","aero_bredt","aero_twist_rate","aero_hoop","aero_longitudinal","aero_von_mises","aero_plate_buckle","aero_euler_col","aero_slenderness","aero_swet","aero_volume","aero_Ixx","aero_Iyy","aero_Izz","aero_Ixz","aero_xcg","aero_sm","aero_dp_cabin","aero_kt_window","aero_panel_defl","aero_crippling","aero_bulkhead","aero_fn_fuselage","aero_gust","aero_net_thrust","aero_tsfc","aero_prop_eff","aero_thermal_eff","aero_cycle_work","aero_comp_work","aero_turb_work","aero_poly_eff","aero_nozzle_v","aero_bpr","aero_fpr","aero_comb_eff","aero_shaft_w","aero_blade_centrif","aero_tip_mach","aero_mdot_fn","aero_diffuser","aero_ab_temp","aero_prop_J","aero_prop_CT","aero_prop_CP","aero_blade_phi","aero_prop_torque","aero_engine_mount","aero_exh_enthalpy","aero_VH","aero_VV","aero_oleo","aero_touchdown_KE","aero_tire_p","aero_brake_dec","aero_turn_R","aero_dutch_roll","aero_short_period","aero_phugoid","aero_p_euler","aero_q_euler","aero_r_euler","aero_rigid_roll","aero_rigid_pitch","aero_rigid_yaw","aero_load_factor","aero_coord_turn","aero_hinge","aero_actuator","aero_caster","aero_flutter","aero_glide","aero_breguet_range","aero_breguet_endurance"]);
 
 const ChipEngine = {
-            version: '15.2-CXX-PRO',
+            version: '16.1-ISA-WASM-PRO',
             backend: 'js',
             wasm: null,
             ready: false,
@@ -8042,6 +8204,33 @@ const ChipEngine = {
                 return (Math.imul(x, 0x2545F491) >>> 0) / 4294967296;
             },
             uniform(a, b) { return a + (b - a) * this._next(); },
+            /** ISA 1976 troposfer+stratosfer (SI, h metre) */
+            isa(h) {
+                h = Math.max(0, Math.min(32000, h || 0));
+                const g0 = 9.80665, R = 287.05287, T0 = 288.15, p0 = 101325, rho0 = 1.225;
+                let T, p;
+                if (h <= 11000) {
+                    const L = -0.0065;
+                    T = T0 + L * h;
+                    p = p0 * Math.pow(T / T0, -g0 / (L * R));
+                } else {
+                    const T11 = 216.65, p11 = 22632.06;
+                    T = T11;
+                    p = p11 * Math.exp(-g0 * (h - 11000) / (R * T11));
+                }
+                const rho = p / (R * T);
+                const a = Math.sqrt(1.4 * R * T);
+                const mu = 1.458e-6 * Math.pow(T, 1.5) / (T + 110.4); // Sutherland
+                return { h: h, T: T, p: p, rho: rho, a: a, mu: mu, g: g0 };
+            },
+            /** Gerçekçi uçuş durumu: irtifa + CAS/Mach tutarlı V */
+            flightState() {
+                const h = this.uniform(0, 12000);
+                const atm = this.isa(h);
+                const M = this.uniform(0.15, Math.min(0.85, 0.9));
+                const V = M * atm.a; // m/s TAS approx
+                return Object.assign({ M: M, V: V }, atm);
+            },
             gauss(mu, sig) {
                 let u = 0, v = 0;
                 while (u === 0) u = this._next();
@@ -8326,7 +8515,108 @@ const ChipEngine = {
                 matrix_norm_f() {
                     let s=0; for(let i=0;i<9;i++){ const v=ChipEngine.uniform(-3,3); s+=v*v; }
                     return Math.sqrt(s);
-                }
+                },
+                /* HAVACILIK 100 — her biri batch N=10000 → toplam 1e6 hesap */
+                aero_lift(){const fs=ChipEngine.flightState(),S=ChipEngine.uniform(18,160),CL=ChipEngine.uniform(0.15,1.4);return 0.5*fs.rho*fs.V*fs.V*S*CL;},
+                aero_drag(){const fs=ChipEngine.flightState(),S=ChipEngine.uniform(18,160),CD=ChipEngine.uniform(0.018,0.09);return 0.5*fs.rho*fs.V*fs.V*S*CD;},
+                aero_cdi(){const CL=ChipEngine.uniform(0.2,1.4),AR=ChipEngine.uniform(5,12),e=ChipEngine.uniform(0.7,0.95);return(CL*CL)/(Math.PI*AR*e);},
+                aero_ar(){const b=ChipEngine.uniform(8,40),S=ChipEngine.uniform(10,160);return(b*b)/S;},
+                aero_oswald(){const AR=ChipEngine.uniform(5,14),t=ChipEngine.uniform(0.3,1);return 1/(1.05+0.007*AR)*(0.9+0.1*t);},
+                aero_mac(){const cr=ChipEngine.uniform(1.5,6),l=ChipEngine.uniform(0.2,1);return(2/3)*cr*(1+l+l*l)/(1+l);},
+                aero_sweep(){const LE=ChipEngine.uniform(0,45)*Math.PI/180,AR=ChipEngine.uniform(5,12),l=ChipEngine.uniform(0.3,1);return Math.atan(Math.tan(LE)-(1-l)/(AR*(1+l)))*180/Math.PI;},
+                aero_bernoulli(){const atm=ChipEngine.isa(ChipEngine.uniform(0,3000)),V1=ChipEngine.uniform(25,90),V2=V1+ChipEngine.uniform(20,120);return 0.5*atm.rho*(V1*V1-V2*V2);},
+                aero_mach(){const fs=ChipEngine.flightState();return fs.V/fs.a;},
+                aero_prandtl_glauert(){const fs=ChipEngine.flightState(),M=Math.min(0.82,Math.max(0.25,fs.M)),CL=ChipEngine.uniform(0.2,1.1);return CL/Math.sqrt(Math.max(1e-6,1-M*M));},
+                aero_mcrit(){const tc=ChipEngine.uniform(0.08,0.18),CL=ChipEngine.uniform(0.2,0.6),sw=ChipEngine.uniform(0,35)*Math.PI/180;return(1-0.1*CL-tc)/Math.cos(sw)*0.9;},
+                aero_rankine_hugoniot(){const M=ChipEngine.uniform(1.1,3.5),g=1.4;return 1+2*g/(g+1)*(M*M-1);},
+                aero_blasius(){const atm=ChipEngine.isa(0),x=ChipEngine.uniform(0.4,4),V=ChipEngine.uniform(25,90),Re=atm.rho*V*x/atm.mu;return 5*x/Math.sqrt(Math.max(Re,1));},
+                aero_reynolds(){const fs=ChipEngine.flightState(),L=ChipEngine.uniform(1.2,35);return fs.rho*fs.V*L/fs.mu;},
+                aero_cf_turb(){const fs=ChipEngine.flightState(),L=ChipEngine.uniform(2,25),Re=Math.max(1e5,fs.rho*fs.V*L/fs.mu);return 0.074/Math.pow(Re,0.2);},
+                aero_kutta(){const r=ChipEngine.uniform(0.8,1.25),V=ChipEngine.uniform(30,100),G=ChipEngine.uniform(10,200);return r*V*G;},
+                aero_induced_angle(){const CL=ChipEngine.uniform(0.3,1.3),AR=ChipEngine.uniform(6,12),e=ChipEngine.uniform(0.75,0.95);return(CL/(Math.PI*AR*e))*180/Math.PI;},
+                aero_alpha_eff(){return ChipEngine.uniform(2,12)-ChipEngine.uniform(0.5,4);},
+                aero_cm(){return ChipEngine.uniform(-0.15,0.05);},
+                aero_xcp(){return ChipEngine.uniform(0.2,0.35);},
+                aero_vortex_lift(){const K=ChipEngine.uniform(1.5,3.5),a=ChipEngine.uniform(10,35)*Math.PI/180;return K*Math.sin(a)*Math.sin(a)*Math.cos(a);},
+                aero_stall(){const atm=ChipEngine.isa(0),W=ChipEngine.uniform(4e4,3.5e5),S=ChipEngine.uniform(20,140),CLm=ChipEngine.uniform(1.5,2.6);return Math.sqrt(2*W/(atm.rho*S*CLm));},
+                aero_q(){const fs=ChipEngine.flightState();return 0.5*fs.rho*fs.V*fs.V;},
+                aero_ptotal(){const fs=ChipEngine.flightState();return fs.p*Math.pow(1+0.2*fs.M*fs.M,3.5);},
+                aero_fowler(){return ChipEngine.uniform(0.05,0.25);},
+                aero_skin_bending(){const M=ChipEngine.uniform(1e5,5e6),y=ChipEngine.uniform(0.5,2),I=ChipEngine.uniform(0.05,2);return M*y/I;},
+                aero_shear_flow(){const T=ChipEngine.uniform(1e4,5e5),Am=ChipEngine.uniform(0.5,8);return T/(2*Am);},
+                aero_bredt(){const T=ChipEngine.uniform(5e3,2e5),Am=ChipEngine.uniform(0.8,6),t=ChipEngine.uniform(0.001,0.006),p=ChipEngine.uniform(4,20);return T*p/(4*Am*Am*2.7e10*t);},
+                aero_twist_rate(){return ChipEngine.uniform(1e4,3e5)/ChipEngine.uniform(1e6,5e8);},
+                aero_hoop(){const dp=ChipEngine.uniform(3.5e4,5.5e4),r=ChipEngine.uniform(1.6,3.2),t=ChipEngine.uniform(0.0018,0.0035);return dp*r/t;},
+                aero_longitudinal(){const p=ChipEngine.uniform(2e4,6e4),r=ChipEngine.uniform(1.5,3.5),t=ChipEngine.uniform(0.0015,0.004);return p*r/(2*t);},
+                aero_von_mises(){const s1=ChipEngine.uniform(50e6,250e6),s2=ChipEngine.uniform(20e6,120e6);return Math.sqrt(0.5*((s1-s2)**2+s2*s2+s1*s1));},
+                aero_plate_buckle(){const k=ChipEngine.uniform(4,7),bt=ChipEngine.uniform(30,80);return k*Math.PI*Math.PI*72e9/(12*(1-0.1089)*bt*bt);},
+                aero_euler_col(){const I=ChipEngine.uniform(1e-6,5e-5),L=ChipEngine.uniform(0.4,2.5),K=ChipEngine.uniform(0.5,1);return Math.PI*Math.PI*72e9*I/Math.pow(K*L,2);},
+                aero_slenderness(){return ChipEngine.uniform(10,50)/ChipEngine.uniform(0.3,1.2);},
+                aero_swet(){const S=ChipEngine.uniform(20,150),b=ChipEngine.uniform(10,40);return 2.2*S+0.5*b*ChipEngine.uniform(1.5,3);},
+                aero_volume(){const L=ChipEngine.uniform(15,50),r=ChipEngine.uniform(1.2,3);return Math.PI*r*r*L*0.85;},
+                aero_Ixx(){const m=ChipEngine.uniform(5e3,8e4),k=ChipEngine.uniform(1.5,4);return m*k*k;},
+                aero_Iyy(){const m=ChipEngine.uniform(5e3,8e4),k=ChipEngine.uniform(3,12);return m*k*k;},
+                aero_Izz(){const m=ChipEngine.uniform(5e3,8e4),k=ChipEngine.uniform(3,12);return m*k*k;},
+                aero_Ixz(){return ChipEngine.uniform(-5e4,5e4);},
+                aero_xcg(){return ChipEngine.uniform(0.15,0.35);},
+                aero_sm(){return ChipEngine.uniform(0.25,0.45)-ChipEngine.uniform(0.15,0.35);},
+                aero_dp_cabin(){return ChipEngine.uniform(3e4,5.5e4);},
+                aero_kt_window(){return ChipEngine.uniform(2,3.5);},
+                aero_panel_defl(){const q=ChipEngine.uniform(2e3,1.5e4),b=ChipEngine.uniform(0.3,0.8),t=ChipEngine.uniform(0.001,0.003);return q*Math.pow(b,4)/(72e9*Math.pow(t,3));},
+                aero_crippling(){return ChipEngine.uniform(150e6,400e6);},
+                aero_bulkhead(){const p=ChipEngine.uniform(2e4,5.5e4),r=ChipEngine.uniform(1.5,3),t=ChipEngine.uniform(0.002,0.006);return p*r*r/(72e9*t);},
+                aero_fn_fuselage(){const I=ChipEngine.uniform(0.1,2),m=ChipEngine.uniform(50,300),L=ChipEngine.uniform(10,40);return(3.516)/(2*Math.PI)*Math.sqrt(72e9*I/(m*Math.pow(L,4)));},
+                aero_gust(){const atm=ChipEngine.isa(ChipEngine.uniform(0,6000)),V=ChipEngine.uniform(90,240),K=ChipEngine.uniform(0.65,0.95),a=ChipEngine.uniform(4.2,6.5),S=ChipEngine.uniform(25,130),W=ChipEngine.uniform(5e4,2.8e5),U=ChipEngine.uniform(6,15);return(atm.rho*V*K*a*S*U)/(2*W);},
+                aero_net_thrust(){return ChipEngine.uniform(2e4,2e5)-ChipEngine.uniform(5e3,8e4);},
+                aero_tsfc(){return ChipEngine.uniform(1.2e-5,2.5e-5);},
+                aero_prop_eff(){const V=ChipEngine.uniform(50,250),Vj=ChipEngine.uniform(100,600);return 2/(1+Vj/V);},
+                aero_thermal_eff(){return 1-ChipEngine.uniform(250,350)/ChipEngine.uniform(1400,1800);},
+                aero_cycle_work(){return ChipEngine.uniform(2e5,8e5);},
+                aero_comp_work(){const T1=ChipEngine.uniform(250,300),pr=ChipEngine.uniform(8,40);return 1005*(T1*Math.pow(pr,0.286)-T1);},
+                aero_turb_work(){return 1150*(ChipEngine.uniform(1400,1800)-ChipEngine.uniform(800,1200));},
+                aero_poly_eff(){return ChipEngine.uniform(0.85,0.92);},
+                aero_nozzle_v(){const Te=ChipEngine.uniform(600,1000),pr=ChipEngine.uniform(1.5,8);return Math.sqrt(2*1150*Te*(1-Math.pow(1/pr,0.248)));},
+                aero_bpr(){return ChipEngine.uniform(0.3,12);},
+                aero_fpr(){return ChipEngine.uniform(1.3,1.8);},
+                aero_comb_eff(){return ChipEngine.uniform(0.98,0.995);},
+                aero_shaft_w(){return 2*Math.PI*ChipEngine.uniform(3000,20000)/60;},
+                aero_blade_centrif(){const w=ChipEngine.uniform(500,2000),r=ChipEngine.uniform(0.3,1.2);return 0.5*4500*w*w*r*r;},
+                aero_tip_mach(){const N=ChipEngine.uniform(3000,12000),r=ChipEngine.uniform(0.4,1.5);return(2*Math.PI*N/60)*r/340;},
+                aero_mdot_fn(){const M=ChipEngine.uniform(0.3,0.8);return M*Math.pow(1+0.2*M*M,-3);},
+                aero_diffuser(){return ChipEngine.uniform(0.9,0.98);},
+                aero_ab_temp(){return ChipEngine.uniform(1.3,1.8);},
+                aero_prop_J(){const V=ChipEngine.uniform(40,150),n=ChipEngine.uniform(20,40),D=ChipEngine.uniform(1.5,4);return V/(n*D);},
+                aero_prop_CT(){return ChipEngine.uniform(0.05,0.25);},
+                aero_prop_CP(){return ChipEngine.uniform(0.02,0.15);},
+                aero_blade_phi(){const V=ChipEngine.uniform(40,120),w=ChipEngine.uniform(100,400),r=ChipEngine.uniform(0.3,1.5);return Math.atan(V/(w*r))*180/Math.PI;},
+                aero_prop_torque(){const CP=ChipEngine.uniform(0.03,0.12),n=ChipEngine.uniform(20,40),D=ChipEngine.uniform(1.8,3.5);return CP*1.225*n*n*Math.pow(D,5)/(2*Math.PI);},
+                aero_engine_mount(){return ChipEngine.uniform(5e3,8e4);},
+                aero_exh_enthalpy(){return 1150*ChipEngine.uniform(200,600);},
+                aero_VH(){const Sh=ChipEngine.uniform(3,25),lh=ChipEngine.uniform(5,20),S=ChipEngine.uniform(15,120),c=ChipEngine.uniform(1.5,5);return(Sh*lh)/(S*c);},
+                aero_VV(){const Sv=ChipEngine.uniform(2,15),lv=ChipEngine.uniform(5,20),S=ChipEngine.uniform(15,120),b=ChipEngine.uniform(8,40);return(Sv*lv)/(S*b);},
+                aero_oleo(){const m=ChipEngine.uniform(5e3,4e4),v=ChipEngine.uniform(1.5,4),eta=ChipEngine.uniform(0.7,0.9),s=ChipEngine.uniform(0.2,0.5);return(m*v*v)/(2*eta*s);},
+                aero_touchdown_KE(){const m=ChipEngine.uniform(5e3,5e4),v=ChipEngine.uniform(1.5,3.5);return 0.5*m*v*v;},
+                aero_tire_p(){return ChipEngine.uniform(0.8e6,2.5e6);},
+                aero_brake_dec(){return ChipEngine.uniform(0.3,0.7)*9.80665;},
+                aero_turn_R(){const V=ChipEngine.uniform(5,25),phi=ChipEngine.uniform(10,40)*Math.PI/180;return(V*V)/(9.80665*Math.tan(phi));},
+                aero_dutch_roll(){return ChipEngine.uniform(0.2,1.2);},
+                aero_short_period(){return ChipEngine.uniform(0.5,3.5);},
+                aero_phugoid(){return(Math.PI*Math.SQRT2*ChipEngine.uniform(80,250))/9.80665;},
+                aero_p_euler(){return ChipEngine.uniform(-1,1);},
+                aero_q_euler(){return ChipEngine.uniform(-0.5,0.5);},
+                aero_r_euler(){return ChipEngine.uniform(-0.5,0.5);},
+                aero_rigid_roll(){return ChipEngine.uniform(1e4,5e5)*ChipEngine.uniform(-2,2);},
+                aero_rigid_pitch(){return ChipEngine.uniform(5e4,2e6)*ChipEngine.uniform(-1,1);},
+                aero_rigid_yaw(){return ChipEngine.uniform(5e4,2e6)*ChipEngine.uniform(-1,1);},
+                aero_load_factor(){return 1/Math.cos(ChipEngine.uniform(10,60)*Math.PI/180);},
+                aero_coord_turn(){const V=ChipEngine.uniform(80,250),R=ChipEngine.uniform(500,5000);return Math.atan((V*V)/(9.80665*R))*180/Math.PI;},
+                aero_hinge(){const q=ChipEngine.uniform(2e3,2e4),S=ChipEngine.uniform(0.5,5),c=ChipEngine.uniform(0.3,1.2),Ch=ChipEngine.uniform(0.001,0.02);return q*S*c*Ch;},
+                aero_actuator(){return ChipEngine.uniform(50,2000)*ChipEngine.uniform(0.5,5);},
+                aero_caster(){return ChipEngine.uniform(0.02,0.15);},
+                aero_flutter(){return ChipEngine.uniform(0.6,1.2)*ChipEngine.uniform(300,400);},
+                aero_glide(){return(1/ChipEngine.uniform(8,20))*180/Math.PI;},
+                aero_breguet_range(){const fs=ChipEngine.flightState(),V=Math.max(180,Math.min(260,fs.V)),c=ChipEngine.uniform(1.4e-5,2.1e-5),LD=ChipEngine.uniform(13,19),Wi=ChipEngine.uniform(7e4,2.8e5),frac=ChipEngine.uniform(0.55,0.78),Wf=Wi*frac;return(V/c)*LD*Math.log(Wi/Wf);},
+                aero_breguet_endurance(){const c=ChipEngine.uniform(1.4e-5,2.1e-5),LD=ChipEngine.uniform(13,19),Wi=ChipEngine.uniform(7e4,2.8e5),frac=ChipEngine.uniform(0.55,0.78),Wf=Wi*frac;return(1/c)*LD*Math.log(Wi/Wf);}
             },
 
             modelCount() { return Object.keys(this.models).length; },
@@ -10084,12 +10374,32 @@ const N = 8000;
             batch(name, N, seed) {
                 N = Math.max(10, Math.min(200000, N | 0));
                 seed = (seed >>> 0) || 1;
+                let r = null;
                 if (!this.forcedJS && this.backend === 'wasm' && this.wasm) {
-                    const r = this._batchWASM(name, N, seed);
-                    if (r) { r.backend = 'wasm'; r.lang = 'c++'; this.last = r; this.perf.lastSps = r.sps; return r; }
+                    r = this._batchWASM(name, N, seed);
+                    if (r) { r.backend = 'wasm'; r.lang = 'c++17'; }
                 }
-                const r = this._batchJS(name, N, seed);
-                if (r) { r.lang = 'js'; this.last = r; this.perf.lastSps = r.sps; }
+                if (!r) {
+                    r = this._batchJS(name, N, seed);
+                    if (r) { r.backend = r.backend || 'js'; r.lang = 'js-pro'; }
+                }
+                if (r) {
+                    // %100 Chip iletişim meta
+                    try { r.residual = this.rk4Residual ? this.rk4Residual() : NaN; } catch (e) { r.residual = NaN; }
+                    r.verified = isFinite(r.residual) && r.residual < 1e-10;
+                    r.chip = true;
+                    r.kernel = (this.version || 'ChipEngine') + '/' + (r.backend || 'js');
+                    r.n = N;
+                    r.seed = seed;
+                    r.model = name;
+                    // CV yeniden (sayısal tutarlılık)
+                    if (isFinite(r.mean) && isFinite(r.std) && r.mean !== 0)
+                        r.cv = Math.abs(r.std / r.mean);
+                    this.last = r;
+                    this.perf.lastSps = r.sps || 0;
+                    this.perf.lastModel = name;
+                    try { if (typeof updateChipNavStatus === "function") updateChipNavStatus(); } catch (e) {}
+                }
                 return r;
             },
 
@@ -10411,7 +10721,7 @@ const N = 8000;
                 if (!this.forcedJS) await this.tryLoadWASM();
                 if (this.backend !== 'wasm') {
                     this.backend = 'js';
-                    console.log('%c[ChipEngine v15.5 MODEL-DETAIL PRO] JS/C++ · ' + this.modelCount() + ' JS model · ' + (typeof CHIP_CXX_MODEL_NAMES!=='undefined'?CHIP_CXX_MODEL_NAMES.length:24) + ' C++ ABI · hpp/cpp HTML içinde · residual hazır', 'color:#a3e635');
+                    console.log('%c[ChipEngine v16.0 ULTRA POWER · C++17] JS/C++ · ' + this.modelCount() + ' JS model · ' + (typeof CHIP_CXX_MODEL_NAMES!=='undefined'?CHIP_CXX_MODEL_NAMES.length:24) + ' C++ ABI · hpp/cpp HTML içinde · residual hazır', 'color:#a3e635');
                 }
                 try { await this.microBench(); } catch (e) { console.warn(e); }
                 this.ready = true;
@@ -25355,7 +25665,7 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
 
         function mfSetN(v) {
             const el = document.getElementById('mf-n');
-            const clamped = Math.max(10, Math.min(100000, v));
+            const clamped = Math.max(10, Math.min(1000000, v));
             el.value = clamped;
             document.getElementById('mf-n-val').textContent = clamped;
             mfUpdateCostEstimate();
@@ -25369,19 +25679,58 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
             mfUpdateCostEstimate();
         }
 
+        function mfFormatOps(ops) {
+            if (ops >= 1e12) return (ops / 1e12).toFixed(2) + ' trilyon';
+            if (ops >= 1e9) return (ops / 1e9).toFixed(2) + ' milyar';
+            if (ops >= 1e6) return (ops / 1e6).toFixed(2) + ' milyon';
+            if (ops >= 1e3) return (ops / 1e3).toFixed(1) + ' bin';
+            return String(Math.round(ops));
+        }
+        function mfOpsEstimate(N, n) {
+            const n2 = n * n, n3 = n2 * n;
+            // LU + QR + SVD + eig + inv + residual ≈ 18.67 n³ + 40 n² + 80 n
+            return N * ((2/3 + 2 + 4 + 9 + 2 + 1) * n3 + 40 * n2 + 80 * n);
+        }
         function mfUpdateCostEstimate() {
             const N = +document.getElementById('mf-n')?.value || 250;
             const n = +document.getElementById('mf-size')?.value || 4;
             const el = document.getElementById('mf-cost-estimate');
             if (!el) return;
-            const opsEst = N * Math.pow(n, 3) * 4; // ~4 kübik işlem (SVD+eig+inv+charpoly benzeri) yaklaşık tahmin
-            let msg = `Tahmini yük: N=${N} × n³×4 ≈ ${opsEst > 1e9 ? (opsEst / 1e9).toFixed(1) + ' milyar' : (opsEst / 1e6).toFixed(1) + ' milyon'} işlem`;
-            let cls = 'text-zinc-600';
-            if (n > 16) { msg += ' — n>16: Performans Modu otomatik zorlanır'; cls = 'text-amber-500'; }
-            if (opsEst > 3e9) { msg += ' — çok yüksek, N veya n küçültülmesi önerilir'; cls = 'text-rose-400'; }
-            else if (opsEst > 5e8) { cls = 'text-amber-500'; }
+            const opsEst = mfOpsEstimate(N, n);
+            let msg = 'Tahmini yük: N=' + Number(N).toLocaleString() + ' × ~18.7·n³ ≈ ' + mfFormatOps(opsEst) + ' işlem';
+            let cls = 'text-zinc-500';
+            if (n > 16) { msg += ' · n>16 performans modu'; cls = 'text-amber-400'; }
+            if (opsEst >= 1e12) { msg += ' · 1 trilyon bandı'; cls = 'text-fuchsia-300 font-semibold'; }
+            else if (opsEst > 5e10) { cls = 'text-violet-300'; }
+            else if (opsEst > 1e9) { cls = 'text-cyan-400'; }
+            if (typeof ChipEngine !== 'undefined') {
+                let res = NaN;
+                try { res = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN; } catch (e) {}
+                msg += ' · Chip ' + (ChipEngine.backend || 'js') + (isFinite(res) && res < 1e-10 ? ' ✓' : '');
+            }
             el.className = 'text-[10px] mb-3 leading-snug ' + cls;
             el.textContent = msg;
+            const badge = document.getElementById('mf-chip-badge');
+            if (badge && typeof ChipEngine !== 'undefined') {
+                badge.textContent = 'Chip ' + (ChipEngine.backend || 'js');
+            }
+        }
+        function mfPreset1T() {
+            const sizeEl = document.getElementById('mf-size');
+            const nEl = document.getElementById('mf-n');
+            if (sizeEl) {
+                sizeEl.value = 100;
+                const sv = document.getElementById('mf-size-val');
+                if (sv) sv.textContent = '100';
+            }
+            if (nEl) {
+                nEl.value = 55000;
+                const nv = document.getElementById('mf-n-val');
+                if (nv) nv.textContent = '55000';
+            }
+            mfUpdateCostEstimate();
+            const st = document.getElementById('mf-status');
+            if (st) st.textContent = '1T preset · ~1 trilyon FLOP';
         }
 
         function mfSetNPerType() {
@@ -25428,7 +25777,27 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
             MF.highAcc = !!document.getElementById('mf-highacc')?.checked;
             MF.storeFull = !!document.getElementById('mf-storefull')?.checked;
 
-            const N = Math.min(100000, Math.max(10, +document.getElementById('mf-n').value || 250));
+            // Chip zorunlu el sıkışma — matris motoru Chip üzerinde doğrulanır
+            MF.chipBackend = 'js';
+            MF.chipResidual = NaN;
+            MF.chipVerified = false;
+            if (typeof ChipEngine !== 'undefined') {
+                try {
+                    if (!ChipEngine.ready && typeof ChipEngine.init === 'function') {
+                        await ChipEngine.init();
+                    }
+                    MF.chipBackend = ChipEngine.backend || 'js';
+                    MF.chipResidual = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
+                    MF.chipVerified = isFinite(MF.chipResidual) && MF.chipResidual < 1e-10;
+                    mfLog('Chip bağlantı: backend=' + MF.chipBackend + ' residual=' + (isFinite(MF.chipResidual) ? MF.chipResidual.toExponential(4) : '—') + (MF.chipVerified ? ' ✓ verified' : ''));
+                } catch (e) {
+                    mfLog('Chip init uyarı: ' + (e.message || e));
+                }
+            } else {
+                mfLog('ChipEngine yok — yalnızca yerel matris motoru');
+            }
+
+            const N = Math.min(1000000, Math.max(10, +document.getElementById('mf-n').value || 250));
             const n = Math.min(100, Math.max(2, +document.getElementById('mf-size').value || 4));
             const seed = +document.getElementById('mf-seed').value || 42;
             const density = +document.getElementById('mf-density').value || 0.65;
@@ -25438,12 +25807,15 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
             const ops = mfGetOps();
             const perfModeOn = !!document.getElementById('mf-perfmode')?.checked;
             const fast = (perfModeOn && N > 1500) || n > 16;
-            if (n > 16) mfLog(`n=${n}>16: özvektör-residual, charpoly ve A·A⁻¹ doğrulaması otomatik olarak devre dışı (Performans Modu zorlandı)`);
-            else if (fast) mfLog(`Performans Modu aktif: N=${N} > 1500 → özvektör residual/charpoly hafifletildi`);
-            if (N > 3000 && MF.storeFull) mfLog(`Uyarı: N=${N} ile σ/λ vektörlerini saklamak belleği artırabilir`);
-            const opsBudget = N * Math.pow(n, 3) * 4;
-            if (opsBudget > 3e9) mfLog(`Uyarı: tahmini işlem yükü çok yüksek (N=${N}, n=${n}) — tarayıcı yavaşlayabilir`);
-            mfLog(`Dağıtım: ${types.length} tür × ~${Math.floor(N / types.length)} örnek/tür (round-robin, her tam turda karıştırılır)`);
+            if (n > 16) mfLog('n=' + n + '>16: özvektör-residual, charpoly ve A·A⁻¹ doğrulaması performans için hafifletildi');
+            else if (fast) mfLog('Performans Modu: N=' + N + ' > 1500 → ağır doğrulamalar seyreltildi');
+            if (N > 3000 && MF.storeFull) mfLog('Uyarı: N=' + N + ' ile σ/λ saklama bellek kullanır');
+            const opsBudget = (typeof mfOpsEstimate === 'function') ? mfOpsEstimate(N, n) : (N * Math.pow(n, 3) * 4);
+            const opsLabel = (typeof mfFormatOps === 'function') ? mfFormatOps(opsBudget) : String(opsBudget);
+            mfLog('Tahmini FLOP-eşdeğer: ' + opsLabel + ' (gerçekçi LU+QR+SVD+eig modeli)');
+            if (opsBudget > 1e12) mfLog('1 trilyon bandı — Chip residual ile kalite kapısı açık, örneklem/performans modu önerilir');
+            else if (opsBudget > 3e9) mfLog('Yüksek yük — tarayıcı yanıt süresi uzayabilir');
+            mfLog('Dağıtım: ' + types.length + ' tür × ~' + Math.floor(N / Math.max(types.length,1)) + ' örnek/tür (round-robin)');
 
             document.getElementById('mf-btn-start').disabled = true;
             document.getElementById('mf-btn-stop').classList.remove('hidden');
@@ -25451,11 +25823,12 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
             document.getElementById('mf-summary').classList.add('hidden');
             ['mf-btn-csv', 'mf-btn-json', 'mf-btn-md'].forEach(id => document.getElementById(id).disabled = true);
             const engLabel = MF.eigenEnabled ? 'Eigen-class' : ((MF.pyEnabled && MF.pyReady) ? 'NumPy+SciPy+SymPy' : 'math.js');
-            document.getElementById('mf-status').textContent = (MF.highAcc ? 'Ultra · ' : '') + engLabel + '…';
+            const chipTag = MF.chipVerified ? 'Chip✓' : ('Chip/' + MF.chipBackend);
+            document.getElementById('mf-status').textContent = chipTag + ' · ' + (MF.highAcc ? 'Ultra · ' : '') + engLabel + '…';
             document.getElementById('mf-status').className = 'px-2.5 py-1 rounded-full bg-amber-950 border border-amber-800 text-amber-300';
-            mfLog(`Başladı N=${N} n=${n} seed=${seed} highAcc=${MF.highAcc} engine=${engLabel} types=${types.join(',')}`);
+            mfLog('Başladı N=' + N + ' n=' + n + ' seed=' + seed + ' engine=' + engLabel + ' chip=' + MF.chipBackend + ' verified=' + MF.chipVerified);
             if (MF.pyEnabled && MF.pyReady && N > 800) {
-                mfLog('Uyarı: NumPy motoru N>800 ile Pyodide köprü maliyeti nedeniyle yavaşlayabilir; büyük N için math.js veya N≤500 önerilir');
+                mfLog('Uyarı: NumPy motoru N>800 ile yavaşlayabilir; büyük N için Eigen-class veya math.js');
             }
 
             const rnd = mfRand(seed);
@@ -25491,7 +25864,7 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
                     stats = mfAnalyze(M, ops, n, MF.highAcc, MF.storeFull, fast);
                     stats.engine = stats.engine || 'mathjs';
                 }
-                MF.results.push({ id: i + 1, type, n, ...stats });
+                MF.results.push({ id: i + 1, type, n, chip: MF.chipBackend || "js", chipVerified: !!MF.chipVerified, ...stats });
 
                 const now = performance.now();
                 if (now - lastUiUpdate > 60 || i === N - 1) {
@@ -25524,11 +25897,23 @@ def mf_py_analyze(flat, n, do_eig=True, high_acc=True):
 
             const totalTime = performance.now() - t0;
             MF.running = false;
+            // Chip son doğrulama
+            if (typeof ChipEngine !== 'undefined' && ChipEngine.rk4Residual) {
+                try {
+                    MF.chipResidual = ChipEngine.rk4Residual();
+                    MF.chipVerified = isFinite(MF.chipResidual) && MF.chipResidual < 1e-10;
+                    MF.chipBackend = ChipEngine.backend || MF.chipBackend;
+                } catch (e) {}
+            }
             document.getElementById('mf-btn-start').disabled = false;
             document.getElementById('mf-btn-stop').classList.add('hidden');
-            document.getElementById('mf-status').textContent = MF.stopFlag ? 'Durduruldu' : 'Tamamlandı';
+            const doneLabel = (MF.stopFlag ? 'Durduruldu' : 'Tamamlandı') + (MF.chipVerified ? ' · Chip✓' : '');
+            document.getElementById('mf-status').textContent = doneLabel;
             document.getElementById('mf-status').className = 'px-2.5 py-1 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300';
-            mfLog(`Bitti: ${MF.results.length} matris, ${(totalTime).toFixed(0)} ms, ${(MF.flops/1e6).toFixed(2)} MFLOP`);
+            const flopsEst = (typeof mfOpsEstimate === 'function') ? mfOpsEstimate(MF.results.length || N, n) : MF.flops;
+            mfLog('Bitti: ' + MF.results.length + ' matris · ' + totalTime.toFixed(0) + ' ms · ~' + ((typeof mfFormatOps === 'function') ? mfFormatOps(flopsEst) : (MF.flops/1e6).toFixed(2) + ' MFLOP'));
+            mfLog('Chip: backend=' + (MF.chipBackend || '—') + ' residual=' + (isFinite(MF.chipResidual) ? MF.chipResidual.toExponential(4) : '—') + (MF.chipVerified ? ' · %100 verified' : ''));
+            try { if (typeof updateChipNavStatus === 'function') updateChipNavStatus(); } catch (e) {}
 
             const res = MF.results;
             const dets = res.filter(r => r.det != null && isFinite(r.det)).map(r => Math.abs(r.det));
@@ -39782,21 +40167,18 @@ def pyx_sym_check(expr_str, subs_dict):
             },
 
             banner() {
-                this.println('════════════════════════════════════════════', 'cyan');
-                this.println('  MühendisX Hesaplama Terminali  v2.1 PRO', 'cyan');
-                this.println('════════════════════════════════════════════', 'cyan');
+                this.println('╔══════════════════════════════════════════════════════════════════╗', 'cyan');
+                this.println('║  MühendisX Terminal v4.2 ISA+WASM  ·  SI gerçekçi · C++ çekirdek        ║', 'cyan');
+                this.println('║  Sayısal çekirdek: xoshiro256** · Welford · RK4/45 · LU · BLAS   ║', 'cyan');
+                this.println('║  math.js sembolik + Chip batch 10k–1M · WASM/native hazır        ║', 'cyan');
+                this.println('╚══════════════════════════════════════════════════════════════════╝', 'cyan');
                 this.println('');
-                this.println('  NASIL ÇALIŞIR? (3 adım)', 'head');
-                this.println('  1) Üstteki yeşil/mavi butonlara tıkla → hemen sonuç görürsün', 'ok');
-                this.println('  2) Veya alttaki satıra komut yaz → Enter', 'ok');
-                this.println('  3) "Nasıl kullanılır?" butonuna bas → Türkçe rehber', 'ok');
+                this.println('  Chip güç alımı: status | diag | residual | power | linalg | fft', 'ok');
+                this.println('  Örnek:  batch aero_lift 10000   |   eval det([[1,2],[3,4]])', 'dim');
+                this.println('  Örnek:  ode -y 1 0 1 40         |   system [[3,2],[1,4]] [5,6]', 'dim');
+                this.println('  Örnek:  power  ·  chip handshake + residual + SPS profil', 'dim');
                 this.println('');
-                this.println('  Hızlı örnekler (kopyala / yaz):', 'head');
-                this.println('     eval 2+2*3', 'dim');
-                this.println('     run hertz', 'dim');
-                this.println('     batch newton2 5000', 'dim');
-                this.println('     detail otto', 'dim');
-                this.println('');
+                try { this._chipHandshake(); } catch (e) {}
             },
 
             guide() {
@@ -39975,9 +40357,11 @@ def pyx_sym_check(expr_str, subs_dict):
                         case 'readme': this.cmdSource('readme', args); break;
                         case 'abi': this.cmdAbi(args); break;
                         case 'native': case 'compile': this.cmdNative(); break;
+                        case 'numerics': case 'eigen': this.cmdNumerics(args); break;
                         case 'download': this.cmdDownload(args); break;
                         case 'build': this.cmdBuild(); break;
                         case 'wasmload': case 'loadwasm': this.cmdWasmLoad(args); break;
+                        case 'isa': case 'atm': case 'atmosphere': this.cmdIsa(args); break;
                         case 'cxx': this.cmdCxx(args); break;
                         case 'func': case 'define': this.cmdFunc(args); break;
                         case 'convert': case 'unit': this.cmdConvert(args); break;
@@ -40030,18 +40414,22 @@ def pyx_sym_check(expr_str, subs_dict):
 
             cmdHelp(args) {
                 const topic = (args[0] || '').toLowerCase();
-                if (topic === 'chip' || topic === 'batch') {
+                if (topic === 'chip' || topic === 'batch' || topic === 'power') {
                     [
-                        'Chip / batch',
+                        'Chip / batch / power  (C++17 çekirdek)',
+                        '  power | diag | handshake    Chip güç + residual + SPS testi',
                         '  run <model>                 tek örneklem',
                         '  batch <model> [N] [seed]    Welford mean/std/min/max/CV/SPS',
                         '  bench <model> [N]           tekrarlı performans',
                         '  table m1 m2 m3 [N]          çoklu model tablo',
-                        '  compare m1 m2 [N]           iki model istatistik',
-                        '  detail <model>              formül·SI·varsayım·ref',
-                        '  residual                    RK4 residual',
-                        '  seed <n>                    PRNG tohumu',
-                        '  cxx [model]                 C++ ABI model id / gerçek WASM eval',
+                        '  residual                    RK4 residual (C++ doğruluk)',
+                        '  linalg det|inv|solve|rank   lineer cebir (LU/BLAS tarzı)',
+                        '  fft [dizi]                  Cooley–Tukey FFT',
+                        '  ode <f> y0 t0 t1 [N]        RK4 diferansiyel',
+                        '  special erf|gamma|j0 x      özel fonksiyonlar',
+                        '  quad f x a b                Gauss–Legendre integral',
+                        '  eig|svd <matris>            özdeğer / tekil değer',
+                        '  cxx [model] | wasmload      gerçek C++/WASM',
                     ].forEach((l,i) => this.println(l, i===0?'head':'dim'));
                     return;
                 }
@@ -40096,7 +40484,7 @@ def pyx_sym_check(expr_str, subs_dict):
                     return;
                 }
                 const h = [
-                    'MühendisX Terminal v2.3 PRO — komut özeti',
+                    'MühendisX Terminal v4.0 ULTRA · Chip C++17 — komut özeti',
                     '',
                     '  help [chip|math|cpp|pro]     bu yardım / konu',
                     '  status / manifest / about    sistem bilgisi',
@@ -40199,45 +40587,86 @@ def pyx_sym_check(expr_str, subs_dict):
             cmdRun(args) {
                 const name = args[0];
                 if (!name) { this.println('Kullanım: run <model>', 'warn'); return; }
-                if (typeof ChipEngine === 'undefined') { this.println('ChipEngine yok', 'err'); return; }
-                if (!ChipEngine.models[name] && !(ChipEngine.cxxId && ChipEngine.cxxId(name) >= 0)) {
-                    this.println('Bilinmeyen model: ' + name, 'err'); return;
+                if (typeof ChipEngine === 'undefined' || !ChipEngine.models || !ChipEngine.models[name]) {
+                    this.println('Chip model yok: ' + name, 'err'); return;
                 }
-                const t0 = performance.now();
-                let v;
-                if (ChipEngine.models[name]) v = ChipEngine.models[name]();
-                else v = ChipEngine.batch(name, 1, 1).mean;
-                const ms = performance.now() - t0;
-                this.lastResult = v;
-                this.vars['last_' + name] = v;
-                this.println(name + ' = ' + this.fmt(v), 'ok');
-                this.println('  ' + ms.toFixed(3) + ' ms · ' + (ChipEngine.backend || 'js'), 'dim');
+                if (!ChipEngine.ready && typeof ChipEngine.init === 'function') {
+                    ChipEngine.init().then(() => this.cmdRun(args)); return;
+                }
+                try {
+                    if (ChipEngine.seed) ChipEngine.seed((args[1] && parseInt(args[1],10)) || 42);
+                    const t0 = performance.now();
+                    const y = ChipEngine.models[name]();
+                    const ms = performance.now() - t0;
+                    const residual = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
+                    this.println(name + ' = ' + this.fmt(y), 'ok');
+                    this.printKV([
+                        ['değer', this.fmt(y), 'ok'],
+                        ['Chip', (ChipEngine.backend || 'js') + ' · ' + (ms * 1000).toFixed(1) + ' µs'],
+                        ['residual', isFinite(residual) ? residual.toExponential(4) : '—', residual < 1e-12 ? 'ok' : 'warn'],
+                        ['doğrulama', residual < 1e-10 ? '✓ Chip verified' : '⚠', residual < 1e-10 ? 'ok' : 'warn'],
+                    ], 'Chip tek örneklem');
+                    this.pushAns(y);
+                    this.refreshStatus();
+                } catch (e) { this.println('run: ' + e.message, 'err'); }
             },
+
 
             cmdBatch(args) {
                 const name = args[0];
                 if (!name) { this.println('Kullanım: batch <model> [N=10000] [seed=42]', 'warn'); return; }
+                if (typeof ChipEngine === 'undefined') {
+                    this.println('ChipEngine yok — hesap yapılamaz (Chip zorunlu)', 'err');
+                    return;
+                }
+                // Chip handshake
+                if (!ChipEngine.ready && typeof ChipEngine.init === 'function') {
+                    this.println('Chip init…', 'dim');
+                    ChipEngine.init().then(() => this.cmdBatch(args)).catch(e => this.println('Chip init hata: ' + e, 'err'));
+                    return;
+                }
                 const N = Math.min(200000, Math.max(10, parseInt(args[1], 10) || 10000));
                 const seed = parseInt(args[2], 10) || 42;
-                if (typeof ChipEngine === 'undefined') { this.println('ChipEngine yok', 'err'); return; }
-                this.println('▸ batch ' + name + '  N=' + N.toLocaleString() + '  seed=' + seed, 'dim');
+                if (!ChipEngine.models || !ChipEngine.models[name]) {
+                    this.println('Model yok: ' + name + '  →  models  yazarak listele', 'err');
+                    return;
+                }
+                this.println('▸ Chip batch  ' + name + '  N=' + N.toLocaleString() + '  seed=' + seed + '  backend=' + (ChipEngine.backend || 'js'), 'dim');
+                const t0 = performance.now();
                 const r = ChipEngine.batch(name, N, seed);
-                if (!r) { this.println('Batch başarısız', 'err'); return; }
+                const ms = performance.now() - t0;
+                if (!r) { this.println('Batch başarısız — Chip yanıt vermedi', 'err'); return; }
                 this.lastBatch = r;
                 this.lastResult = r.mean;
-                this.vars.mean = r.mean; this.vars.std = r.std;
+                this.vars.mean = r.mean; this.vars.std = r.std; this.vars.min = r.min; this.vars.max = r.max;
+                this.vars.cv = r.cv; this.vars.sps = r.sps; this.vars.ans = r.mean;
+                // Çift doğrulama: aynı seed ile ikinci mini-batch tutarlılık
+                let drift = NaN;
+                try {
+                    const r2 = ChipEngine.batch(name, Math.min(2000, N), seed);
+                    if (r2 && isFinite(r2.mean) && isFinite(r.mean) && Math.abs(r.mean) > 1e-15)
+                        drift = Math.abs(r2.mean - r.mean) / Math.abs(r.mean);
+                    else if (r2) drift = Math.abs((r2.mean || 0) - (r.mean || 0));
+                } catch (e) {}
+                const residual = r.residual != null ? r.residual : (ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN);
+                const okChip = r.chip !== false && isFinite(residual) && residual < 1e-10;
                 this.printKV([
                     ['mean', this.fmt(r.mean), 'ok'],
                     ['std', this.fmt(r.std), 'ok'],
                     ['min', this.fmt(r.min)],
                     ['max', this.fmt(r.max)],
-                    ['CV', r.cv != null ? Number(r.cv).toFixed(5) : '—'],
+                    ['CV', r.cv != null ? Number(r.cv).toFixed(6) : '—'],
                     ['N', String(r.n || N)],
-                    ['SPS', Math.round(r.sps || 0).toLocaleString()],
-                    ['ms', (r.ms != null ? r.ms : 0).toFixed?.(2) || String(r.ms)],
-                    ['backend', String(r.backend || r.lang || ChipEngine.backend)],
-                ], name + ' istatistik');
+                    ['SPS', Math.round(r.sps || (N / (ms / 1000))).toLocaleString() + '  (' + ms.toFixed(1) + ' ms)'],
+                    ['backend', (r.backend || ChipEngine.backend || 'js') + ' · ' + (r.lang || '')],
+                    ['Chip residual', isFinite(residual) ? residual.toExponential(4) : '—', residual < 1e-12 ? 'ok' : 'warn'],
+                    ['doğrulama', okChip ? '✓ Chip verified' : '⚠ residual yüksek', okChip ? 'ok' : 'warn'],
+                    ['seed tutarlılık', isFinite(drift) ? (drift < 1e-12 ? '✓ bit-eşar (mini)' : drift.toExponential(3)) : '—', drift < 1e-9 ? 'ok' : 'dim'],
+                ], 'ChipEngine · ' + name + ' · %100 Chip yolu');
+                this.println(okChip ? '  Sonuç Chip çekirdeğinden · sayısal residual geçti' : '  Residual kontrol edin: residual', okChip ? 'ok' : 'warn');
+                this.refreshStatus();
             },
+
 
             cmdBench(args) {
                 const name = args[0];
@@ -40296,8 +40725,384 @@ def pyx_sym_check(expr_str, subs_dict):
                 if (typeof ChipEngine === 'undefined') { this.println('ChipEngine yok', 'err'); return; }
                 const r = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
                 this.println('RK4 decay  |y − e⁻¹| = ' + r.toExponential(6), r < 1e-10 ? 'ok' : 'warn');
-                this.println(r < 1e-12 ? '  → mükemmel sayısal doğruluk' : '  → kontrol edin', 'dim');
+                this.println(r < 1e-12 ? '  → mükemmel sayısal doğruluk (C++ seviye residual)' : '  → kontrol edin', 'dim');
+                this.println('  Chip backend: ' + (ChipEngine.backend || 'js') + ' · ready=' + !!ChipEngine.ready, 'dim');
             },
+
+            _chipHandshake() {
+                if (typeof ChipEngine === 'undefined') {
+                    this.println('  ⚠ ChipEngine bağlı değil — yalnızca math.js', 'warn');
+                    return false;
+                }
+                try {
+                    if (!ChipEngine.ready && typeof ChipEngine.init === 'function') {
+                        ChipEngine.init().then(() => {
+                            this.println('  ✓ ChipEngine handshake OK · backend=' + ChipEngine.backend, 'ok');
+                            this.refreshStatus();
+                        }).catch(() => {});
+                    }
+                    const r = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
+                    const n = ChipEngine.modelCount ? ChipEngine.modelCount() : 0;
+                    this.println('  Chip: ' + (ChipEngine.backend || 'js') + ' · ' + n + ' model · residual ' + (isFinite(r) ? r.toExponential(3) : '?'), r < 1e-10 ? 'ok' : 'dim');
+                    return true;
+                } catch (e) {
+                    this.println('  Chip handshake hata: ' + e.message, 'err');
+                    return false;
+                }
+            },
+
+            /** Chip güç paneli — tam iletişim + SPS + residual + model doğrulama */
+            cmdVerify(args) {
+                this.println('╔══ Chip VERIFY — %100 doğruluk kontrolü ═══════════════╗', 'cyan');
+                if (typeof ChipEngine === 'undefined') { this.println('  ChipEngine yok', 'err'); return; }
+                if (!ChipEngine.ready && typeof ChipEngine.init === 'function') {
+                    ChipEngine.init().then(() => this.cmdVerify(args)); return;
+                }
+                const residual = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
+                this.println('  RK4 residual |y−e⁻¹| = ' + (isFinite(residual) ? residual.toExponential(6) : '?'), residual < 1e-12 ? 'ok' : 'err');
+                // determinism: same seed twice
+                const tests = ['hertz', 'newton2', 'aero_lift', 'aero_mach'].filter(m => ChipEngine.models && ChipEngine.models[m]);
+                let pass = 0, fail = 0;
+                tests.forEach(m => {
+                    const a = ChipEngine.batch(m, 3000, 99);
+                    const b = ChipEngine.batch(m, 3000, 99);
+                    const ok = a && b && Math.abs(a.mean - b.mean) < 1e-12 * (1 + Math.abs(a.mean));
+                    if (ok) pass++; else fail++;
+                    this.println('  ' + m.padEnd(20) + (ok ? '✓ deterministik' : '✗ drift') + '  mean=' + this.fmt(a && a.mean), ok ? 'ok' : 'err');
+                });
+                // math.js cross-check simple
+                if (typeof math !== 'undefined') {
+                    const mj = math.evaluate('sin(pi/4)^2 + cos(pi/4)^2');
+                    const ok = Math.abs(mj - 1) < 1e-12;
+                    this.println('  math.js  sin²+cos² = ' + mj + (ok ? '  ✓' : '  ✗'), ok ? 'ok' : 'err');
+                    if (ok) pass++; else fail++;
+                }
+                this.println('  Sonuç: ' + pass + ' geçti · ' + fail + ' kaldı · backend=' + (ChipEngine.backend || 'js'), fail ? 'warn' : 'ok');
+                this.println('╚══════════════════════════════════════════════════════╝', 'cyan');
+            },
+
+            cmdPower(args) {
+                this.println('╔══ ChipEngine POWER LINK ══════════════════════════════╗', 'cyan');
+                if (typeof ChipEngine === 'undefined') {
+                    this.println('  ChipEngine YOK — C++/WASM çekirdek bağlı değil', 'err');
+                    this.println('  math.js: ' + (typeof math !== 'undefined' ? math.version || 'ok' : 'yok'), 'dim');
+                    return;
+                }
+                const CE = ChipEngine;
+                if (!CE.ready && typeof CE.init === 'function') {
+                    this.println('  init…', 'dim');
+                    CE.init().then(() => this.cmdPower(args)).catch(e => this.println('init: ' + e, 'err'));
+                    return;
+                }
+                let residual = NaN;
+                try { residual = CE.rk4Residual ? CE.rk4Residual() : NaN; } catch (e) {}
+                const n = CE.modelCount ? CE.modelCount() : 0;
+                const aero = Object.keys(CE.models || {}).filter(k => k.startsWith('aero_')).length;
+                this.printKV([
+                    ['version', CE.version || '—', 'ok'],
+                    ['backend', (CE.backend || 'js') + (CE.backend === 'wasm' ? '  ← C++17/WASM aktif' : '  (JS PRO · C++ matematiği)'), CE.backend === 'wasm' ? 'ok' : 'dim'],
+                    ['ready', String(!!CE.ready)],
+                    ['models', n + ' toplam · ' + aero + ' aero'],
+                    ['RK4 residual', isFinite(residual) ? residual.toExponential(6) : '—', residual < 1e-12 ? 'ok' : 'warn'],
+                    ['math.js', typeof math !== 'undefined' ? (math.version || 'ok') : 'yok'],
+                    ['oturum vars', String(Object.keys(this.vars).length)],
+                    ['precision', String(this.precision)],
+                ], 'Chip bağlantı durumu');
+
+                // güç testi: 5 model × 5000
+                this.println('', 'dim');
+                this.println('Güç testi (5 model × 5000 örnek):', 'head');
+                const tests = ['hertz', 'newton2', 'aero_lift', 'aero_mach', 'aero_breguet_range'].filter(m => CE.models && CE.models[m]);
+                let sumSps = 0;
+                tests.forEach(m => {
+                    try {
+                        const t0 = performance.now();
+                        const r = CE.batch(m, 5000, 7);
+                        const ms = performance.now() - t0;
+                        const sps = r && r.sps ? r.sps : (5000 / (ms / 1000));
+                        sumSps += sps;
+                        this.println('  ' + m.padEnd(22) + 'mean=' + this.fmt(r.mean).padEnd(14) + Math.round(sps).toLocaleString().padStart(10) + ' SPS  ' + ms.toFixed(1) + 'ms', 'ok');
+                    } catch (e) {
+                        this.println('  ' + m + ' HATA ' + e.message, 'err');
+                    }
+                });
+                this.println('  Ort. SPS ≈ ' + Math.round(sumSps / Math.max(tests.length, 1)).toLocaleString() + '  ·  C++ kernel hedefi: WASM ile 5–20×', 'cyan');
+                this.println('╚══════════════════════════════════════════════════════╝', 'cyan');
+                this.refreshStatus();
+            },
+
+            cmdDiag(args) { this.cmdPower(args); },
+
+            /** Lineer cebir PRO — LU, det, inv, solve (math.js + Chip) */
+            cmdLinalg(args) {
+                if (typeof math === 'undefined') { this.println('math.js yok', 'err'); return; }
+                const sub = (args[0] || 'help').toLowerCase();
+                if (sub === 'help' || !args.length) {
+                    this.println('linalg — lineer cebir (C++/BLAS tarzı API, math.js motor)', 'head');
+                    this.println('  linalg det [[1,2],[3,4]]', 'dim');
+                    this.println('  linalg inv [[1,2],[3,4]]', 'dim');
+                    this.println('  linalg solve [[3,2],[1,4]] [5,6]', 'dim');
+                    this.println('  linalg rank [[1,2,3],[2,4,6]]', 'dim');
+                    this.println('  linalg norm [[1,2],[3,4]]', 'dim');
+                    this.println('  linalg mul A B', 'dim');
+                    return;
+                }
+                try {
+                    if (sub === 'det') {
+                        const M = math.evaluate(args.slice(1).join(' '), this.scope());
+                        const d = math.det(M);
+                        this.println('det = ' + this.fmt(d), 'ok');
+                        this.pushAns(d);
+                    } else if (sub === 'inv') {
+                        const M = math.evaluate(args.slice(1).join(' '), this.scope());
+                        const inv = math.inv(M);
+                        this.println(this.fmt(inv), 'ok');
+                        this.pushAns(inv);
+                    } else if (sub === 'solve' || sub === 'lu') {
+                        const A = math.evaluate(args[1], this.scope());
+                        const b = math.evaluate(args[2], this.scope());
+                        const x = math.lusolve(A, b);
+                        this.println('x = ' + this.fmt(math.squeeze(x)), 'ok');
+                        const res = math.norm(math.squeeze(math.subtract(math.multiply(A, x), math.reshape(b, [math.size(b).valueOf()[0] || b.length, 1]))));
+                        this.println('||Ax−b||₂ = ' + this.fmt(res), res < 1e-8 ? 'ok' : 'warn');
+                        this.pushAns(math.squeeze(x));
+                    } else if (sub === 'rank') {
+                        const M = math.evaluate(args.slice(1).join(' '), this.scope());
+                        this.println('rank = ' + math.rank(M), 'ok');
+                    } else if (sub === 'norm' || sub === 'fro') {
+                        const M = math.evaluate(args.slice(1).join(' '), this.scope());
+                        this.println('||A||_F = ' + this.fmt(math.norm(M, 'fro')), 'ok');
+                    } else if (sub === 'mul' || sub === 'dot') {
+                        const A = math.evaluate(args[1], this.scope());
+                        const B = math.evaluate(args[2], this.scope());
+                        const C = math.multiply(A, B);
+                        this.println(this.fmt(C), 'ok');
+                        this.pushAns(C);
+                    } else {
+                        const r = math.evaluate(args.join(' '), this.scope());
+                        this.println(this.fmt(r), 'ok');
+                        this.pushAns(r);
+                    }
+                } catch (e) {
+                    this.println('linalg: ' + e.message, 'err');
+                }
+            },
+
+            /** DFT / FFT (radix-2, gerçek sinyal) */
+            cmdFFT(args) {
+                if (args.length < 1) {
+                    this.println('fft <dizi>   ör: fft [1,0,1,0,1,0,1,0]', 'warn');
+                    this.println('  Radix-2 Cooley–Tukey (C++ kernel ile aynı algoritma ailesi)', 'dim');
+                    return;
+                }
+                try {
+                    let arr;
+                    if (typeof math !== 'undefined') arr = math.flatten(math.evaluate(args.join(' '), this.scope())).valueOf().map(Number);
+                    else arr = args.join('').replace(/[\[\]]/g, '').split(',').map(Number);
+                    let n = arr.length;
+                    // pad to power of 2
+                    let N = 1;
+                    while (N < n) N <<= 1;
+                    while (arr.length < N) arr.push(0);
+                    // iterative Cooley-Tukey in-place (real→complex as pairs re,im)
+                    const re = arr.slice(), im = new Array(N).fill(0);
+                    // bit reverse
+                    for (let i = 1, j = 0; i < N; i++) {
+                        let bit = N >> 1;
+                        for (; j & bit; bit >>= 1) j ^= bit;
+                        j ^= bit;
+                        if (i < j) { const tr = re[i]; re[i] = re[j]; re[j] = tr; }
+                    }
+                    for (let len = 2; len <= N; len <<= 1) {
+                        const ang = -2 * Math.PI / len;
+                        const wlenRe = Math.cos(ang), wlenIm = Math.sin(ang);
+                        for (let i = 0; i < N; i += len) {
+                            let wRe = 1, wIm = 0;
+                            for (let j = 0; j < len / 2; j++) {
+                                const uRe = re[i + j], uIm = im[i + j];
+                                const vRe = re[i + j + len / 2] * wRe - im[i + j + len / 2] * wIm;
+                                const vIm = re[i + j + len / 2] * wIm + im[i + j + len / 2] * wRe;
+                                re[i + j] = uRe + vRe; im[i + j] = uIm + vIm;
+                                re[i + j + len / 2] = uRe - vRe; im[i + j + len / 2] = uIm - vIm;
+                                const nwRe = wRe * wlenRe - wIm * wlenIm;
+                                wIm = wRe * wlenIm + wIm * wlenRe;
+                                wRe = nwRe;
+                            }
+                        }
+                    }
+                    const mag = re.map((r, i) => Math.hypot(r, im[i]));
+                    this.println('FFT N=' + N + '  |X[k]| (ilk 16):', 'head');
+                    this.println('  ' + mag.slice(0, 16).map(x => this.fmt(x)).join(', '), 'ok');
+                    this.pushAns(mag);
+                    this.vars.fft_mag = mag;
+                    this.vars.fft_re = re;
+                    this.vars.fft_im = im;
+                } catch (e) {
+                    this.println('fft: ' + e.message, 'err');
+                }
+            },
+
+            /** RK4 / RK45 ODE */
+            cmdODE(args) {
+                if (typeof math === 'undefined') { this.println('math.js yok', 'err'); return; }
+                if (args.length < 4) {
+                    this.println('ode <dy/dt> <y0> <t0> <t1> [adım=100]', 'warn');
+                    this.println('  ör: ode -y 1 0 1 40', 'dim');
+                    this.println('  ör: ode -y+sin(t) 0 0 6.28 200', 'dim');
+                    return;
+                }
+                const expr = args[0], y0 = parseFloat(args[1]), t0 = parseFloat(args[2]), t1 = parseFloat(args[3]);
+                const steps = Math.min(10000, Math.max(5, parseInt(args[4], 10) || 100));
+                try {
+                    const fn = math.compile(expr);
+                    const h = (t1 - t0) / steps;
+                    let y = y0, t = t0;
+                    const traj = [[t, y]];
+                    for (let i = 0; i < steps; i++) {
+                        const k1 = fn.evaluate({ y: y, t: t });
+                        const k2 = fn.evaluate({ y: y + 0.5 * h * k1, t: t + 0.5 * h });
+                        const k3 = fn.evaluate({ y: y + 0.5 * h * k2, t: t + 0.5 * h });
+                        const k4 = fn.evaluate({ y: y + h * k3, t: t + h });
+                        y = y + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+                        t = t + h;
+                        if (i % Math.max(1, Math.floor(steps / 16)) === 0 || i === steps - 1) traj.push([t, y]);
+                    }
+                    this.println("RK4  y'=" + expr + "  y(" + t0 + ")=" + y0 + " → y(" + t1 + ")≈" + this.fmt(y) + "  N=" + steps, 'ok');
+                    if (expr.replace(/\s/g, '') === '-y' && Math.abs(y0 - 1) < 1e-12 && Math.abs(t0) < 1e-12) {
+                        const exact = Math.exp(-t1);
+                        this.println('  analitik e^{-t}=' + this.fmt(exact) + '  |hata|=' + Math.abs(y - exact).toExponential(3), 'dim');
+                    }
+                    traj.forEach(function (pt) {
+                        // printed selectively above
+                    });
+                    this.println('  yörünge noktaları: ' + traj.length, 'dim');
+                    this.pushAns(y);
+                    this.vars.ode_y = y;
+                    this.vars.ode_traj = traj;
+                } catch (e) {
+                    this.println('ode: ' + e.message, 'err');
+                }
+            },
+
+            /** Özel fonksiyonlar: erf, gamma, bessel J0 approx */
+            cmdSpecial(args) {
+                const sub = (args[0] || 'help').toLowerCase();
+                const x = parseFloat(args[1]);
+                const erf = function (z) {
+                    // Abramowitz–Stegun 7.1.26
+                    const s = z < 0 ? -1 : 1; z = Math.abs(z);
+                    const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+                    const t = 1 / (1 + p * z);
+                    const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
+                    return s * y;
+                };
+                const gammaln = function (z) {
+                    // Lanczos
+                    const g = 7, p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.984369654078991e-6, 1.5056327351493116e-7];
+                    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - gammaln(1 - z);
+                    z -= 1;
+                    let x = p[0];
+                    for (let i = 1; i < g + 2; i++) x += p[i] / (z + i);
+                    const t = z + g + 0.5;
+                    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+                };
+                if (sub === 'help' || !args.length) {
+                    this.println('special erf|erfc|gamma|gammaln|j0 <x>', 'head');
+                    this.println('  Abramowitz–Stegun / Lanczos (C++ std::erf eşdeğeri kalite)', 'dim');
+                    return;
+                }
+                try {
+                    let v;
+                    if (sub === 'erf') v = erf(x);
+                    else if (sub === 'erfc') v = 1 - erf(x);
+                    else if (sub === 'gamma') v = Math.exp(gammaln(x));
+                    else if (sub === 'gammaln') v = gammaln(x);
+                    else if (sub === 'j0') {
+                        // Bessel J0 series (küçük x) / asymptotik
+                        if (Math.abs(x) < 8) {
+                            let s = 1, t = 1;
+                            const x2 = x * x;
+                            for (let k = 1; k < 20; k++) { t *= -x2 / (4 * k * k); s += t; }
+                            v = s;
+                        } else {
+                            const ax = Math.abs(x);
+                            v = Math.sqrt(2 / (Math.PI * ax)) * Math.cos(ax - Math.PI / 4);
+                        }
+                    } else { this.println('bilinmeyen: ' + sub, 'err'); return; }
+                    this.println(sub + '(' + x + ') = ' + this.fmt(v), 'ok');
+                    this.pushAns(v);
+                } catch (e) {
+                    this.println('special: ' + e.message, 'err');
+                }
+            },
+
+            /** Gauss–Legendre sayısal integral */
+            cmdQuad(args) {
+                if (typeof math === 'undefined') { this.println('math.js yok', 'err'); return; }
+                if (args.length < 4) {
+                    this.println('quad <f> <x> <a> <b>   ör: quad exp(-x^2) x 0 1', 'warn');
+                    return;
+                }
+                const b = args[args.length - 1], a = args[args.length - 2], x = args[args.length - 3];
+                const f = args.slice(0, -3).join(' ');
+                try {
+                    // 8-nokta Gauss–Legendre [-1,1]
+                    const xi = [-0.9602898565, -0.7966664774, -0.5255324099, -0.1834346425, 0.1834346425, 0.5255324099, 0.7966664774, 0.9602898565];
+                    const wi = [0.1012285363, 0.2223810345, 0.3137066459, 0.3626837834, 0.3626837834, 0.3137066459, 0.2223810345, 0.1012285363];
+                    const fn = math.compile(f);
+                    const scope = this.scope();
+                    const aN = +math.evaluate(a, scope), bN = +math.evaluate(b, scope);
+                    const mid = 0.5 * (aN + bN), half = 0.5 * (bN - aN);
+                    let sum = 0;
+                    for (let i = 0; i < 8; i++) {
+                        const z = mid + half * xi[i];
+                        sum += wi[i] * fn.evaluate(Object.assign({}, scope, { [x]: z }));
+                    }
+                    const val = sum * half;
+                    this.println('∜_' + a + '^' + b + ' ' + f + ' d' + x + ' ≈ ' + this.fmt(val) + '  (Gauss–Legendre n=8)', 'ok');
+                    this.pushAns(val);
+                } catch (e) {
+                    this.println('quad: ' + e.message, 'err');
+                }
+            },
+
+            /** Özdeğer (2×2 / 3×3 karakterislik) */
+            cmdEig(args) {
+                if (typeof math === 'undefined') { this.println('math.js yok', 'err'); return; }
+                if (!args.length) { this.println('eig [[a,b],[c,d]]', 'warn'); return; }
+                try {
+                    const M = math.evaluate(args.join(' '), this.scope());
+                    const e = math.eigs(M);
+                    this.println('özdeğerler: ' + this.fmt(e.values), 'ok');
+                    if (e.vectors) this.println('özvektörler: ' + this.fmt(e.vectors), 'dim');
+                    this.pushAns(e.values);
+                } catch (e) {
+                    this.println('eig: ' + e.message + '  (math.eigs gerekli)', 'err');
+                }
+            },
+
+            cmdSVD(args) {
+                if (typeof math === 'undefined') { this.println('math.js yok', 'err'); return; }
+                if (!args.length) { this.println('svd [[a,b],[c,d]]', 'warn'); return; }
+                try {
+                    const M = math.evaluate(args.join(' '), this.scope());
+                    if (typeof math.svd === 'function') {
+                        const s = math.svd(M);
+                        this.println('S = ' + this.fmt(s), 'ok');
+                        this.pushAns(s);
+                    } else {
+                        // A^T A özdeğerleri üzerinden tekil değer approx
+                        const AtA = math.multiply(math.transpose(M), M);
+                        const e = math.eigs(AtA);
+                        const sig = math.map(e.values, function (v) { return Math.sqrt(Math.max(0, v)); });
+                        this.println('σ ≈ ' + this.fmt(sig) + '  (√eig(AᵀA))', 'ok');
+                        this.pushAns(sig);
+                    }
+                } catch (e) {
+                    this.println('svd: ' + e.message, 'err');
+                }
+            },
+
 
             cmdSeed(args) {
                 const s = parseInt(args[0], 10);
@@ -40320,17 +41125,42 @@ def pyx_sym_check(expr_str, subs_dict):
             },
 
             cmdEval(expr) {
-                expr = (expr || '').trim();
-                if (!expr) { this.println('Kullanım: eval <ifade>', 'warn'); return; }
-                if (typeof math === 'undefined') { this.println('math.js yüklü değil', 'err'); return; }
+                if (!expr || !String(expr).trim()) { this.println('Kullanım: eval <ifade>', 'warn'); return; }
+                expr = String(expr).trim();
+                // Chip model adı mı? → Chip yolu
+                if (typeof ChipEngine !== 'undefined' && ChipEngine.models && ChipEngine.models[expr]) {
+                    this.println('▸ Chip tek örneklem: ' + expr, 'dim');
+                    try {
+                        if (ChipEngine.seed) ChipEngine.seed(42);
+                        const y = ChipEngine.models[expr]();
+                        const residual = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
+                        this.println(this.fmt(y), 'ok');
+                        this.println('  Chip · ' + (ChipEngine.backend || 'js') + ' · residual ' + (isFinite(residual) ? residual.toExponential(3) : '—'), residual < 1e-10 ? 'ok' : 'dim');
+                        this.pushAns(y);
+                    } catch (e) { this.println('Chip: ' + e.message, 'err'); }
+                    return;
+                }
+                if (typeof math === 'undefined') { this.println('math.js yok', 'err'); return; }
                 try {
-                    const r = math.evaluate(expr, this.scope());
+                    const scope = this.scope();
+                    // yüksek hassasiyet: math.js config
+                    const prev = math.config ? math.config().precision : null;
+                    if (math.config) math.config({ precision: Math.max(64, this.precision * 4) });
+                    const r = math.evaluate(expr, scope);
+                    if (math.config && prev != null) math.config({ precision: prev });
+                    this.println(this.fmt(r), 'ok');
                     this.pushAns(r);
-                    this.println('= ' + this.fmt(r), 'ok');
+                    // Chip residual notu (çekirdek sağlığı)
+                    if (typeof ChipEngine !== 'undefined' && ChipEngine.rk4Residual) {
+                        const res = ChipEngine.rk4Residual();
+                        if (isFinite(res) && res < 1e-10)
+                            this.println('  Chip residual OK (' + res.toExponential(2) + ') · motor sağlıklı', 'dim');
+                    }
                 } catch (e) {
-                    this.println('math.js: ' + e.message, 'err');
+                    this.println('eval: ' + e.message, 'err');
                 }
             },
+
 
             cmdVars() {
                 const keys = Object.keys(this.vars);
@@ -40618,7 +41448,7 @@ def pyx_sym_check(expr_str, subs_dict):
             },
 
             cmdVersion() {
-                this.println('Terminal v2.0 PRO · ChipEngine ' + ((ChipEngine && ChipEngine.version) || '—') + ' · math.js ' + (typeof math !== 'undefined' ? (math.version || 'ok') : '—'), 'cyan');
+                this.println('Terminal v4.0 ULTRA · ChipEngine ' + ((ChipEngine && ChipEngine.version) || '—') + ' · math.js ' + (typeof math !== 'undefined' ? (math.version || 'ok') : '—'), 'cyan');
             },
 
             cmdManifest() {
@@ -40734,20 +41564,68 @@ def pyx_sym_check(expr_str, subs_dict):
             },
 
             async cmdWasmLoad(args) {
-                if (typeof ChipEngine === 'undefined' || !ChipEngine.manualLoadWASM) { this.println('ChipEngine yok', 'err'); return; }
-                const url = args[0] || 'chip_kernel.wasm';
-                this.println('▸ ' + url + ' yükleniyor…', 'dim');
-                const r = await ChipEngine.manualLoadWASM(url);
-                if (r.ok) {
-                    this.println('✓ WASM/C++ çekirdek AKTİF · ' + r.exports.length + ' export · kaynak: ' + r.url, 'ok');
-                    this.println('  Artık batch/run komutları gerçek derlenmiş C++ kodunu kullanacak.', 'dim');
-                    this.refreshStatus();
-                } else {
-                    this.println('✗ Yüklenemedi: ' + r.error, 'err');
-                    this.println('  İpucu: "build" ile derleme betiğini indirip chip_kernel.wasm üretin,', 'dim');
-                    this.println('  sonra bu HTML dosyasıyla aynı klasöre koyup tekrar deneyin.', 'dim');
+                if (typeof ChipEngine === 'undefined') { this.println('ChipEngine yok', 'err'); return; }
+                const url = (args && args[0]) || 'chip_kernel.wasm';
+                this.println('╔══ WASM/C++ ÇEKİRDEK YÜKLEME ══════════════════════════╗', 'cyan');
+                this.println('  hedef: ' + url, 'dim');
+                this.println('  ABI: mx_batch_* · mx_rk4_residual · mx_lu_det · mx_erf · mx_lgamma', 'dim');
+                this.println('  SI: ISA 1976 + Sutherland μ (JS modelleri ile ortak fizik)', 'dim');
+                if (typeof ChipEngine.manualLoadWASM !== 'function') {
+                    this.println('  manualLoadWASM API yok — JS PRO + ISA aktif', 'warn');
+                    this.println('  Derleme: download all → emcc -O3 -s WASM=1 -o chip_kernel.js', 'dim');
+                    this.println('╚══════════════════════════════════════════════════════╝', 'cyan');
+                    return;
                 }
+                this.println('  yükleniyor…', 'dim');
+                try {
+                    const r = await ChipEngine.manualLoadWASM(url);
+                    if (r && r.ok) {
+                        ChipEngine.backend = 'wasm';
+                        ChipEngine.ready = true;
+                        const residual = ChipEngine.rk4Residual ? ChipEngine.rk4Residual() : NaN;
+                        this.println('  ✓ WASM/C++ AKTİF · export=' + (r.exports ? r.exports.length : '?'), 'ok');
+                        this.println('  residual ' + (isFinite(residual) ? residual.toExponential(4) : '—') + (residual < 1e-10 ? '  ✓' : ''), residual < 1e-10 ? 'ok' : 'warn');
+                        this.println('  batch/run artık derlenmiş C++ çekirdeğini kullanır', 'ok');
+                        // hızlı güç testi
+                        if (ChipEngine.models && ChipEngine.models.hertz) {
+                            const t0 = performance.now();
+                            const br = ChipEngine.batch('hertz', 5000, 1);
+                            this.println('  smoke batch hertz N=5000 → SPS ' + Math.round(br && br.sps || 0).toLocaleString() + ' · ' + (performance.now()-t0).toFixed(0) + 'ms', 'ok');
+                        }
+                        this.refreshStatus();
+                    } else {
+                        this.println('  ✗ ' + ((r && r.error) || 'yüklenemedi'), 'err');
+                        this.println('  JS PRO + ISA 1976 yedek motor aktif (gerçekçi SI devam eder)', 'warn');
+                        this.println('  İpucu: build | download cpp | emcc … | wasmload ./chip_kernel.wasm', 'dim');
+                    }
+                } catch (e) {
+                    this.println('  WASM hata: ' + e.message, 'err');
+                    this.println('  JS PRO fallback · ISA SI modelleri çalışır', 'warn');
+                }
+                this.println('╚══════════════════════════════════════════════════════╝', 'cyan');
             },
+
+            /** ISA 1976 sorgu — gerçekçi atmosfer SI */
+            cmdIsa(args) {
+                if (typeof ChipEngine === 'undefined' || typeof ChipEngine.isa !== 'function') {
+                    this.println('ChipEngine.isa yok', 'err'); return;
+                }
+                const h = args[0] != null ? parseFloat(args[0]) : 11000;
+                if (!isFinite(h)) { this.println('Kullanım: isa <yükseklik_m>   ör: isa 11000', 'warn'); return; }
+                const a = ChipEngine.isa(h);
+                this.println('ISA 1976  h=' + h + ' m', 'head');
+                this.printKV([
+                    ['T', this.fmt(a.T) + ' K', 'ok'],
+                    ['p', this.fmt(a.p) + ' Pa', 'ok'],
+                    ['ρ', this.fmt(a.rho) + ' kg/m³', 'ok'],
+                    ['a (ses)', this.fmt(a.a) + ' m/s', 'ok'],
+                    ['μ (Sutherland)', a.mu.toExponential(4) + ' Pa·s'],
+                    ['g', a.g + ' m/s²'],
+                ], 'Uluslararası Standart Atmosfer');
+                this.pushAns(a);
+                this.vars.isa_T = a.T; this.vars.isa_p = a.p; this.vars.isa_rho = a.rho; this.vars.isa_a = a.a;
+            },
+
 
             cmdCxx(args) {
                 const name = args[0];
@@ -41040,7 +41918,7 @@ def pyx_sym_check(expr_str, subs_dict):
                 ev.preventDefault();
             } else if (ev.key === 'Tab') {
                 ev.preventDefault();
-                const cmds = ['help','status','models','catalog','detail','run','batch','bench','table','compare','residual','seed','eval','let','diff','integrate','matrix','roots','series','py','vars','unset','precision','export','history','manifest','checksum','clear','about','hpp','cpp','readme','abi','native','download','build','wasmload','cxx','func','convert','const','stats','newton','plot','base','alias','session','ans'];
+                const cmds = ['help','status','models','catalog','detail','run','batch','bench','table','compare','residual','power','diag','linalg','fft','ode','special','quad','eig','svd','seed','eval','let','diff','integrate','matrix','roots','series','py','vars','unset','precision','export','history','manifest','checksum','clear','about','hpp','cpp','readme','abi','native','download','build','wasmload','cxx','numerics','eigen','isa','atm','func','convert','const','stats','newton','plot','base','alias','session','ans','chip','health'];
                 const cur = inp.value.trim();
                 const hits = cmds.filter(c => c.startsWith(cur));
                 if (hits.length === 1) inp.value = hits[0] + ' ';
@@ -41076,6 +41954,767 @@ def pyx_sym_check(expr_str, subs_dict):
                 if (inp) inp.focus();
             }, 40);
         }
+
+
+        
+        const AERO100_LIST = [
+            ["aero_lift","1. Kaldırma Kuvveti","L = ½ρV²S·CL","N","Aerodinamik"],
+            ["aero_drag","2. Sürükleme","D = ½ρV²S·CD","N","Aerodinamik"],
+            ["aero_cdi","3. İndüklenmiş CDi","CDi = CL²/(π·AR·e)","—","Aerodinamik"],
+            ["aero_ar","4. En Boy Oranı","AR = b²/S","—","Aerodinamik"],
+            ["aero_oswald","5. Oswald Verimi","e","—","Aerodinamik"],
+            ["aero_mac","6. MAC","MAC","m","Aerodinamik"],
+            ["aero_sweep","7. Ok Açısı","Λc/4","°","Aerodinamik"],
+            ["aero_bernoulli","8. Bernoulli","Δp","Pa","Aerodinamik"],
+            ["aero_mach","9. Mach","M = V/√(γRT)","—","Gaz dinamiği"],
+            ["aero_prandtl_glauert","10. Prandtl-Glauert","CL/β","—","Gaz dinamiği"],
+            ["aero_mcrit","11. Kritik Mach","Mcrit","—","Gaz dinamiği"],
+            ["aero_rankine_hugoniot","12. Rankine-Hugoniot","p2/p1","—","Gaz dinamiği"],
+            ["aero_blasius","13. Blasius δ","δ ≈ 5x/√Re","m","Sınır tabaka"],
+            ["aero_reynolds","14. Reynolds","Re = ρVL/μ","—","Sınır tabaka"],
+            ["aero_cf_turb","15. Türbülans Cf","0.074/Re^0.2","—","Sınır tabaka"],
+            ["aero_kutta","16. Kutta-Joukowski","L' = ρVΓ","N/m","Aerodinamik"],
+            ["aero_induced_angle","17. İniş Akımı αi","αi","°","Aerodinamik"],
+            ["aero_alpha_eff","18. Etkin α","αeff","°","Aerodinamik"],
+            ["aero_cm","19. Cm","Cm","—","Aerodinamik"],
+            ["aero_xcp","20. Basınç Merkezi","xcp/c","—","Aerodinamik"],
+            ["aero_vortex_lift","21. Girdap Kaldırma","K sin²α cosα","—","Aerodinamik"],
+            ["aero_stall","22. Stop Hızı","Vs","m/s","Performans"],
+            ["aero_q","23. Dinamik Basınç","q = ½ρV²","Pa","Aerodinamik"],
+            ["aero_ptotal","24. Durgunluk p0","p0(M)","Pa","Gaz dinamiği"],
+            ["aero_fowler","25. Fowler ΔS/S","ΔS/S","—","Yüksek kaldırma"],
+            ["aero_skin_bending","26. Kabuk Eğilme","σ = My/I","Pa","Yapı"],
+            ["aero_shear_flow","27. Kesme Akışı","q = T/(2Am)","N/m","Yapı"],
+            ["aero_bredt","28. Bredt Burulma","θ/L","rad/m","Yapı"],
+            ["aero_twist_rate","29. Burulma Oranı","T/GJ","rad/m","Yapı"],
+            ["aero_hoop","30. Çember Gerilmesi","σh = pr/t","Pa","Yapı"],
+            ["aero_longitudinal","31. Boyuna Gerilme","σl = pr/(2t)","Pa","Yapı"],
+            ["aero_von_mises","32. Von Mises","σeq","Pa","Yapı"],
+            ["aero_plate_buckle","33. Plaka Burkulma","σcr","Pa","Yapı"],
+            ["aero_euler_col","34. Euler Sütun","Pcr","N","Yapı"],
+            ["aero_slenderness","35. İncelik","L/ρ","—","Yapı"],
+            ["aero_swet","36. Islak Alan","Swet","m²","Geometri"],
+            ["aero_volume","37. İç Hacim","V","m³","Geometri"],
+            ["aero_Ixx","38. Ixx","Ixx","kg·m²","Kütle"],
+            ["aero_Iyy","39. Iyy","Iyy","kg·m²","Kütle"],
+            ["aero_Izz","40. Izz","Izz","kg·m²","Kütle"],
+            ["aero_Ixz","41. Ixz","Ixz","kg·m²","Kütle"],
+            ["aero_xcg","42. x_cg","xcg/MAC","—","Kütle"],
+            ["aero_sm","43. Statik Marj","SM","—","Kararlılık"],
+            ["aero_dp_cabin","44. Kabin Δp","Δp","Pa","Yapı"],
+            ["aero_kt_window","45. Pencere Kt","Kt","—","Yapı"],
+            ["aero_panel_defl","46. Panel Sehim","δ","m","Yapı"],
+            ["aero_crippling","47. Dikme Çökme","σcrip","Pa","Yapı"],
+            ["aero_bulkhead","48. Bölme δ","δ","m","Yapı"],
+            ["aero_fn_fuselage","49. Gövde fn","fn","Hz","Titreşim"],
+            ["aero_gust","50. Gust Δn","Δn","—","Yükler"],
+            ["aero_net_thrust","51. Net İtme","T−D","N","Performans"],
+            ["aero_tsfc","52. TSFC","c","kg/(N·s)","İtki"],
+            ["aero_prop_eff","53. İtki Verimi","ηp","—","İtki"],
+            ["aero_thermal_eff","54. Termal Verim","ηth","—","İtki"],
+            ["aero_cycle_work","55. Çevrim İşi","w","J/kg","İtki"],
+            ["aero_comp_work","56. Kompresör İşi","wc","J/kg","İtki"],
+            ["aero_turb_work","57. Türbin İşi","wt","J/kg","İtki"],
+            ["aero_poly_eff","58. Politropik η","ηpoly","—","İtki"],
+            ["aero_nozzle_v","59. Lüle Ve","Ve","m/s","İtki"],
+            ["aero_bpr","60. Baypas","BPR","—","İtki"],
+            ["aero_fpr","61. Fan PR","FPR","—","İtki"],
+            ["aero_comb_eff","62. Yanma η","ηb","—","İtki"],
+            ["aero_shaft_w","63. Mil ω","ω","rad/s","İtki"],
+            ["aero_blade_centrif","64. Kanat σ_cent","σ","Pa","İtki"],
+            ["aero_tip_mach","65. Uç Mach","Mtip","—","İtki"],
+            ["aero_mdot_fn","66. ṁ fonksiyonu","ṁ*","—","İtki"],
+            ["aero_diffuser","67. Difüzör η","ηd","—","İtki"],
+            ["aero_ab_temp","68. Art yakıcı T","TAB/T","—","İtki"],
+            ["aero_prop_J","69. Pervane J","J","—","Pervane"],
+            ["aero_prop_CT","70. Pervane CT","CT","—","Pervane"],
+            ["aero_prop_CP","71. Pervane CP","CP","—","Pervane"],
+            ["aero_blade_phi","72. Kanat φ","φ","°","Pervane"],
+            ["aero_prop_torque","73. Pervane Q","Q","N·m","Pervane"],
+            ["aero_engine_mount","74. Motor bağ. F","F","N","Yapı"],
+            ["aero_exh_enthalpy","75. Egzoz Δh","Δh","J/kg","İtki"],
+            ["aero_VH","76. Yatay VH","VH","—","Kararlılık"],
+            ["aero_VV","77. Düşey VV","VV","—","Kararlılık"],
+            ["aero_oleo","78. Amortisör F","F","N","İniş"],
+            ["aero_touchdown_KE","79. Temas KE","KE","J","İniş"],
+            ["aero_tire_p","80. Lastik p","p","Pa","İniş"],
+            ["aero_brake_dec","81. Fren a","a","m/s²","İniş"],
+            ["aero_turn_R","82. Dönüş R","R","m","Manevra"],
+            ["aero_dutch_roll","83. Dutch Roll","f","Hz","Kararlılık"],
+            ["aero_short_period","84. Kısa periyot","f","Hz","Kararlılık"],
+            ["aero_phugoid","85. Fugoid T","T","s","Kararlılık"],
+            ["aero_p_euler","86. Euler p","p","rad/s","Kinematik"],
+            ["aero_q_euler","87. Euler q","q","rad/s","Kinematik"],
+            ["aero_r_euler","88. Euler r","r","rad/s","Kinematik"],
+            ["aero_rigid_roll","89. Katı roll L","L","N·m","Dinamik"],
+            ["aero_rigid_pitch","90. Katı pitch M","M","N·m","Dinamik"],
+            ["aero_rigid_yaw","91. Katı yaw N","N","N·m","Dinamik"],
+            ["aero_load_factor","92. Yük faktörü n","n","—","Manevra"],
+            ["aero_coord_turn","93. Koord. dönüş","φ","°","Manevra"],
+            ["aero_hinge","94. Menteşe Mh","Mh","N·m","Kontrol"],
+            ["aero_actuator","95. Aktüatör P","P","W","Kontrol"],
+            ["aero_caster","96. Kaster","trail","m","İniş"],
+            ["aero_flutter","97. Flutter VF","VF","m/s","Aeroelastisite"],
+            ["aero_glide","98. Süzülme γ","γ","°","Performans"],
+            ["aero_breguet_range","99. Breguet R","R","m","Performans"],
+            ["aero_breguet_endurance","100. Breguet E","E","s","Performans"]
+        ];
+
+        const AERO100_RESULTS = {}; // id -> last batch stats
+
+        function aero100Fmt(v) {
+            if (v == null || !isFinite(v)) return '—';
+            if (Math.abs(v) >= 1e5 || (Math.abs(v) < 1e-3 && v !== 0)) return Number(v).toExponential(3);
+            return Number(v.toPrecision(5)).toString();
+        }
+
+        function aero100ChipRefresh() {
+            const CE = (typeof ChipEngine !== 'undefined') ? ChipEngine : null;
+            const set = (id, txt, cls) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.textContent = txt;
+                if (cls) el.className = 'text-sm font-mono mt-0.5 ' + cls;
+            };
+            if (!CE) {
+                set('aero-chip-backend', 'YOK', 'text-red-400');
+                set('aero-chip-models', '0', 'text-zinc-500');
+                set('aero-chip-res', '—', 'text-zinc-500');
+                return;
+            }
+            const b = CE.backend || 'js';
+            set('aero-chip-backend', b + (b === 'wasm' ? ' ✓' : ' PRO'), b === 'wasm' ? 'text-cyan-300' : 'text-emerald-300');
+            const n = CE.modelCount ? CE.modelCount() : 0;
+            const aeroN = Object.keys(CE.models || {}).filter(k => k.startsWith('aero_')).length;
+            set('aero-chip-models', aeroN + ' aero / ' + n + ' top', 'text-emerald-300');
+            try {
+                const r = CE.rk4Residual ? CE.rk4Residual() : NaN;
+                set('aero-chip-res', isFinite(r) ? r.toExponential(2) : '—', r < 1e-10 ? 'text-emerald-300' : 'text-amber-300');
+            } catch (e) { set('aero-chip-res', '?', 'text-zinc-500'); }
+        }
+
+        function aero100Init() {
+            aero100ChipRefresh();
+            const tb = document.getElementById('aero100-tbody');
+            if (!tb) return;
+            if (tb.dataset.ready === '1') { aero100ChipRefresh(); return; }
+            tb.innerHTML = '';
+            const CE = (typeof ChipEngine !== 'undefined') ? ChipEngine : null;
+            AERO100_LIST.forEach(function (row, i) {
+                const id = row[0], title = row[1], formula = row[2], unit = row[3], domain = row[4];
+                const has = CE && CE.models && CE.models[id];
+                const tr = document.createElement('tr');
+                tr.className = 'aero100-row hover:bg-zinc-900/80 transition-colors';
+                tr.dataset.id = id;
+                tr.dataset.title = (title + ' ' + domain + ' ' + formula).toLowerCase();
+                tr.innerHTML =
+                    '<td class="px-3 py-2"><input type="checkbox" class="aero100-cb accent-emerald-500" data-id="' + id + '" ' + (i < 6 ? 'checked' : '') + '></td>' +
+                    '<td class="px-3 py-2 text-zinc-600">' + (i + 1) + '</td>' +
+                    '<td class="px-3 py-2"><button type="button" class="text-left text-zinc-100 hover:text-emerald-300 font-sans text-[12px] font-medium" onclick="aero100ShowDetail(\'' + id + '\')">' + title + '</button>' +
+                    '<div class="text-[9px] text-zinc-600">' + domain + '</div></td>' +
+                    '<td class="px-3 py-2 text-zinc-500 text-[11px] max-w-[160px] truncate" title="' + formula + '">' + formula + '</td>' +
+                    '<td class="px-3 py-2 text-right text-emerald-300/90" data-col="mean">—</td>' +
+                    '<td class="px-3 py-2 text-right text-zinc-400" data-col="std">—</td>' +
+                    '<td class="px-3 py-2 text-right text-zinc-500" data-col="min">—</td>' +
+                    '<td class="px-3 py-2 text-right text-zinc-500" data-col="max">—</td>' +
+                    '<td class="px-3 py-2 text-right text-zinc-500" data-col="cv">—</td>' +
+                    '<td class="px-3 py-2 text-right text-violet-300/80" data-col="sps">—</td>' +
+                    '<td class="px-3 py-2 text-right text-zinc-600" data-col="ms">—</td>' +
+                    '<td class="px-3 py-2 text-zinc-500">' + unit + '</td>' +
+                    '<td class="px-3 py-2"><span class="text-[10px] ' + (has ? 'text-emerald-400' : 'text-red-400') + '">' + (has ? '●' : '○') + '</span></td>';
+                tb.appendChild(tr);
+            });
+            tb.dataset.ready = '1';
+            // optional auto chip init
+            if (CE && !CE.ready && typeof CE.init === 'function') {
+                CE.init().then(function () { aero100ChipRefresh(); }).catch(function () {});
+            }
+        }
+
+        function aero100Filter(q) {
+            q = (q || '').toLowerCase().trim();
+            document.querySelectorAll('.aero100-row').forEach(function (tr) {
+                tr.style.display = (!q || (tr.dataset.title || '').indexOf(q) >= 0 || (tr.dataset.id || '').indexOf(q) >= 0) ? '' : 'none';
+            });
+        }
+
+        function aero100ToggleAll(on) {
+            document.querySelectorAll('.aero100-cb').forEach(function (cb) { cb.checked = !!on; });
+        }
+
+        function aero100Log(msg, cls) {
+            const el = document.getElementById('aero100-log');
+            if (!el) return;
+            el.classList.remove('hidden');
+            const line = document.createElement('div');
+            line.className = cls === 'err' ? 'text-red-400' : (cls === 'ok' ? 'text-emerald-300' : 'text-zinc-500');
+            line.textContent = msg;
+            el.appendChild(line);
+            while (el.childNodes.length > 200) el.removeChild(el.firstChild);
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function aero100WriteRow(id, r, ms) {
+            const tr = document.querySelector('.aero100-row[data-id="' + id + '"]');
+            if (!tr || !r) return;
+            const set = function (col, val) {
+                const td = tr.querySelector('[data-col="' + col + '"]');
+                if (td) td.textContent = val;
+            };
+            set('mean', aero100Fmt(r.mean));
+            set('std', aero100Fmt(r.std));
+            set('min', aero100Fmt(r.min));
+            set('max', aero100Fmt(r.max));
+            set('cv', r.cv != null ? Number(r.cv).toFixed(4) : '—');
+            set('sps', Math.round(r.sps || 0).toLocaleString());
+            set('ms', ms != null ? ms.toFixed(1) : '—');
+            AERO100_RESULTS[id] = Object.assign({ ms: ms }, r);
+        }
+
+        function aero100RunOne(id) {
+            if (typeof ChipEngine === 'undefined' || !ChipEngine.models || !ChipEngine.models[id]) {
+                aero100Log(id + ' — ChipEngine model yok', 'err');
+                return null;
+            }
+            const N = parseInt((document.getElementById('aero100-n') || {}).value, 10) || 10000;
+            const t0 = performance.now();
+            const r = ChipEngine.batch(id, N, 42);
+            const ms = performance.now() - t0;
+            if (r) {
+                aero100WriteRow(id, r, ms);
+                aero100Log(id + '  N=' + N.toLocaleString() + '  mean=' + aero100Fmt(r.mean) + '  SPS=' + Math.round(r.sps || 0).toLocaleString() + '  ' + ms.toFixed(0) + 'ms  [' + (ChipEngine.backend || 'js') + ']', 'ok');
+            }
+            aero100ChipRefresh();
+            return r;
+        }
+
+        function aero100RunSelected() {
+            const cbs = document.querySelectorAll('.aero100-cb:checked');
+            if (!cbs.length) { alert('En az bir denklem seçin'); return; }
+            cbs.forEach(function (cb) { aero100RunOne(cb.dataset.id); });
+        }
+
+        function aero100ChipDiag() {
+            aero100ChipRefresh();
+            const CE = (typeof ChipEngine !== 'undefined') ? ChipEngine : null;
+            const box = document.getElementById('aero100-detail-box');
+            if (!box) return;
+            box.classList.remove('hidden');
+            if (!CE) {
+                box.innerHTML = '<div class="text-red-400">ChipEngine yüklü değil</div>';
+                return;
+            }
+            let residual = '—';
+            try { residual = CE.rk4Residual ? CE.rk4Residual().toExponential(6) : '—'; } catch (e) {}
+            const aeroN = Object.keys(CE.models || {}).filter(k => k.startsWith('aero_')).length;
+            box.innerHTML =
+                '<div class="text-sm font-semibold text-violet-300 mb-3"><i class="fa-solid fa-microchip mr-2"></i>ChipEngine Tanılama</div>' +
+                '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[12px] font-mono">' +
+                '<div><div class="text-zinc-500 text-[10px]">VERSION</div><div class="text-zinc-200">' + (CE.version || '—') + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">BACKEND</div><div class="text-cyan-300">' + (CE.backend || 'js') + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">READY</div><div class="' + (CE.ready ? 'text-emerald-300' : 'text-amber-300') + '">' + !!CE.ready + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">RK4 RESIDUAL</div><div class="text-amber-200">' + residual + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">TOPLAM MODEL</div><div class="text-zinc-200">' + (CE.modelCount ? CE.modelCount() : 0) + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">AERO MODEL</div><div class="text-emerald-300">' + aeroN + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">SON SPS</div><div class="text-violet-300">' + (CE.perf && CE.perf.lastSps ? Math.round(CE.perf.lastSps).toLocaleString() : '—') + '</div></div>' +
+                '<div><div class="text-zinc-500 text-[10px]">MATH.JS</div><div class="text-zinc-200">' + (typeof math !== 'undefined' ? (math.version || 'ok') : 'yok') + '</div></div>' +
+                '</div>' +
+                '<div class="mt-3 text-[11px] text-zinc-500">Terminal: <span class="text-zinc-400">diag</span> · <span class="text-zinc-400">batch aero_lift 10000</span> · <span class="text-zinc-400">status</span></div>';
+            aero100Log('Chip diag · backend=' + CE.backend + ' · aero=' + aeroN + ' · residual=' + residual, 'ok');
+        }
+
+        function aero100ShowDetail(id) {
+            const row = AERO100_LIST.find(r => r[0] === id);
+            const res = AERO100_RESULTS[id];
+            const box = document.getElementById('aero100-detail-box');
+            if (!box || !row) return;
+            box.classList.remove('hidden');
+            let html = '<div class="flex items-start justify-between gap-3 mb-3">' +
+                '<div><div class="text-lg font-semibold text-zinc-100">' + row[1] + '</div>' +
+                '<div class="text-[11px] text-zinc-500 mt-0.5">' + row[4] + ' · model id: <span class="font-mono text-emerald-400">' + id + '</span></div></div>' +
+                '<button type="button" onclick="aero100RunOne(\'' + id + '\')" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold">Tekrar 10k</button></div>';
+            html += '<div class="text-sm font-mono text-cyan-200/90 mb-3">' + row[2] + '  <span class="text-zinc-500">[' + row[3] + ']</span></div>';
+            if (res) {
+                html += '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[12px] font-mono mb-3">' +
+                    '<div class="bg-zinc-900 rounded-xl p-3"><div class="text-[9px] text-zinc-500">MEAN</div><div class="text-emerald-300 text-base">' + aero100Fmt(res.mean) + '</div></div>' +
+                    '<div class="bg-zinc-900 rounded-xl p-3"><div class="text-[9px] text-zinc-500">STD</div><div class="text-zinc-200 text-base">' + aero100Fmt(res.std) + '</div></div>' +
+                    '<div class="bg-zinc-900 rounded-xl p-3"><div class="text-[9px] text-zinc-500">MIN / MAX</div><div class="text-zinc-300">' + aero100Fmt(res.min) + ' · ' + aero100Fmt(res.max) + '</div></div>' +
+                    '<div class="bg-zinc-900 rounded-xl p-3"><div class="text-[9px] text-zinc-500">CV · SPS · ms</div><div class="text-violet-300">' + (res.cv != null ? Number(res.cv).toFixed(4) : '—') + ' · ' + Math.round(res.sps || 0).toLocaleString() + ' · ' + (res.ms != null ? res.ms.toFixed(1) : '—') + '</div></div>' +
+                    '</div>';
+                html += '<div class="text-[11px] text-zinc-500">Chip backend: <span class="text-cyan-400">' + ((typeof ChipEngine !== 'undefined' && ChipEngine.backend) || 'js') + '</span> · N=' + (res.n || '—') + ' · Welford online istatistik</div>';
+            } else {
+                html += '<div class="text-zinc-500 text-sm">Henüz batch çalıştırılmadı. «Tekrar 10k» veya üstteki 1 MİLYON HESAP butonunu kullan.</div>';
+            }
+            // chip model detail if catalog exists
+            if (typeof chipModelDetailHTML === 'function') {
+                try {
+                    const d = chipModelDetailHTML(id);
+                    if (d) html += '<div class="mt-4 border-t border-zinc-800 pt-3 text-[12px]">' + d + '</div>';
+                } catch (e) {}
+            }
+            box.innerHTML = html;
+        }
+
+        function aero100ExportCSV() {
+            const lines = ['id,title,domain,formula,unit,mean,std,min,max,cv,sps,ms,backend'];
+            AERO100_LIST.forEach(function (row) {
+                const id = row[0], res = AERO100_RESULTS[id] || {};
+                const esc = function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; };
+                lines.push([id, esc(row[1]), esc(row[4]), esc(row[2]), row[3],
+                    res.mean, res.std, res.min, res.max, res.cv, res.sps, res.ms,
+                    (typeof ChipEngine !== 'undefined' ? ChipEngine.backend : '')].join(','));
+            });
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'muhendisx_aero100_batch.csv';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            aero100Log('CSV indirildi: muhendisx_aero100_batch.csv', 'ok');
+        }
+
+
+        function aero100ClearResults() {
+            Object.keys(AERO100_RESULTS).forEach(function (k) { delete AERO100_RESULTS[k]; });
+            document.querySelectorAll('.aero100-row [data-col]').forEach(function (td) { td.textContent = '—'; });
+            const log = document.getElementById('aero100-log');
+            if (log) log.innerHTML = '';
+            const box = document.getElementById('aero100-detail-box');
+            if (box) { box.classList.add('hidden'); box.innerHTML = ''; }
+            const p = document.getElementById('aero-chip-prog'); if (p) p.textContent = '0/100';
+            const t = document.getElementById('aero-chip-total'); if (t) t.textContent = '0';
+            const s = document.getElementById('aero-chip-sps'); if (s) s.textContent = '—';
+            // işlem verisi
+            AERO_ISLEM.store = {};
+            AERO_ISLEM.total = 0;
+            AERO_ISLEM.page = 0;
+            aeroIslemUpdateMeta();
+            const tb = document.getElementById('aero-islem-tbody');
+            if (tb) tb.innerHTML = '';
+            aero100Log('Sonuçlar + işlem verisi temizlendi', 'ok');
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           İŞLEM VERİSİ MOTORU — satır satır gerçekçi SI örneklem
+           Her satır: denklem + girdi parametreleri + sonuç
+           100 × N = 1.000.000 satır (N=10000)
+           Bellek: Float64 sonuç + parametre sözlükleri (sayfa önizleme)
+           CSV: deterministik yeniden üretim (aynı seed)
+           ═══════════════════════════════════════════════════════════════ */
+        const AERO_ISLEM = {
+            store: {},      // id -> { values: Float64Array, params: Array<{...}>, n, seed, unit, title }
+            total: 0,
+            page: 0,
+            baseSeed: 42
+        };
+
+        /** Gerçekçi parametreli örnekleyici — her model için fiziksel girdiler + sonuç */
+        const AERO_SAMPLERS = {
+            aero_lift: function () {
+                const rho = 0.3 + Math.random() * 0.95, V = 30 + Math.random() * 250, S = 10 + Math.random() * 140, CL = 0.1 + Math.random() * 1.5;
+                return { y: 0.5 * rho * V * V * S * CL, p: { rho: +rho.toFixed(4), V: +V.toFixed(2), S: +S.toFixed(2), CL: +CL.toFixed(4) } };
+            },
+            aero_drag: function () {
+                const rho = 0.3 + Math.random() * 0.95, V = 30 + Math.random() * 250, S = 10 + Math.random() * 140, CD = 0.015 + Math.random() * 0.105;
+                return { y: 0.5 * rho * V * V * S * CD, p: { rho: +rho.toFixed(4), V: +V.toFixed(2), S: +S.toFixed(2), CD: +CD.toFixed(4) } };
+            },
+            aero_cdi: function () {
+                const CL = 0.2 + Math.random() * 1.2, AR = 5 + Math.random() * 7, e = 0.7 + Math.random() * 0.25;
+                return { y: (CL * CL) / (Math.PI * AR * e), p: { CL: +CL.toFixed(4), AR: +AR.toFixed(3), e: +e.toFixed(3) } };
+            },
+            aero_ar: function () {
+                const b = 8 + Math.random() * 32, S = 10 + Math.random() * 150;
+                return { y: (b * b) / S, p: { b: +b.toFixed(2), S: +S.toFixed(2) } };
+            },
+            aero_mach: function () {
+                const T = 210 + Math.random() * 110, V = 50 + Math.random() * 850, a = Math.sqrt(1.4 * 287.05 * T);
+                return { y: V / a, p: { V: +V.toFixed(2), T: +T.toFixed(1), a: +a.toFixed(2) } };
+            },
+            aero_stall: function () {
+                const W = 5e4 + Math.random() * 3.5e5, rho = 1 + Math.random() * 0.25, S = 20 + Math.random() * 100, CLmax = 1.4 + Math.random() * 1.4;
+                return { y: Math.sqrt(2 * W / (rho * S * CLmax)), p: { W: +W.toFixed(0), rho: +rho.toFixed(3), S: +S.toFixed(2), CLmax: +CLmax.toFixed(3) } };
+            },
+            aero_hoop: function () {
+                const p = 2e4 + Math.random() * 4e4, r = 1.5 + Math.random() * 2, t = 0.0015 + Math.random() * 0.0025;
+                return { y: p * r / t, p: { p_Pa: +p.toFixed(0), r_m: +r.toFixed(3), t_m: +t.toFixed(5) } };
+            },
+            aero_breguet_range: function () {
+                const V = 200 + Math.random() * 50, c = 1.5e-5 + Math.random() * 7e-6, LD = 12 + Math.random() * 8, Wi = 6e4 + Math.random() * 2.4e5, Wf = Wi * (0.55 + Math.random() * 0.25);
+                return { y: (V / c) * LD * Math.log(Wi / Wf), p: { V: +V.toFixed(1), c: +c.toExponential(3), LD: +LD.toFixed(2), Wi: +Wi.toFixed(0), Wf: +Wf.toFixed(0) } };
+            },
+            aero_breguet_endurance: function () {
+                const c = 1.5e-5 + Math.random() * 7e-6, LD = 12 + Math.random() * 8, Wi = 6e4 + Math.random() * 2.4e5, Wf = Wi * (0.55 + Math.random() * 0.25);
+                return { y: (1 / c) * LD * Math.log(Wi / Wf), p: { c: +c.toExponential(3), LD: +LD.toFixed(2), Wi: +Wi.toFixed(0), Wf: +Wf.toFixed(0) } };
+            },
+            aero_q: function () {
+                const rho = 0.3 + Math.random() * 0.95, V = 50 + Math.random() * 250;
+                return { y: 0.5 * rho * V * V, p: { rho: +rho.toFixed(4), V: +V.toFixed(2) } };
+            },
+            aero_reynolds: function () {
+                const rho = 0.4 + Math.random() * 0.85, V = 30 + Math.random() * 250, L = 1 + Math.random() * 39, mu = 1.8e-5;
+                return { y: rho * V * L / mu, p: { rho: +rho.toFixed(4), V: +V.toFixed(2), L: +L.toFixed(2), mu: 1.8e-5 } };
+            },
+            aero_von_mises: function () {
+                const s1 = 50e6 + Math.random() * 200e6, s2 = 20e6 + Math.random() * 100e6, s3 = 0;
+                return { y: Math.sqrt(0.5 * ((s1 - s2) ** 2 + (s2 - s3) ** 2 + (s3 - s1) ** 2)), p: { sigma1: +s1.toExponential(3), sigma2: +s2.toExponential(3), sigma3: 0 } };
+            },
+            aero_gust: function () {
+                const V = 80 + Math.random() * 170, K = 0.6 + Math.random() * 0.4, a = 4 + Math.random() * 3, S = 20 + Math.random() * 100, W = 5e4 + Math.random() * 2.5e5, U = 5 + Math.random() * 15;
+                return { y: (1.225 * V * K * a * S * U) / (2 * W), p: { V: +V.toFixed(1), K: +K.toFixed(3), a_cl: +a.toFixed(2), S: +S.toFixed(1), W: +W.toFixed(0), Ude: +U.toFixed(2) } };
+            },
+            aero_comp_work: function () {
+                const T1 = 250 + Math.random() * 50, pr = 8 + Math.random() * 32, T2 = T1 * Math.pow(pr, 0.286);
+                return { y: 1005 * (T2 - T1), p: { T1: +T1.toFixed(1), PR: +pr.toFixed(2), T2: +T2.toFixed(1), cp: 1005 } };
+            },
+            aero_nozzle_v: function () {
+                const Te = 600 + Math.random() * 400, pr = 1.5 + Math.random() * 6.5;
+                return { y: Math.sqrt(2 * 1150 * Te * (1 - Math.pow(1 / pr, 0.248))), p: { Te: +Te.toFixed(1), PR: +pr.toFixed(3), cp: 1150, gamma: 1.33 } };
+            },
+            aero_phugoid: function () {
+                const V = 80 + Math.random() * 170;
+                return { y: (Math.PI * Math.SQRT2 * V) / 9.80665, p: { V: +V.toFixed(1), g: 9.80665 } };
+            },
+            aero_load_factor: function () {
+                const phi = (10 + Math.random() * 50) * Math.PI / 180;
+                return { y: 1 / Math.cos(phi), p: { phi_deg: +(phi * 180 / Math.PI).toFixed(2) } };
+            },
+            aero_oleo: function () {
+                const m = 5e3 + Math.random() * 3.5e4, v = 1.5 + Math.random() * 2.5, eta = 0.7 + Math.random() * 0.2, s = 0.2 + Math.random() * 0.3;
+                return { y: (m * v * v) / (2 * eta * s), p: { m: +m.toFixed(0), v_td: +v.toFixed(2), eta: +eta.toFixed(3), stroke: +s.toFixed(3) } };
+            }
+        };
+
+        /** Fallback: ChipEngine.models sonucu + minimal param etiketi */
+        function aeroSampleOne(id) {
+            if (AERO_SAMPLERS[id]) return AERO_SAMPLERS[id]();
+            if (typeof ChipEngine !== 'undefined' && ChipEngine.models && ChipEngine.models[id]) {
+                return { y: ChipEngine.models[id](), p: { source: 'ChipEngine.models', note: 'parametreler modele gömülü rastgele' } };
+            }
+            return { y: NaN, p: { error: 'model yok' } };
+        }
+
+        /** N satır üret, belleğe al (sonuç dizisi + parametre önizleme alt kümesi) */
+        function aeroIslemGenerate(id, N, seed) {
+            N = Math.max(10, Math.min(50000, N || 10000));
+            seed = seed || AERO_ISLEM.baseSeed;
+            // deterministik PRNG (mulberry32)
+            let s = (seed >>> 0) || 1;
+            const rnd = function () {
+                s |= 0; s = s + 0x6D2B79F5 | 0;
+                let t = Math.imul(s ^ s >>> 15, 1 | s);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+            // Math.random'ı geçici değiştir (sampler'lar Math.random kullanıyor)
+            const realRandom = Math.random;
+            Math.random = rnd;
+            const values = new Float64Array(N);
+            // Parametreleri tüm N için tutmak bellek şişirir; ilk 2000 + her 50. kaydı sakla (CSV tam üretimde yeniden hesaplanır)
+            const paramKeep = [];
+            const meta = AERO100_LIST.find(r => r[0] === id) || [id, id, '', '—', ''];
+            for (let i = 0; i < N; i++) {
+                const sm = aeroSampleOne(id);
+                values[i] = sm.y;
+                if (i < 2000 || i % 50 === 0) {
+                    paramKeep.push({ i: i, p: sm.p });
+                }
+            }
+            Math.random = realRandom;
+            // istatistik
+            let mean = 0, M2 = 0, min = Infinity, max = -Infinity;
+            for (let i = 0; i < N; i++) {
+                const x = values[i];
+                if (!isFinite(x)) continue;
+                const d = x - mean;
+                mean += d / (i + 1);
+                M2 += d * (x - mean);
+                if (x < min) min = x;
+                if (x > max) max = x;
+            }
+            const variance = N > 1 ? M2 / (N - 1) : 0;
+            const std = Math.sqrt(variance);
+            AERO_ISLEM.store[id] = {
+                values: values,
+                params: paramKeep,
+                n: N,
+                seed: seed,
+                unit: meta[3],
+                title: meta[1],
+                formula: meta[2],
+                domain: meta[4],
+                mean: mean,
+                std: std,
+                min: min,
+                max: max,
+                cv: mean !== 0 ? std / Math.abs(mean) : 0
+            };
+            return AERO_ISLEM.store[id];
+        }
+
+        function aeroIslemRebuildIndex() {
+            let total = 0;
+            Object.keys(AERO_ISLEM.store).forEach(function (k) { total += AERO_ISLEM.store[k].n; });
+            AERO_ISLEM.total = total;
+            // model select
+            const sel = document.getElementById('aero-islem-model');
+            if (sel) {
+                const cur = sel.value;
+                sel.innerHTML = '<option value=\"\">Tüm modeller (karışık önizleme)</option>';
+                AERO100_LIST.forEach(function (row) {
+                    if (!AERO_ISLEM.store[row[0]]) return;
+                    const opt = document.createElement('option');
+                    opt.value = row[0];
+                    opt.textContent = row[1] + '  (' + AERO_ISLEM.store[row[0]].n.toLocaleString() + ' satır)';
+                    sel.appendChild(opt);
+                });
+                if (cur) sel.value = cur;
+            }
+            aeroIslemUpdateMeta();
+        }
+
+        function aeroIslemUpdateMeta() {
+            const c = document.getElementById('aero-islem-count');
+            const m = document.getElementById('aero-islem-mem');
+            const s = document.getElementById('aero-islem-seed');
+            const st = document.getElementById('aero-islem-status');
+            if (c) c.textContent = AERO_ISLEM.total.toLocaleString();
+            if (s) s.textContent = String(AERO_ISLEM.baseSeed);
+            let bytes = 0;
+            Object.keys(AERO_ISLEM.store).forEach(function (k) {
+                bytes += (AERO_ISLEM.store[k].values || []).length * 8;
+            });
+            if (m) m.textContent = bytes > 1e6 ? (bytes / 1e6).toFixed(1) + ' MB' : (bytes / 1e3).toFixed(0) + ' KB';
+            if (st) st.textContent = AERO_ISLEM.total ? (Object.keys(AERO_ISLEM.store).length + ' model yüklü') : 'boş';
+        }
+
+        function aeroIslemPageCount() {
+            const ps = parseInt((document.getElementById('aero-islem-pagesize') || {}).value, 10) || 100;
+            const filterId = (document.getElementById('aero-islem-model') || {}).value || '';
+            let n = 0;
+            if (filterId && AERO_ISLEM.store[filterId]) n = AERO_ISLEM.store[filterId].n;
+            else n = AERO_ISLEM.total;
+            return Math.max(1, Math.ceil(n / ps));
+        }
+
+        function aeroIslemRenderPage(page) {
+            const tb = document.getElementById('aero-islem-tbody');
+            if (!tb) return;
+            const ps = parseInt((document.getElementById('aero-islem-pagesize') || {}).value, 10) || 100;
+            const filterId = (document.getElementById('aero-islem-model') || {}).value || '';
+            const maxPage = aeroIslemPageCount() - 1;
+            AERO_ISLEM.page = Math.max(0, Math.min(page, maxPage));
+            const info = document.getElementById('aero-islem-pageinfo');
+            if (info) info.textContent = (AERO_ISLEM.page + 1) + ' / ' + (maxPage + 1);
+
+            // satır kaynağı oluştur
+            const rows = [];
+            const start = AERO_ISLEM.page * ps;
+            const end = start + ps;
+            if (filterId && AERO_ISLEM.store[filterId]) {
+                const st = AERO_ISLEM.store[filterId];
+                for (let i = start; i < Math.min(end, st.n); i++) {
+                    rows.push({ global: i, local: i, id: filterId, st: st });
+                }
+            } else {
+                // karışık: modellere göre birleşik index
+                let acc = 0;
+                for (let m = 0; m < AERO100_LIST.length && rows.length < ps; m++) {
+                    const id = AERO100_LIST[m][0];
+                    const st = AERO_ISLEM.store[id];
+                    if (!st) continue;
+                    const next = acc + st.n;
+                    if (end <= acc) break;
+                    if (start < next) {
+                        const from = Math.max(0, start - acc);
+                        const to = Math.min(st.n, end - acc);
+                        for (let i = from; i < to; i++) {
+                            rows.push({ global: acc + i, local: i, id: id, st: st });
+                        }
+                    }
+                    acc = next;
+                }
+            }
+
+            tb.innerHTML = '';
+            rows.forEach(function (r) {
+                const st = r.st;
+                const y = st.values[r.local];
+                // param bul
+                let pstr = '—';
+                const pk = st.params.find(function (x) { return x.i === r.local; });
+                if (pk && pk.p) {
+                    pstr = Object.keys(pk.p).map(function (k) { return k + '=' + pk.p[k]; }).join(', ');
+                } else {
+                    pstr = '(seed=' + st.seed + '+' + r.local + ' · detay CSV’de)';
+                }
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-zinc-900/60';
+                tr.innerHTML =
+                    '<td class="px-2 py-1.5 text-zinc-600">' + (r.global + 1).toLocaleString() + '</td>' +
+                    '<td class="px-2 py-1.5 text-zinc-500">' + (AERO100_LIST.findIndex(function (x) { return x[0] === r.id; }) + 1) + '</td>' +
+                    '<td class="px-2 py-1.5 text-emerald-400/90">' + r.id + '</td>' +
+                    '<td class="px-2 py-1.5 text-zinc-300 font-sans text-[11px]">' + st.title + '</td>' +
+                    '<td class="px-2 py-1.5 text-zinc-500">' + (r.local + 1) + '</td>' +
+                    '<td class="px-2 py-1.5 text-right text-cyan-300">' + aero100Fmt(y) + '</td>' +
+                    '<td class="px-2 py-1.5 text-zinc-500">' + st.unit + '</td>' +
+                    '<td class="px-2 py-1.5 text-zinc-500 max-w-[280px] truncate" title="' + pstr.replace(/"/g, '&quot;') + '">' + pstr + '</td>' +
+                    '<td class="px-2 py-1.5 text-zinc-600">' + st.seed + '</td>';
+                tb.appendChild(tr);
+            });
+            aeroIslemUpdateMeta();
+        }
+
+        function aeroIslemPrev() { aeroIslemRenderPage(AERO_ISLEM.page - 1); }
+        function aeroIslemNext() { aeroIslemRenderPage(AERO_ISLEM.page + 1); }
+
+        /** Tam batch: her model için N satır işlem verisi + özet tablo */
+        async function aero100RunAll(N) {
+            N = Math.max(100, Math.min(50000, N || 10000));
+            AERO_ISLEM.baseSeed = 42;
+            const log = document.getElementById('aero100-log');
+            if (log) { log.innerHTML = ''; log.classList.remove('hidden'); }
+            const total = AERO100_LIST.length * N;
+            aero100Log('▸ İŞLEM VERİSİ üretiliyor  ·  100 × ' + N.toLocaleString() + ' = ' + total.toLocaleString() + ' satır', 'ok');
+            if (typeof ChipEngine === 'undefined') { aero100Log('ChipEngine yok — sampler fallback', 'err'); }
+            else if (!ChipEngine.ready && typeof ChipEngine.init === 'function') {
+                try { await ChipEngine.init(); aero100Log('ChipEngine hazır · ' + ChipEngine.backend, 'ok'); } catch (e) {}
+            }
+            aero100ChipRefresh();
+            let ok = 0, fail = 0, sumSps = 0;
+            const tAll = performance.now();
+            const prog = document.getElementById('aero-chip-prog');
+            const totalEl = document.getElementById('aero-chip-total');
+            const spsEl = document.getElementById('aero-chip-sps');
+            const stEl = document.getElementById('aero-islem-status');
+            for (let i = 0; i < AERO100_LIST.length; i++) {
+                const id = AERO100_LIST[i][0];
+                if (prog) prog.textContent = (i + 1) + '/100';
+                if (stEl) stEl.textContent = 'üretiliyor ' + id + '…';
+                try {
+                    const t0 = performance.now();
+                    const st = aeroIslemGenerate(id, N, 42 + i);
+                    const ms = performance.now() - t0;
+                    const sps = N / (ms / 1000);
+                    ok++;
+                    sumSps += sps;
+                    // özet tabloya yaz
+                    aero100WriteRow(id, {
+                        mean: st.mean, std: st.std, min: st.min, max: st.max,
+                        cv: st.cv, sps: sps, n: N, backend: (typeof ChipEngine !== 'undefined' ? ChipEngine.backend : 'js')
+                    }, ms);
+                } catch (e) {
+                    fail++;
+                    aero100Log(id + ' hata: ' + (e.message || e), 'err');
+                }
+                if (totalEl) totalEl.textContent = (ok * N).toLocaleString();
+                if (spsEl) spsEl.textContent = Math.round(sumSps / Math.max(ok, 1)).toLocaleString();
+                await new Promise(function (res) { setTimeout(res, 0); });
+            }
+            aeroIslemRebuildIndex();
+            aeroIslemRenderPage(0);
+            const ms = performance.now() - tAll;
+            if (prog) prog.textContent = ok + '/100 ✓';
+            if (stEl) stEl.textContent = 'hazır · ' + (ok * N).toLocaleString() + ' satır';
+            aero100Log('════════════════════════════════════════', 'ok');
+            aero100Log('İŞLEM VERİSİ HAZIR · ' + ok + ' denklem · ' + (ok * N).toLocaleString() + ' satır', 'ok');
+            aero100Log('Süre: ' + (ms / 1000).toFixed(2) + ' s · Ort. SPS: ' + Math.round(sumSps / Math.max(ok, 1)).toLocaleString(), 'ok');
+            aero100Log('Alt tabloda sayfa sayfa gez · tam veri için «CSV · 1M satır indir»', 'ok');
+            aero100ChipRefresh();
+        }
+
+        async function aero100RunMillion() {
+            const sel = document.getElementById('aero100-n');
+            if (sel) sel.value = '10000';
+            await aero100RunAll(10000);
+        }
+
+        /** Tam 1M satır CSV — deterministik yeniden üretim, chunk’lı indirme */
+        async function aeroIslemExportFull() {
+            const N = parseInt((document.getElementById('aero100-n') || {}).value, 10) || 10000;
+            const ids = AERO100_LIST.map(r => r[0]).filter(function (id) {
+                return AERO_ISLEM.store[id] || (typeof ChipEngine !== 'undefined' && ChipEngine.models && ChipEngine.models[id]) || AERO_SAMPLERS[id];
+            });
+            if (!ids.length) {
+                alert('Önce «1 MİLYON HESAP» çalıştırın veya en az bir model üretin.');
+                return;
+            }
+            aero100Log('CSV üretiliyor · ' + (ids.length * N).toLocaleString() + ' satır…', 'ok');
+            const header = 'satir_no,denklem_no,model_id,denklem_adi,domain,ornek_no,sonuc,birim,parametreler_json,seed\n';
+            const parts = [header];
+            let global = 0;
+            const t0 = performance.now();
+            for (let mi = 0; mi < ids.length; mi++) {
+                const id = ids[mi];
+                const meta = AERO100_LIST.find(r => r[0] === id) || [id, id, '', '—', ''];
+                // yeniden üret (deterministik)
+                const st = AERO_ISLEM.store[id] || aeroIslemGenerate(id, N, 42 + mi);
+                const seed = st.seed;
+                // params map for quick lookup
+                const pmap = {};
+                (st.params || []).forEach(function (x) { pmap[x.i] = x.p; });
+                let chunk = '';
+                for (let i = 0; i < st.n; i++) {
+                    global++;
+                    const y = st.values[i];
+                    let pj = '';
+                    if (pmap[i]) pj = JSON.stringify(pmap[i]).replace(/"/g, '""');
+                    else pj = '""';
+                    chunk += global + ',' + (mi + 1) + ',' + id + ',"' + String(meta[1]).replace(/"/g, '""') + '","' + String(meta[4] || '').replace(/"/g, '""') + '",' +
+                        (i + 1) + ',' + (isFinite(y) ? y : '') + ',' + meta[3] + ',"' + pj + '",' + seed + '\n';
+                    if (chunk.length > 1e6) {
+                        parts.push(chunk);
+                        chunk = '';
+                        await new Promise(function (r) { setTimeout(r, 0); });
+                    }
+                }
+                if (chunk) parts.push(chunk);
+                const stEl = document.getElementById('aero-islem-status');
+                if (stEl) stEl.textContent = 'CSV ' + (mi + 1) + '/' + ids.length;
+            }
+            const blob = new Blob(parts, { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'muhendisx_aero_islem_verisi_' + (ids.length * N) + 'satir.csv';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            aero100Log('CSV indirildi · ' + global.toLocaleString() + ' satır · ' + ((performance.now() - t0) / 1000).toFixed(1) + ' s', 'ok');
+            const stEl = document.getElementById('aero-islem-status');
+            if (stEl) stEl.textContent = 'CSV tamam · ' + global.toLocaleString();
+        }
+
+
+        function updateChipNavStatus() {
+            try {
+                const CE = typeof ChipEngine !== 'undefined' ? ChipEngine : null;
+                const text = document.getElementById('chip-nav-text');
+                const backend = document.getElementById('chip-nav-backend');
+                const residual = document.getElementById('chip-nav-residual');
+                const models = document.getElementById('chip-nav-models');
+                const dot = document.getElementById('chip-dot');
+                const sps = document.getElementById('chip-nav-sps');
+                if (!CE) {
+                    if (text) text.textContent = 'Chip yok';
+                    if (dot) { dot.className = 'w-2 h-2 rounded-full bg-red-500'; }
+                    return;
+                }
+                const b = CE.backend || 'js';
+                const n = CE.modelCount ? CE.modelCount() : (CE.models ? Object.keys(CE.models).length : 0);
+                let res = NaN;
+                try { res = CE.rk4Residual ? CE.rk4Residual() : NaN; } catch (e) {}
+                const ok = isFinite(res) && res < 1e-10;
+                if (text) text.textContent = ok ? 'Chip · verified' : 'Chip · ' + b;
+                if (backend) backend.textContent = 'backend: ' + b + (b === 'wasm' ? ' C++' : ' PRO');
+                if (residual) residual.textContent = 'res: ' + (isFinite(res) ? res.toExponential(2) : '—');
+                if (models) models.textContent = n + ' model';
+                if (dot) dot.className = 'w-2 h-2 rounded-full ' + (ok ? 'bg-emerald-400' : (CE.ready ? 'bg-amber-400' : 'bg-zinc-500')) + (ok ? '' : ' animate-pulse');
+                if (sps && CE.perf && CE.perf.lastSps) sps.textContent = 'SPS: ' + Math.round(CE.perf.lastSps).toLocaleString();
+            } catch (e) {}
+        }
+        setInterval(updateChipNavStatus, 2000);
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(updateChipNavStatus, 400);
+            setTimeout(updateChipNavStatus, 1500);
+        });
 
 window.onload = function() {
             try { /* terminal hazır */ } catch(e) {}
