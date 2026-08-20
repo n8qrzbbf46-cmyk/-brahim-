@@ -30,4 +30,4 @@ Bu tasarım, orta ölçekli bir FPGA veya küçük bir ASIC için gerçekçi bir
 ### Nasıl kullanılır?
 Sadece bu tek `.v` dosyasını simülatöre veya sentez aracına verin.
 Testbench de aynı dosyanın içindedir.
-GFM-U f100 serisi veridgim sayısal chip donanım yqzılım satlıktır fiyat lisasn olarak her chip icine bu yazılım ucreti 200 dolar 
+GFM-U f100 serisi veridgim sayısal chip donanım yqzılım satlıktır fiyat lisasn olarak her chip icine bu yazılım ucreti 200 dolar donanım yazılımı sildim cunku kacıran olur diye ama boyle donanım ihtiyacınız vara konusuruz 
