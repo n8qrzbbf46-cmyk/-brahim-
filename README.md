@@ -1,3 +1,4 @@
+KUANTUM CORE yazılım donanım şirketi 
 # Graphics + Vector + Simulation Accelerator Chip
 ## Single-File ~10 Million Transistor Class Design
 
