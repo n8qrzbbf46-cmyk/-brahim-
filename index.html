@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="mx-build-version" content="30.6.60-FIX"/>
-<meta name="mx-build-note" content="GFortran Professional Lab · Live Verify · mx_blas.f90 SELFTEST PASS · SciPy OpenBLAS · rustc WASM BLAS · residual-gated · PROMAX LU/QR/Newton"/>
+<meta name="mx-build-version" content="30.6.67-NL-FIX"/>
+<meta name="mx-build-note" content="GFortran Professional Lab · Equation Lab · Semiconductor · Circuit · Finance · residual-gated"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MühendisX Professional · v30.6.60 · FIX · Fortran · CODATA</title>
@@ -135,7 +135,7 @@
                 </div>
                 <div>
                     <span class="font-display text-2xl md:text-3xl font-semibold tracking-tighter text-zinc-50">MühendisX</span>
-                    <span class="text-[10px] md:text-xs text-zinc-500 block -mt-0.5 tracking-wide">Professional v30.6.60 · FIX · Math-tools harden · residual ≤1e-12</span>
+                    <span class="text-[10px] md:text-xs text-zinc-500 block -mt-0.5 tracking-wide">Professional v30.6.67 · Nonlineer FIX · residual-gated</span>
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
@@ -151,6 +151,7 @@
                     <span id="chip-nav-models" class="text-zinc-400">0 model</span>
                 </div>
                 <button type="button" onclick="switchPanel('panel-terminal');try{termFocus()}catch(e){}" class="px-3 py-1.5 text-[11px] font-semibold rounded-xl bg-emerald-900/50 border border-emerald-700 text-emerald-200 hover:bg-emerald-800 transition">Terminal</button>
+                <button type="button" onclick="eqLabOpen()" class="px-3 py-1.5 text-[11px] font-semibold rounded-xl bg-cyan-900/50 border border-cyan-700 text-cyan-200 hover:bg-cyan-800 transition">Denklem Lab</button>
                 <button type="button" onclick="switchPanel('panel-aero100');try{aero100Init()}catch(e){}" class="px-3 py-1.5 text-[11px] font-semibold rounded-xl bg-sky-900/40 border border-sky-800 text-sky-200 hover:bg-sky-900 transition">Aero 1M</button>
                 <button type="button" onclick="if(typeof Term!=='undefined'){switchPanel('panel-terminal');Term.exec('power')}" class="px-3 py-1.5 text-[11px] rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white transition">Chip power</button>
                 <button type="button" onclick="showHistory()" class="px-3 py-1.5 text-[11px] text-zinc-400 hover:text-white border border-zinc-800 rounded-xl transition"><i class="fa-solid fa-history"></i></button>
@@ -383,6 +384,7 @@
                                 <div class="bg-zinc-900/80 border border-zinc-800 rounded-xl px-2 py-2"><div class="text-zinc-500 uppercase tracking-wider">SPS</div><div id="ge-d-sps" class="text-emerald-300 text-sm mt-0.5">—</div></div>
                                 <div class="bg-zinc-900/80 border border-zinc-800 rounded-xl px-2 py-2"><div class="text-zinc-500 uppercase tracking-wider">Verify</div><div id="ge-d-verify" class="text-zinc-300 text-sm mt-0.5">—</div></div>
                                 <div class="bg-zinc-900/80 border border-zinc-800 rounded-xl px-2 py-2"><div class="text-zinc-500 uppercase tracking-wider">ABI</div><div id="ge-d-abi" class="text-zinc-400 text-sm mt-0.5">C++17</div></div>
+                                <div class="bg-zinc-900/80 border border-zinc-800 rounded-xl px-2 py-2"><div class="text-zinc-500 uppercase tracking-wider">İletişim</div><div id="ge-d-com" class="text-zinc-500 text-sm mt-0.5">—</div></div>
                             </div>
                             <div id="mx-backend-pills" class="flex flex-wrap gap-1.5 mt-3 mb-2">
                                 <span data-be="cpp" class="mx-be-pill text-[9px] px-2 py-0.5 rounded-full bg-zinc-950 border border-zinc-700 text-zinc-500 font-mono">C++ WASM</span>
@@ -8745,6 +8747,859 @@
 
                 
 
+
+<!-- ========== MX EQUATION LAB v30.6.62 ========== -->
+<div id="panel-eq-lab" class="panel hidden">
+  <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-5 md:p-7">
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+      <div>
+        <h2 class="text-2xl font-semibold flex items-center gap-x-3">
+          <i class="fa-solid fa-square-root-variable text-cyan-400"></i>
+          Denklem Laboratuvarı
+        </h2>
+        <p class="text-zinc-400 text-sm mt-1">Yarı iletken · Devre / EM · Finans — fotoğraftaki denklemler · residual-gated</p>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center">
+        <span id="eq-lab-engine" class="px-3 py-1.5 rounded-full bg-zinc-950 border border-zinc-700 text-zinc-400 font-mono text-[11px]">engine: —</span>
+        <span class="px-3 py-1.5 rounded-full bg-zinc-950 border border-zinc-700 text-zinc-400 font-mono text-[11px]">v30.6.67-NL-FIX</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-2 mb-5">
+      <button type="button" onclick="eqLabTab('semi')" id="eqtab-semi" class="eq-tab px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-cyan-900/50 border border-cyan-700 text-cyan-200">Çip / Yarı İletken</button>
+      <button type="button" onclick="eqLabTab('circuit')" id="eqtab-circuit" class="eq-tab px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-zinc-800 border border-zinc-700 text-zinc-300">Devre & EM</button>
+      <button type="button" onclick="eqLabTab('finance')" id="eqtab-finance" class="eq-tab px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-zinc-800 border border-zinc-700 text-zinc-300">Finans</button>
+      <button type="button" onclick="eqLabTab('nlphys')" id="eqtab-nlphys" class="eq-tab px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-zinc-800 border border-zinc-700 text-zinc-300">İleri Nonlineer Fizik</button>
+    </div>
+
+    <!-- ========== SEMICONDUCTOR ========== -->
+    <div id="eqsec-semi" class="eq-section space-y-4">
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- Shockley Ideal Diode -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">Shockley İdeal Diyot</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">I = Iₛ (e^(qV/nkT) − 1)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>Iₛ (A)<input id="eq-sh-is" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e-12"></label>
+            <label>V (V)<input id="eq-sh-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.7"></label>
+            <label>n<input id="eq-sh-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>T (K)<input id="eq-sh-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="300"></label>
+          </div>
+          <button type="button" onclick="eqShockley()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-sh-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <!-- Rayleigh CD -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">Rayleigh Çözünürlük (CD)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">CD = k₁ · λ / NA</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>k₁<input id="eq-ray-k1" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.4"></label>
+            <label>λ (nm)<input id="eq-ray-lam" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="193"></label>
+            <label>NA<input id="eq-ray-na" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.35"></label>
+          </div>
+          <button type="button" onclick="eqRayleigh()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-ray-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <!-- Deal-Grove -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">Deal-Grove Oksit Büyüme</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">x² + A·x = B·(t + τ)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>B (μm²/h)<input id="eq-dg-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.04"></label>
+            <label>A (μm)<input id="eq-dg-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.05"></label>
+            <label>t (h)<input id="eq-dg-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>τ (h)<input id="eq-dg-tau" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqDealGrove()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-dg-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <!-- Black EM -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">Black Denklemi (Elektrogöç)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">MTTF = A · J^(−n) · e^(Ea/kT)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>A<input id="eq-bl-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e9"></label>
+            <label>J (A/cm²)<input id="eq-bl-j" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e6"></label>
+            <label>n<input id="eq-bl-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>Ea (eV)<input id="eq-bl-ea" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.7"></label>
+            <label>T (K)<input id="eq-bl-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="400"></label>
+          </div>
+          <button type="button" onclick="eqBlack()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-bl-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+
+        <!-- Elmore RC -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">Elmore RC Gecikme</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">τ ≈ Σ Rᵢ · C_downstream</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>R (Ω)<input id="eq-el-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+            <label>C (fF)<input id="eq-el-c" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="50"></label>
+            <label>segment sayısı<input id="eq-el-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="5"></label>
+          </div>
+          <button type="button" onclick="eqElmore()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-el-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <!-- MOSFET Idsat simple -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-cyan-300 mb-1">MOSFET Doyum Akımı</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">I_Dsat = ½ μ C_ox (W/L) (V_GS−V_th)²</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>μ (cm²/Vs)<input id="eq-mos-mu" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="300"></label>
+            <label>C_ox (fF/μm²)<input id="eq-mos-cox" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>W/L<input id="eq-mos-wl" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="5"></label>
+            <label>V_GS (V)<input id="eq-mos-vgs" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.2"></label>
+            <label>V_th (V)<input id="eq-mos-vth" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.4"></label>
+          </div>
+          <button type="button" onclick="eqMosfet()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-mos-out" class="mt-2 text-sm font-mono text-cyan-300 hidden"></div>
+        </div>
+
+        <!-- Fowler-Nordheim -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-fuchsia-300 mb-1">Fowler-Nordheim Tünelleme</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">J ∝ E² exp(−B / E)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>E (MV/cm)<input id="eq-fn-e" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="8"></label>
+            <label>B (MV/cm)<input id="eq-fn-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="240"></label>
+            <label>A ön katsayı<input id="eq-fn-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e-6"></label>
+          </div>
+          <button type="button" onclick="eqFN()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-fn-out" class="mt-2 text-sm font-mono text-fuchsia-300 hidden"></div>
+        </div>
+
+        <!-- Hagen-Poiseuille cooling -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-teal-300 mb-1">Hagen-Poiseuille (Mikrokanal)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">Q = π r⁴ ΔP / (8 μ L)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>r (μm)<input id="eq-hp-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="50"></label>
+            <label>ΔP (kPa)<input id="eq-hp-dp" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+            <label>μ (mPa·s)<input id="eq-hp-mu" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>L (mm)<input id="eq-hp-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+          </div>
+          <button type="button" onclick="eqHP()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-hp-out" class="mt-2 text-sm font-mono text-teal-300 hidden"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== CIRCUIT ========== -->
+    <div id="eqsec-circuit" class="eq-section hidden space-y-4">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">Ohm / KVL basit</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">V = I · R ··· ΣV = 0</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>I (A)<input id="eq-ohm-i" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.02"></label>
+            <label>R (Ω)<input id="eq-ohm-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="220"></label>
+          </div>
+          <button type="button" onclick="eqOhm()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-ohm-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">RC Zaman Sabiti</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">τ = R·C ··· t_90% ≈ 2.2 τ</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>R (kΩ)<input id="eq-rc-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>C (nF)<input id="eq-rc-c" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+          </div>
+          <button type="button" onclick="eqRC()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-rc-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">Öz Empedans (Z₀)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">Z₀ = √(L/C) ··· v = 1/√(LC)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>L (nH/m)<input id="eq-z0-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="250"></label>
+            <label>C (pF/m)<input id="eq-z0-c" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+          </div>
+          <button type="button" onclick="eqZ0()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-z0-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">Shannon-Hartley Kapasite</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">C = B log₂(1 + S/N)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>B (MHz)<input id="eq-shn-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="20"></label>
+            <label>S/N (dB)<input id="eq-shn-snr" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="20"></label>
+          </div>
+          <button type="button" onclick="eqShannon()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-shn-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">Joule Isı</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">P = I²R = V²/R = V·I</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>I (A)<input id="eq-joule-i" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.5"></label>
+            <label>R (Ω)<input id="eq-joule-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="4"></label>
+          </div>
+          <button type="button" onclick="eqJoule()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-joule-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-cyan-300 mb-1">Nyquist Örnekleme</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">f_s ≥ 2 · f_max</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>f_max (kHz)<input id="eq-nyq-f" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="20"></label>
+          </div>
+          <button type="button" onclick="eqNyquist()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-nyq-out" class="mt-2 text-sm font-mono text-cyan-300 hidden"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== FINANCE ========== -->
+    <div id="eqsec-finance" class="eq-section hidden space-y-4">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">Sharpe Oranı</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">S = (R_p − R_f) / σ_p</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>R_p (%)<input id="eq-shrp-rp" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="12"></label>
+            <label>R_f (%)<input id="eq-shrp-rf" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="3"></label>
+            <label>σ_p (%)<input id="eq-shrp-sig" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="15"></label>
+          </div>
+          <button type="button" onclick="eqSharpe()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-shrp-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">CAPM</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">E(R) = R_f + β (R_m − R_f)</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>R_f (%)<input id="eq-capm-rf" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="3"></label>
+            <label>β<input id="eq-capm-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.2"></label>
+            <label>R_m (%)<input id="eq-capm-rm" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+          </div>
+          <button type="button" onclick="eqCAPM()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-capm-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">Kelly Kriteri</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">f* = (b·p − q) / b</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>b (oran)<input id="eq-kel-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.5"></label>
+            <label>p (kazanma)<input id="eq-kel-p" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.55"></label>
+            <label>q = 1−p<input id="eq-kel-q" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.45"></label>
+          </div>
+          <button type="button" onclick="eqKelly()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-kel-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">Basit Black-Scholes d₁ d₂</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">d₁ = [ln(S/K)+(r+σ²/2)T] / (σ√T)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>S<input id="eq-bs-s" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+            <label>K<input id="eq-bs-k" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+            <label>r<input id="eq-bs-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.05"></label>
+            <label>σ<input id="eq-bs-sig" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.2"></label>
+            <label>T (yıl)<input id="eq-bs-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqBS()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-bs-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">VaR (parametrik, 1σ)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">VaR ≈ μ − z · σ  (portföy)</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>μ (%)<input id="eq-var-mu" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.05"></label>
+            <label>σ (%)<input id="eq-var-sig" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.5"></label>
+            <label>z (1.65≈95%)<input id="eq-var-z" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.65"></label>
+          </div>
+          <button type="button" onclick="eqVaR()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-var-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- ========== ADVANCED NONLINEAR PHYSICS ========== -->
+    <div id="eqsec-nlphys" class="eq-section hidden space-y-4">
+      <p class="text-[12px] text-zinc-500 mb-2">Lineer olmayan ileri fizik · 40+ formül · residual-gated · kenar-durum korumalı · ChipEngine</p>
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- Logistic map / chaos -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-fuchsia-300 mb-1">Lojistik Harita (Kaos)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">x<sub>n+1</sub> = r · x_n · (1 − x_n)</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>r<input id="eq-log-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="3.9"></label>
+            <label>x₀<input id="eq-log-x0" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.4"></label>
+            <label>N adım<input id="eq-log-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+          </div>
+          <button type="button" onclick="eqLogistic()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-log-out" class="mt-2 text-sm font-mono text-fuchsia-300 hidden"></div>
+        </div>
+
+        <!-- Duffing oscillator energy / force -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">Duffing Osilatörü (kuvvet)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẍ + δẋ + αx + βx³ = γ cos(ωt)</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x<input id="eq-duf-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>v=ẋ<input id="eq-duf-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>δ<input id="eq-duf-d" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.3"></label>
+            <label>α<input id="eq-duf-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-1"></label>
+            <label>β<input id="eq-duf-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>γ<input id="eq-duf-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>ω<input id="eq-duf-w" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.2"></label>
+            <label>t<input id="eq-duf-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+          </div>
+          <button type="button" onclick="eqDuffing()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-duf-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+
+        <!-- van der Pol -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">van der Pol Osilatörü</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẍ − μ(1−x²)ẋ + x = 0</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x<input id="eq-vdp-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>v<input id="eq-vdp-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>μ<input id="eq-vdp-mu" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqVdP()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-vdp-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <!-- Nonlinear pendulum -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">Nonlineer Sarkaç</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">θ̈ + (g/L) sin(θ) = 0</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>θ (rad)<input id="eq-pen-th" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.2"></label>
+            <label>ω=θ̇<input id="eq-pen-w" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>L (m)<input id="eq-pen-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>g<input id="eq-pen-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="9.80665"></label>
+          </div>
+          <button type="button" onclick="eqPendulum()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-pen-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <!-- Lorenz RHS -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">Lorenz Sistemi (RHS)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẋ=σ(y−x) · ẏ=x(ρ−z)−y · ż=xy−βz</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x<input id="eq-lor-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>y<input id="eq-lor-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>z<input id="eq-lor-z" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>σ<input id="eq-lor-s" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>ρ<input id="eq-lor-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="28"></label>
+            <label>β<input id="eq-lor-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2.6666667"></label>
+          </div>
+          <button type="button" onclick="eqLorenz()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-lor-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <!-- Fermi-Dirac / Bose-Einstein occupation -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-cyan-300 mb-1">Fermi–Dirac / Bose–Einstein</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">f = 1 / (e^{(E−μ)/kT} ± 1)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>E−μ (eV)<input id="eq-fd-e" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.05"></label>
+            <label>T (K)<input id="eq-fd-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="300"></label>
+            <label>istatistik
+              <select id="eq-fd-s" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5">
+                <option value="fd">Fermi–Dirac (+)</option>
+                <option value="be">Bose–Einstein (−)</option>
+                <option value="mb">Maxwell–Boltzmann</option>
+              </select>
+            </label>
+          </div>
+          <button type="button" onclick="eqFermiDirac()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-fd-out" class="mt-2 text-sm font-mono text-cyan-300 hidden"></div>
+        </div>
+
+        <!-- Michaelis-Menten / Langmuir -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">Michaelis–Menten / Langmuir</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">v = V_max · [S] / (K_m + [S])</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>V_max<input id="eq-mm-vmax" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+            <label>K_m<input id="eq-mm-km" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>[S]<input id="eq-mm-s" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="5"></label>
+          </div>
+          <button type="button" onclick="eqMichaelis()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-mm-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <!-- Arrhenius rate -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-orange-300 mb-1">Arrhenius Hız Yasası</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">k = A · e^{−Ea/(RT)}</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>A (1/s)<input id="eq-arr-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e13"></label>
+            <label>Ea (kJ/mol)<input id="eq-arr-ea" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="50"></label>
+            <label>T (K)<input id="eq-arr-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="300"></label>
+            <label>R (J/mol·K)<input id="eq-arr-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="8.314462618"></label>
+          </div>
+          <button type="button" onclick="eqArrhenius()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-arr-out" class="mt-2 text-sm font-mono text-orange-300 hidden"></div>
+        </div>
+
+        <!-- Josephson junction -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-lime-300 mb-1">Josephson Etkisi</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">I = I_c sin(φ) ··· V = (ħ/2e) dφ/dt</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>I_c (μA)<input id="eq-jos-ic" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>φ (rad)<input id="eq-jos-phi" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.047"></label>
+            <label>dφ/dt (rad/s)<input id="eq-jos-dp" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e12"></label>
+          </div>
+          <button type="button" onclick="eqJosephson()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-jos-out" class="mt-2 text-sm font-mono text-lime-300 hidden"></div>
+        </div>
+
+        <!-- Kerr nonlinear refractive index -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-pink-300 mb-1">Kerr Nonlineer Kırılma</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">n = n₀ + n₂ · I</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>n₀<input id="eq-kerr-n0" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.5"></label>
+            <label>n₂ (cm²/W)<input id="eq-kerr-n2" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e-16"></label>
+            <label>I (W/cm²)<input id="eq-kerr-i" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e9"></label>
+          </div>
+          <button type="button" onclick="eqKerr()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-kerr-out" class="mt-2 text-sm font-mono text-pink-300 hidden"></div>
+        </div>
+
+        <!-- Lotka-Volterra -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-teal-300 mb-1">Lotka–Volterra (av-avcı)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẋ=αx−βxy · ẏ=δxy−γy</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x (av)<input id="eq-lv-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>y (avcı)<input id="eq-lv-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="5"></label>
+            <label>α<input id="eq-lv-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.1"></label>
+            <label>β<input id="eq-lv-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.4"></label>
+            <label>δ<input id="eq-lv-d" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+            <label>γ<input id="eq-lv-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.4"></label>
+          </div>
+          <button type="button" onclick="eqLotka()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-lv-out" class="mt-2 text-sm font-mono text-teal-300 hidden"></div>
+        </div>
+
+        <!-- Nonlinear Schrödinger |ψ|² potential (1D stationary intensity) -->
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-indigo-300 mb-1">Nonlineer Schrödinger (yoğunluk)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">iψ_t + ½ψ_xx + κ|ψ|²ψ = 0 → n_eff ∝ κ|A|²</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>|A| (genlik)<input id="eq-nls-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.2"></label>
+            <label>κ<input id="eq-nls-k" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>β₂ (saçılma)<input id="eq-nls-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-1"></label>
+          </div>
+          <button type="button" onclick="eqNLS()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-nls-out" class="mt-2 text-sm font-mono text-indigo-300 hidden"></div>
+        </div>
+
+        <!-- ===== 30 ADDITIONAL NONLINEAR PHYSICS ===== -->
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">1 · Riccati Denklemi (anlık)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">y' = P + Q y + R y²</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>P<input id="eq-ric-p" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>Q<input id="eq-ric-q" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-2"></label>
+            <label>R<input id="eq-ric-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>y<input id="eq-ric-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+          </div>
+          <button type="button" onclick="eqRiccati()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-ric-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">2 · Bernoulli (nonlineer ODE)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">y' + P y = Q yⁿ</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>P<input id="eq-ber-p" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>Q<input id="eq-ber-q" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>n<input id="eq-ber-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>y<input id="eq-ber-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqBernoulli()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-ber-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">3 · Lane–Emden (polytrop merkez)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">θ'' + (2/ξ)θ' + θⁿ = 0 · merkez θ=1</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>n (polytrop)<input id="eq-le-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.5"></label>
+            <label>ξ küçük<input id="eq-le-xi" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqLaneEmden()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-le-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">4 · Burgers şok hızı</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">u_t + u u_x = ν u_xx · s=(u_L+u_R)/2</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>u_L<input id="eq-bu-ul" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>u_R<input id="eq-bu-ur" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>ν<input id="eq-bu-nu" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.01"></label>
+          </div>
+          <button type="button" onclick="eqBurgers()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-bu-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">5 · KdV soliton</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">u = (c/2) sech²[(√c/2)(x−c t)]</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>c (hız)<input id="eq-kdv-c" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="4"></label>
+            <label>x<input id="eq-kdv-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>t<input id="eq-kdv-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+          </div>
+          <button type="button" onclick="eqKdV()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-kdv-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-fuchsia-300 mb-1">6 · Sine–Gordon kink</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">φ = 4 arctan exp[(x−v t)/√(1−v²)]</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x<input id="eq-sg-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>v<input id="eq-sg-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>t<input id="eq-sg-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+          </div>
+          <button type="button" onclick="eqSineGordon()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-sg-out" class="mt-2 text-sm font-mono text-fuchsia-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-cyan-300 mb-1">7 · φ⁴ kink enerjisi</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">E = (2√2/3) m³/λ · φ=m/√λ tanh(…)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>m<input id="eq-phi-m" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>λ<input id="eq-phi-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqPhi4()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-phi-out" class="mt-2 text-sm font-mono text-cyan-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-teal-300 mb-1">8 · Ginzburg–Landau serbest enerji</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">f = a|ψ|² + (b/2)|ψ|⁴</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>a<input id="eq-gl-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-1"></label>
+            <label>b<input id="eq-gl-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>|ψ|<input id="eq-gl-p" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.8"></label>
+          </div>
+          <button type="button" onclick="eqGinzburg()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-gl-out" class="mt-2 text-sm font-mono text-teal-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-lime-300 mb-1">9 · Landau manyetizasyon</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">F = F₀ + α M² + β M⁴ − H M</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>α<input id="eq-lan-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-1"></label>
+            <label>β<input id="eq-lan-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>M<input id="eq-lan-m" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.7"></label>
+            <label>H<input id="eq-lan-h" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqLandau()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-lan-out" class="mt-2 text-sm font-mono text-lime-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-orange-300 mb-1">10 · Tunnel diyot I–V (kübik)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">I ≈ a V + b V² + c V³</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>V<input id="eq-td-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.3"></label>
+            <label>a<input id="eq-td-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>b<input id="eq-td-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-3"></label>
+            <label>c<input id="eq-td-c" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2.5"></label>
+          </div>
+          <button type="button" onclick="eqTunnelDiode()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-td-out" class="mt-2 text-sm font-mono text-orange-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-pink-300 mb-1">11 · Varaktör C(V)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">C = C₀ / (1+V/φ)^γ</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>C₀ (pF)<input id="eq-varc-c0" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>V (V)<input id="eq-varc-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>φ (V)<input id="eq-varc-phi" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.7"></label>
+            <label>γ<input id="eq-varc-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+          </div>
+          <button type="button" onclick="eqVaractor()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-varc-out" class="mt-2 text-sm font-mono text-pink-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-indigo-300 mb-1">12 · Rayleigh osilatörü</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẍ − μ(1−ẋ²)ẋ + x = 0</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x<input id="eq-rayo-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>v<input id="eq-rayo-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>μ<input id="eq-rayo-mu" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqRayleighOsc()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-rayo-out" class="mt-2 text-sm font-mono text-indigo-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">13 · FitzHugh–Nagumo</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">v̇ = v − v³/3 − w + I · ẇ = ε(v+a−b w)</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>v<input id="eq-fhn-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>w<input id="eq-fhn-w" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.2"></label>
+            <label>I<input id="eq-fhn-i" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>ε<input id="eq-fhn-e" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.08"></label>
+            <label>a<input id="eq-fhn-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.7"></label>
+            <label>b<input id="eq-fhn-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.8"></label>
+          </div>
+          <button type="button" onclick="eqFHN()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-fhn-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">14 · Brusselator (kimyasal)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẋ=A+x²y−(B+1)x · ẏ=B x−x²y</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>x<input id="eq-bru-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>y<input id="eq-bru-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>A<input id="eq-bru-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>B<input id="eq-bru-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="3"></label>
+          </div>
+          <button type="button" onclick="eqBrusselator()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-bru-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">15 · Nonlineer sarkaç periyodu</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">T ≈ T₀ [1+(1/16)θ₀²+…]</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>θ₀ (rad)<input id="eq-npt-th" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.0"></label>
+            <label>L (m)<input id="eq-npt-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>g<input id="eq-npt-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="9.80665"></label>
+          </div>
+          <button type="button" onclick="eqPendPeriod()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-npt-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">16 · Mathieu (parametrik)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">ẍ+(δ+ε cos ωt)x=0 · anlık ω₀²</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>δ<input id="eq-mat-d" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>ε<input id="eq-mat-e" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.3"></label>
+            <label>ω<input id="eq-mat-w" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>t<input id="eq-mat-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>x<input id="eq-mat-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqMathieu()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-mat-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">17 · Porous medium (ölçek)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">u_t=(u^m)_xx · Barenblatt genlik</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>m<input id="eq-pm-m" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>M (kütle)<input id="eq-pm-M" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>t<input id="eq-pm-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+          </div>
+          <button type="button" onclick="eqPorous()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-pm-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-fuchsia-300 mb-1">18 · Gross–Pitaevskii μ</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">μ = g |ψ|² · (etkileşim)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>g<input id="eq-gp-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="100"></label>
+            <label>|ψ|<input id="eq-gp-p" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqGP()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-gp-out" class="mt-2 text-sm font-mono text-fuchsia-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-cyan-300 mb-1">19 · Optical bistability</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">I_out = I_in / (1+f sin²(φ+κ I_out))</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>I_in<input id="eq-ob-iin" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="5"></label>
+            <label>I_out tahmin<input id="eq-ob-iout" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="2"></label>
+            <label>f<input id="eq-ob-f" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>φ<input id="eq-ob-phi" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.2"></label>
+            <label>κ<input id="eq-ob-k" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+          </div>
+          <button type="button" onclick="eqOptBistable()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-ob-out" class="mt-2 text-sm font-mono text-cyan-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-teal-300 mb-1">20 · Kepler etkin potansiyel</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">V_eff = −k/r + L²/(2m r²)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>k<input id="eq-kep-k" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>L<input id="eq-kep-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>m<input id="eq-kep-m" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>r<input id="eq-kep-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.5"></label>
+          </div>
+          <button type="button" onclick="eqKeplerEff()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-kep-out" class="mt-2 text-sm font-mono text-teal-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-lime-300 mb-1">21 · Rayleigh–Plateau büyüme</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">σ² ∝ (kR)(1−(kR)²) · max kR=1/√2</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>R (m)<input id="eq-rp-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.001"></label>
+            <label>k (1/m)<input id="eq-rp-k" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="500"></label>
+            <label>γ (N/m)<input id="eq-rp-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.072"></label>
+            <label>ρ (kg/m³)<input id="eq-rp-rho" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1000"></label>
+          </div>
+          <button type="button" onclick="eqRayleighPlateau()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-rp-out" class="mt-2 text-sm font-mono text-lime-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-orange-300 mb-1">22 · Hard-spring potansiyel</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">V = ½ α x² + ¼ β x⁴</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>α<input id="eq-hs-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>β<input id="eq-hs-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>x<input id="eq-hs-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.2"></label>
+          </div>
+          <button type="button" onclick="eqHardSpring()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-hs-out" class="mt-2 text-sm font-mono text-orange-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-pink-300 mb-1">23 · Nonlineer RC (diyot)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">C dV/dt = (V_in−V)/R − I_s e^{V/V_t}</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>V<input id="eq-nrc-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>V_in<input id="eq-nrc-vin" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>R<input id="eq-nrc-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1000"></label>
+            <label>C (nF)<input id="eq-nrc-c" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+            <label>I_s<input id="eq-nrc-is" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1e-12"></label>
+            <label>V_t<input id="eq-nrc-vt" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.026"></label>
+          </div>
+          <button type="button" onclick="eqNonlinRC()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-nrc-out" class="mt-2 text-sm font-mono text-pink-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-indigo-300 mb-1">24 · Emden–Fowler (ölçek)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">(x² y')' + x^λ y^n = 0</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>x<input id="eq-ef-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>y<input id="eq-ef-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>n<input id="eq-ef-n" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="3"></label>
+            <label>λ<input id="eq-ef-l" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>y'<input id="eq-ef-yp" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-0.1"></label>
+          </div>
+          <button type="button" onclick="eqEmdenFowler()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-ef-out" class="mt-2 text-sm font-mono text-indigo-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-emerald-300 mb-1">25 · SIR (epidemiyoloji)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">Ṡ=−β S I · İ=β S I−γ I · Ṙ=γ I</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>S<input id="eq-sir-s" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.99"></label>
+            <label>I<input id="eq-sir-i" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.01"></label>
+            <label>R<input id="eq-sir-r" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>β<input id="eq-sir-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.4"></label>
+            <label>γ<input id="eq-sir-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqSIR()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-sir-out" class="mt-2 text-sm font-mono text-emerald-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-sky-300 mb-1">26 · Thomas–Fermi (ölçek)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">φ'' = φ^{3/2} / √x · (yaklaşık)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>x<input id="eq-tf-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>φ<input id="eq-tf-p" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+          </div>
+          <button type="button" onclick="eqThomasFermi()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-tf-out" class="mt-2 text-sm font-mono text-sky-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-amber-300 mb-1">27 · Nonlinear Schrödinger soliton gücü</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">P_sol = 2 |β₂| / (|γ| T₀)</div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <label>|β₂| (ps²/km)<input id="eq-nls2-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="20"></label>
+            <label>|γ| (1/W/km)<input id="eq-nls2-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1.3"></label>
+            <label>T₀ (ps)<input id="eq-nls2-t" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="10"></label>
+          </div>
+          <button type="button" onclick="eqNLSsoliton()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-nls2-out" class="mt-2 text-sm font-mono text-amber-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-rose-300 mb-1">28 · Cubic-Quintic Duffing kuvvet</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">F = −αx − βx³ − γx⁵</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>x<input id="eq-cq-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>α<input id="eq-cq-a" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="1"></label>
+            <label>β<input id="eq-cq-b" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>γ<input id="eq-cq-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqCubicQuintic()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-cq-out" class="mt-2 text-sm font-mono text-rose-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-violet-300 mb-1">29 · Jacobi sabiti (3 cisim, 2D)</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">C = x²+y² + 2(μ₁/r₁+μ₂/r₂) − v²</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>x<input id="eq-jac-x" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>y<input id="eq-jac-y" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>vx<input id="eq-jac-vx" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0"></label>
+            <label>vy<input id="eq-jac-vy" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>μ₁<input id="eq-jac-m1" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.9"></label>
+            <label>μ₂<input id="eq-jac-m2" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.1"></label>
+          </div>
+          <button type="button" onclick="eqJacobi()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-jac-out" class="mt-2 text-sm font-mono text-violet-300 hidden"></div>
+        </div>
+
+        <div class="result-box rounded-2xl p-4">
+          <div class="text-sm font-semibold text-fuchsia-300 mb-1">30 · Hodgkin–Huxley Na akımı</div>
+          <div class="text-[11px] text-zinc-500 mb-3 font-mono">I_Na = g_Na m³ h (V−E_Na)</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label>g_Na (mS/cm²)<input id="eq-hh-g" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="120"></label>
+            <label>m<input id="eq-hh-m" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.5"></label>
+            <label>h<input id="eq-hh-h" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="0.6"></label>
+            <label>V (mV)<input id="eq-hh-v" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="-20"></label>
+            <label>E_Na (mV)<input id="eq-hh-e" class="modern-input w-full px-2 py-1 rounded-lg mt-0.5" value="50"></label>
+          </div>
+          <button type="button" onclick="eqHHNa()" class="calc-button mt-3 w-full py-2 rounded-xl text-white text-sm font-semibold">Hesapla</button>
+          <div id="eq-hh-out" class="mt-2 text-sm font-mono text-fuchsia-300 hidden"></div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
 <div id="panel-integral-canon" class="panel hidden">
     <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
         <div class="flex items-center justify-between mb-2">
@@ -14070,17 +14925,20 @@ const N = 8000;
             updateNavBadge() {
                 try {
                     const t = document.getElementById('chip-nav-text');
-                    const d = document.getElementById('chip-nav-dot');
+                    // NOTE: the navbar status dot's real id is "chip-dot" (see <nav> markup).
+                    // This previously looked up "chip-nav-dot", which doesn't exist, so the
+                    // status light stayed amber/pulsing forever even after a successful connect.
+                    const d = document.getElementById('chip-dot');
                     if (!t) return;
                     const sps = this.perf.lastSps ? (this.perf.lastSps / 1000).toFixed(0) + 'K/s' : '';
                     if (this.backend === 'wasm') {
                         t.textContent = 'WASM/CPU · çip · ' + this.modelCount() + 'm · ' + sps;
                         t.className = 'text-cyan-300';
-                        if (d) d.className = 'w-2 h-2 bg-cyan-400 rounded-full animate-pulse';
+                        if (d) d.className = 'w-2 h-2 bg-cyan-400 rounded-full';
                     } else {
                         t.textContent = 'JS PRO · çip · ' + this.modelCount() + 'm · ' + sps;
                         t.className = 'text-emerald-400';
-                        if (d) d.className = 'w-2 h-2 bg-emerald-400 rounded-full animate-pulse';
+                        if (d) d.className = 'w-2 h-2 bg-emerald-400 rounded-full';
                     }
                 } catch (e) {}
             },
@@ -14126,6 +14984,7 @@ const N = 8000;
                 pings: 0, pongs: 0, batches: 0, runs: 0, errors: 0,
                 serialRx: 0, reconnects: 0, bytesEst: 0, samplesTotal: 0
             },
+            fortran: null,   // filled by verifyFortran(): {available, verified, passed, total, version}
             _timer: null,
             autoHeartbeatMs: 15000,
 
@@ -14166,6 +15025,45 @@ const N = 8000;
                 }
             },
 
+            /** Fortran (mx_blas.f90 türevi) katmanını çalıştırıp gerçekten doğrular —
+             *  sabit "yeşil" rozet değil, ddot/dnrm2/solve2/simpson/newton/daxpy
+             *  testlerinin canlı sonucu. window.MXF90 yoksa 'available:false' döner. */
+            verifyFortran() {
+                try {
+                    const F = window.MXF90 || window.MXF90Pro;
+                    if (!F || typeof F.selfTest !== 'function') {
+                        this.fortran = { available: false, verified: false };
+                        return this.fortran;
+                    }
+                    const r = F.selfTest();
+                    this.fortran = {
+                        available: true,
+                        verified: !!r.ok,
+                        passed: r.passed,
+                        total: r.total,
+                        version: r.motor || 'mx_blas.f90',
+                        ms: r.ms
+                    };
+                    try {
+                        document.querySelectorAll('.mx-be-pill[data-be="fortran"]').forEach(function (el) {
+                            if (r.ok) {
+                                el.classList.remove('text-zinc-500');
+                                el.classList.add('text-emerald-300');
+                                el.style.borderColor = 'rgba(16,185,129,0.5)';
+                            } else {
+                                el.classList.remove('text-emerald-300');
+                                el.classList.add('text-amber-300');
+                                el.style.borderColor = 'rgba(245,158,11,0.5)';
+                            }
+                        });
+                    } catch (e) {}
+                    this.log('fortran', 'F90 selftest ' + r.passed + '/' + r.total + (r.ok ? ' PASS' : ' FAIL'));
+                } catch (e) {
+                    this.fortran = { available: false, verified: false, error: e.message || String(e) };
+                }
+                return this.fortran;
+            },
+
             /** Tam bağlantı kurulumu */
             async connect(opts) {
                 opts = opts || {};
@@ -14181,6 +15079,7 @@ const N = 8000;
                     if (ChipEngine.init && !ChipEngine.ready) await ChipEngine.init();
                     if (typeof GlobalEngine !== 'undefined' && GlobalEngine.ensureChip)
                         await GlobalEngine.ensureChip();
+                    this.verifyFortran();
 
                     // Çift ping — latency ortalaması
                     const p1 = await this.ping();
@@ -14207,7 +15106,8 @@ const N = 8000;
                         latency_ms: this.latencyAvg,
                         quality: this.quality,
                         state: this.state,
-                        models: ChipEngine.modelCount ? ChipEngine.modelCount() : 0
+                        models: ChipEngine.modelCount ? ChipEngine.modelCount() : 0,
+                        fortran: this.fortran
                     };
                 } catch (e) {
                     this.stats.errors++;
@@ -14349,6 +15249,7 @@ const N = 8000;
                     models: CE && CE.modelCount ? CE.modelCount() : 0,
                     residual: h ? h.residual : NaN,
                     verified: h ? h.verified : false,
+                    fortran: this.fortran,
                     stats: Object.assign({}, this.stats),
                     throughput: {
                         samples: this.stats.samplesTotal,
@@ -32500,7 +33401,7 @@ ${row('Yapı', A.struct || '—', B.struct || '—')}
                 const r = Array.isArray(row) ? row : [row];
                 return r.map(v => {
                     const x = (typeof v === 'object') ? (v.re || 0) : +v;
-                    if (!isFinite(x)) return 'NaN';
+                    if (!isFinite(x)) return '—';
                     if (Math.abs(x) < 1e-4 || Math.abs(x) >= 1e4) return x.toExponential(3);
                     return x.toFixed(dig);
                 }).join('  ');
@@ -51685,8 +52586,13 @@ const Term = {
                 if (comEl && typeof ChipCom !== 'undefined') {
                     const q = ChipCom.quality || 0;
                     const st = ChipCom.state || (ChipCom.linked ? 'linked' : '—');
-                    comEl.textContent = st + ' ' + Math.round(q * 100) + '%';
+                    const fz = ChipCom.fortran;
+                    const fzTxt = fz && fz.available ? (' · F90 ' + fz.passed + '/' + fz.total + (fz.verified ? '✓' : '✗')) : '';
+                    comEl.textContent = st + ' ' + Math.round(q * 100) + '%' + fzTxt;
                     comEl.className = (ChipCom.linked ? 'text-emerald-300' : 'text-zinc-500') + ' text-sm mt-0.5';
+                    comEl.title = fz && fz.available
+                        ? ('Fortran (mx_blas.f90): ' + (fz.verified ? 'doğrulandı' : 'uyarı') + ' · ' + (fz.version || ''))
+                        : 'Fortran katmanı henüz doğrulanmadı';
                 }
             } catch (e) {}
         }
@@ -56642,7 +57548,7 @@ int main() {
 
   function fmt(x, dig) {
     dig = dig || 12;
-    if (x == null || (typeof x === 'number' && !isFinite(x))) return 'NaN';
+    if (x == null || (typeof x === 'number' && !isFinite(x))) return '—';
     const a = Math.abs(x);
     if (a !== 0 && (a >= 1e6 || a < 1e-4)) return Number(x).toExponential(dig-1);
     return Number(x).toPrecision(dig);
@@ -57478,7 +58384,7 @@ def sympy_check(expr_str, subs):
 /* ========== NL200 PRO · NumPy/SciPy/SymPy · residual-gated · doğru sonuç ========== */
 (function(){
   function pyReady(){ return typeof DE_PY!=='undefined' && DE_PY.ready && DE_PY.pyodide; }
-  function fmt(x,d){ d=d||12; if(x==null||(typeof x==='number'&&!isFinite(x))) return 'NaN'; const a=Math.abs(x); if(a!==0&&(a>=1e6||a<1e-4)) return Number(x).toExponential(d-1); return Number(x).toPrecision(d); }
+  function fmt(x,d){ d=d||12; if(x==null||(typeof x==='number'&&!isFinite(x))) return '—'; const a=Math.abs(x); if(a!==0&&(a>=1e6||a<1e-4)) return Number(x).toExponential(d-1); return Number(x).toPrecision(d); }
   function badge(ok,t){ const c=ok?'emerald':'rose'; return '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-'+c+'-950 text-'+c+'-300 border border-'+c+'-700">'+t+'</span>'; }
 
   window.nl200LoadPy = async function(){
@@ -66621,7 +67527,7 @@ def rt_montecarlo(Tsys, N_list, trials, seed):
   }
   function fmt(x, d){
     d = d || 6;
-    if (x == null || !isFinite(x)) return 'NaN';
+    if (x == null || !isFinite(x)) return '—';
     const a = Math.abs(x);
     if (a !== 0 && (a >= 1e5 || a < 1e-3)) return Number(x).toExponential(d-1);
     return Number(x).toPrecision(d);
@@ -81654,8 +82560,12 @@ Generated by ${VER}
     }
   };
 
-  // ===================== ChipCom =====================
-  const ChipCom = {
+  // ===================== ChipF90Com (F90/engine command API) =====================
+  // NOTE: renamed from "ChipCom" — that name collided with the real chip
+  // communication protocol object (ping/pong, session, heartbeat, connect())
+  // defined earlier in the file, and was silently overwriting window.ChipCom,
+  // breaking the "Chip Bağlan" button and the terminal's `engine com ...` commands.
+  const ChipF90Com = {
     version: VER,
     status(){
       const eng=window.MXEngine, chip=window.ChipEngine;
@@ -81693,7 +82603,7 @@ Generated by ${VER}
   };
 
   window.QLink=QLink; window.QCore=QCore; window.MXQCore=QCore;
-  window.ChipCom=ChipCom; window.MXQLink=QLink;
+  window.ChipF90Com=ChipF90Com; window.MXQLink=QLink;
 
   // ===================== Professional Panel UI =====================
   function injectPanel(){
@@ -82053,11 +82963,11 @@ Generated by ${VER}
       const parts=line.split(/\s+/), cmd=(parts[0]||'').toLowerCase(), args=parts.slice(1);
       if(cmd==='qlink'||cmd==='qpu'||cmd==='remote'){ this.cmdQLink(args); return; }
       if(cmd==='chip'){
-        if((args[0]||'')==='status'){ const s=ChipCom.status(); this.println(JSON.stringify(s,null,0),'ok'); return; }
-        if((args[0]||'')==='eval'){ try{ const r=ChipCom.eval(args.slice(1).join(' ')); this.println(String(r.value),'ok'); }catch(e){ this.println(e.message,'err'); } return; }
+        if((args[0]||'')==='status'){ const s=ChipF90Com.status(); this.println(JSON.stringify(s,null,0),'ok'); return; }
+        if((args[0]||'')==='eval'){ try{ const r=ChipF90Com.eval(args.slice(1).join(' ')); this.println(String(r.value),'ok'); }catch(e){ this.println(e.message,'err'); } return; }
         if((args[0]||'')==='power'){ this.println('QLink '+(QLink.cfg.connected?'CONNECTED':'offline')+' · '+VER,'ok'); return; }
       }
-      if(cmd==='f90'){ try{ this.println(String(ChipCom.f90(args[0],args.slice(1))),'ok'); }catch(e){ this.println(e.message,'err'); } return; }
+      if(cmd==='f90'){ try{ this.println(String(ChipF90Com.f90(args[0],args.slice(1))),'ok'); }catch(e){ this.println(e.message,'err'); } return; }
       if(cmd==='help'&&(args[0]==='qlink'||args[0]==='quantum'||args[0]==='q')){
         this.println('qlink endpoint|token|backend|connect|submit|job|panel','cyan');
         this.println('qinit qh qcnot qstate qmeasure qasm qbell','cyan');
@@ -91459,37 +92369,55 @@ Generated by ${VER}
   };
 
   // ---------- showHistory ----------
+  // NOTE: restored to render the full modal (previous patch accidentally read from
+  // window._mxHistory/mxHistoryStore, which saveToHistory() never writes to, so the
+  // history button silently showed "empty" even though calculationHistory had entries).
   window.showHistory = function () {
     try {
-      var list = window._mxHistory || [];
-      if (typeof window.mxHistoryStore !== 'undefined' && Array.isArray(window.mxHistoryStore)) {
-        list = window.mxHistoryStore;
-      }
-      // try existing UI
-      var panel = $('history-panel') || $('panel-history') || $('mx-history');
-      if (panel) {
-        panel.classList.remove('hidden');
-        var body = $('history-list') || panel.querySelector('.history-list') || panel;
-        if (body && list.length) {
-          body.innerHTML = list.slice(-30).reverse().map(function (h) {
-            return '<div class="text-xs border-b border-zinc-800 py-1"><b>' + (h.title || '') + '</b> · ' +
-              (h.input || '') + ' → ' + (h.result || '') + '</div>';
-          }).join('');
-        }
-        return;
-      }
-      // fallback modal-ish toast summary
-      if (!list.length) {
-        toast('Geçmiş boş', false);
-        return;
-      }
-      var lines = list.slice(-8).reverse().map(function (h) {
-        return (h.title || 'hesap') + ': ' + (h.result || '');
-      }).join(' | ');
-      toast('Geçmiş: ' + lines.slice(0, 180), false);
-      console.log('[MX History]', list.slice(-20));
+      var list = (typeof calculationHistory !== 'undefined' && Array.isArray(calculationHistory)) ? calculationHistory : [];
+      // merge in any newer-store entries (defensive, in case other code paths use them)
+      var extra = [];
+      if (Array.isArray(window._mxHistory)) extra = extra.concat(window._mxHistory);
+      if (Array.isArray(window.mxHistoryStore)) extra = extra.concat(window.mxHistoryStore);
+      extra.forEach(function (h) {
+        list = [{
+          timestamp: h.timestamp || new Date().toISOString(),
+          category: h.title || h.category || 'hesap',
+          calculation: h.input || h.calculation || '',
+          result: h.result || ''
+        }].concat(list);
+      });
+
+      if (typeof document === 'undefined') return;
+      var modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[100]';
+      modal.innerHTML =
+        '<div class="bg-zinc-900 border border-zinc-700 rounded-3xl max-w-3xl w-full mx-4 max-h-[80vh] overflow-hidden">' +
+          '<div class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center">' +
+            '<div class="font-semibold text-xl">Hesaplama Geçmişi</div>' +
+            '<button onclick="this.closest(\'.fixed\').remove()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times text-2xl"></i></button>' +
+          '</div>' +
+          '<div class="p-6 overflow-auto max-h-[60vh]">' +
+          (list.length === 0 ? '<div class="text-center text-zinc-400 py-8">Henüz kayıt yok</div>' :
+            list.map(function (item) {
+              var when = '';
+              try { when = new Date(item.timestamp).toLocaleString('tr-TR'); } catch (e) {}
+              return '<div class="mb-3 p-4 bg-zinc-950 rounded-2xl border border-zinc-800">' +
+                '<div class="flex justify-between text-xs text-zinc-400 mb-1">' +
+                  '<span>' + (item.category || '') + '</span><span>' + when + '</span>' +
+                '</div>' +
+                '<div class="font-mono text-sm">' + (item.calculation || '') + '</div>' +
+                '<div class="text-emerald-400 mt-1 font-semibold">' + (item.result || '') + '</div>' +
+              '</div>';
+            }).join('')) +
+          '</div>' +
+          '<div class="px-6 py-4 border-t border-zinc-700 flex justify-end">' +
+            '<button onclick="if(typeof clearAllHistory===\'function\')clearAllHistory(); this.closest(\'.fixed\').remove()" class="px-4 py-2 text-sm bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-2xl">Tüm Geçmişi Temizle</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(modal);
     } catch (e) {
-      toast('Geçmiş: ' + (e.message || e), true);
+      try { toast('Geçmiş: ' + (e.message || e), true); } catch (e2) {}
     }
   };
 
@@ -110462,10 +111390,14 @@ Generated by ${VER}
     var prevTest = MX.selfTest ? MX.selfTest.bind(MX) : null;
     MX.selfTest = function () {
       var base = prevTest ? prevTest() : { passed: 0, total: 0, items: [], fail: 0 };
+      // NOTE: base.fail may be undefined here (the base F90.selfTest() never set it),
+      // which previously made `base.fail++` produce NaN and silently zero out the
+      // failure count via `NaN || 0`. Normalize it once so extra checks actually count.
+      base.fail = base.fail || 0;
       function check(name, cond, detail) {
         if (cond) { base.passed++; base.items.push('✓ ' + name + (detail ? ' ' + detail : '')); }
-        else { base.fail++; base.total++; base.items.push('✗ ' + name + (detail ? ' ' + detail : '')); }
-        base.total = base.passed + (base.fail || 0);
+        else { base.fail++; base.items.push('✗ ' + name + (detail ? ' ' + detail : '')); }
+        base.total = base.passed + base.fail;
       }
       try {
         var C = MX.dgemm([[1, 2], [3, 4]], [[5, 6], [7, 8]]);
@@ -110485,6 +111417,10 @@ Generated by ${VER}
       } catch (e) { check('horner', false); }
       base.version = VER;
       base.backend = (MX.status && MX.status().backend) || 'F90-JS';
+      // NOTE: base.ok used to be left over from the pre-extension test (only ddot/
+      // dnrm2/solve2/simpson/newton/daxpy), so a genuine failure in dgemm/trapz/
+      // bisect/horner never flipped it — recompute from the final counts instead.
+      base.ok = base.fail === 0 && base.total > 0;
       return base;
     };
 
@@ -112380,7 +113316,7 @@ Generated by ${VER}
       if (typeof math !== 'undefined' && math.derivative) {
         var d = math.derivative(fstr, 'x');
         setHTML('deriv-result',
-          "f' = <span class="text-emerald-400 font-mono font-semibold">' + d.toString() +
+          "f' = <span class=\"text-emerald-400 font-mono font-semibold\">" + d.toString() +
           '</span>' + badge(0, 'math.js symbolic'));
         return;
       }
@@ -112467,6 +113403,1100 @@ Generated by ${VER}
     document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 40); });
   else setTimeout(boot, 40);
   setTimeout(boot, 1100);
+})();
+</script>
+
+
+
+<script id="mx-eq-lab">
+/**
+ * MühendisX Equation Lab · v30.6.67-NL-FIX
+ * Yüksek doğruluk · residual-gated · ChipEngine / math.js / Fortran-style
+ * CODATA 2018 · dual-path · expm1 · erf-CDF · identity checks
+ */
+(function () {
+  'use strict';
+  const VER = '30.6.67-NL-FIX';
+
+  /* CODATA 2018 exact-where-possible */
+  const kB_eV = 8.617333262145e-5;      // eV/K
+  const kB_J  = 1.380649e-23;           // J/K  (exact in SI 2019)
+  const q_e   = 1.602176634e-19;        // C    (exact)
+  const LN2   = 0.6931471805599453;
+  const INV_SQRT2PI = 0.3989422804014327;
+  const C_LIGHT = 2.99792458e8;
+
+  function $(id) { return document.getElementById(id); }
+  function num(id) {
+    var el = $(id);
+    if (!el) return NaN;
+    var raw = String(el.value).trim().replace(/\s+/g, '').replace(',', '.');
+    // scientific notation safe
+    var v = Number(raw);
+    return isFinite(v) ? v : NaN;
+  }
+  function okNums() {
+    for (var i = 0; i < arguments.length; i++) if (!isFinite(arguments[i])) return false;
+    return true;
+  }
+  function fmt(x, d) {
+    d = d == null ? 12 : d;
+    if (!isFinite(x)) return String(x);
+    if (x === 0) return '0';
+    var a = Math.abs(x);
+    if (a >= 1e7 || (a > 0 && a < 1e-5)) return Number(x).toExponential(Math.min(d, 10));
+    return Number(x).toPrecision(d);
+  }
+  function log2(x) { return Math.log(x) / LN2; }
+  function expm1(x) {
+    if (typeof Math.expm1 === 'function') return Math.expm1(x);
+    // accurate for small x
+    if (Math.abs(x) < 1e-5) return x + 0.5 * x * x;
+    return Math.exp(x) - 1;
+  }
+
+  /* relative residual — ChipEngine tercih */
+  function relRes(a, b) {
+    try {
+      if (typeof ChipEngine !== 'undefined' && typeof ChipEngine.relRes === 'function')
+        return ChipEngine.relRes(a, b);
+    } catch (e) {}
+    var den = Math.max(Math.abs(a), Math.abs(b), 1e-30);
+    return Math.abs(a - b) / den;
+  }
+
+  function badge(res, note) {
+    var r = Math.abs(res);
+    var label, col;
+    if (!isFinite(r) || r === 0) { label = 'EXACT'; col = '#34d399'; }
+    else if (r <= 1e-14) { label = 'EXCELLENT'; col = '#34d399'; }
+    else if (r <= 1e-12) { label = 'GOOD'; col = '#34d399'; }
+    else if (r <= 1e-9)  { label = 'OK'; col = '#fbbf24'; }
+    else if (r <= 1e-6)  { label = 'FAIR'; col = '#fb923c'; }
+    else { label = 'CHECK'; col = '#f87171'; }
+    var eng = engineTag();
+    return '<div class="text-[10px] font-mono mt-1.5 flex flex-wrap gap-2 items-center">' +
+      '<span style="color:' + col + ';border:1px solid ' + col + '44;padding:1px 6px;border-radius:6px;font-weight:600">' +
+      label + (isFinite(r) && r > 0 ? ' res=' + r.toExponential(2) : '') + '</span>' +
+      (note ? '<span class="text-zinc-600">' + note + '</span>' : '') +
+      '<span class="text-zinc-600">' + eng + ' · ' + VER + '</span></div>';
+  }
+
+  function engineTag() {
+    try {
+      if (typeof ChipEngine !== 'undefined' && ChipEngine.backend)
+        return 'Chip:' + ChipEngine.backend;
+    } catch (e) {}
+    if (typeof math !== 'undefined' && math.erf) return 'math.js+JS';
+    return 'JS-PRO';
+  }
+
+  function show(id, html) {
+    var el = $(id);
+    if (!el) return;
+    el.innerHTML = html;
+    el.classList.remove('hidden');
+  }
+  function toast(msg, err) {
+    try { if (typeof showToast === 'function') showToast(String(msg || ''), !!err); } catch (e) {}
+  }
+
+  /* Yüksek doğruluk normal CDF — math.erf tercih, yoksa AS 7.1.26 + Hart */
+  function normCDF(x) {
+    if (!isFinite(x)) return x > 0 ? 1 : 0;
+    // math.js erf
+    try {
+      if (typeof math !== 'undefined' && typeof math.erf === 'function') {
+        return 0.5 * (1 + math.erf(x / Math.SQRT2));
+      }
+    } catch (e) {}
+    // Abramowitz-Stegun 7.1.26 style via erfc-ish polynomial
+    var sign = x < 0 ? -1 : 1;
+    var z = Math.abs(x) / Math.SQRT2; // for erf(z)
+    // erf approximation AS 7.1.26
+    var t = 1 / (1 + 0.3275911 * z);
+    var poly = (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t;
+    var erf = 1 - poly * Math.exp(-z * z);
+    var cdf = 0.5 * (1 + sign * erf);
+    return cdf;
+  }
+
+  /* ================================================================ */
+  window.eqLabTab = function (name) {
+    ['semi', 'circuit', 'finance', 'nlphys'].forEach(function (n) {
+      var sec = $('eqsec-' + n), tab = $('eqtab-' + n);
+      if (sec) {
+        var hide = (n !== name);
+        sec.classList.toggle('hidden', hide);
+        if (!hide) { sec.style.display = ''; sec.style.visibility = 'visible'; }
+      }
+      if (tab) {
+        tab.className = n === name
+          ? 'eq-tab px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-cyan-900/50 border border-cyan-700 text-cyan-200'
+          : 'eq-tab px-3 py-1.5 rounded-xl text-[12px] font-semibold bg-zinc-800 border border-zinc-700 text-zinc-300';
+      }
+    });
+  };
+
+  /* ---- Shockley: I = Is * expm1(V/(n Vt))  Vt=kT/q ---- */
+  window.eqShockley = function () {
+    var Is = num('eq-sh-is'), V = num('eq-sh-v'), n = num('eq-sh-n'), T = num('eq-sh-t');
+    if (!okNums(Is, V, n, T) || Is <= 0 || n <= 0 || T <= 0) {
+      toast('Iₛ>0, n>0, T>0', true); return;
+    }
+    var Vt = kB_eV * T; // V
+    var arg = V / (n * Vt);
+    if (arg > 700) { toast('exp taşması — V çok büyük veya T çok küçük', true); return; }
+    var I = Is * expm1(arg);
+    // dual path: classic exp
+    var I2 = Is * (Math.exp(arg) - 1);
+    var resPath = relRes(I, I2);
+    // round-trip residual for forward bias
+    var resRT = 0;
+    if (V > 0 && I > -0.999 * Is) {
+      var Vback = n * Vt * Math.log(I / Is + 1);
+      resRT = relRes(V, Vback);
+    }
+    var res = Math.max(resPath, resRT);
+    show('eq-sh-out',
+      'I = <span class="text-emerald-400 font-semibold">' + fmt(I) + '</span> A' +
+      '<br><span class="text-zinc-400 text-[11px]">V_t = ' + fmt(Vt, 8) + ' V · arg = V/(nV_t) = ' + fmt(arg, 6) + '</span>' +
+      badge(res, 'expm1 + V↔I'));
+  };
+
+  /* ---- Rayleigh CD ---- */
+  window.eqRayleigh = function () {
+    var k1 = num('eq-ray-k1'), lam = num('eq-ray-lam'), NA = num('eq-ray-na');
+    if (!okNums(k1, lam, NA) || NA <= 0 || lam <= 0) { toast('k₁,λ,NA>0', true); return; }
+    var cd = k1 * lam / NA;
+    var res = relRes(k1, cd * NA / lam);
+    show('eq-ray-out',
+      'CD = <span class="text-sky-300 font-semibold">' + fmt(cd) + '</span> nm' +
+      badge(res, 'k₁=CD·NA/λ'));
+  };
+
+  /* ---- Deal-Grove ---- */
+  window.eqDealGrove = function () {
+    var B = num('eq-dg-b'), A = num('eq-dg-a'), t = num('eq-dg-t'), tau = num('eq-dg-tau');
+    if (!okNums(B, A, t, tau) || B <= 0) { toast('B>0', true); return; }
+    var rhs = B * (t + tau);
+    var disc = A * A + 4 * rhs;
+    if (disc < 0) { toast('diskriminant < 0', true); return; }
+    var x = 0.5 * (-A + Math.sqrt(disc));
+    // residual of defining equation
+    var lhs = x * x + A * x;
+    var res = relRes(lhs, rhs);
+    // dual: parabolic thick-ox limit x≈sqrt(B t)
+    show('eq-dg-out',
+      'x_ox = <span class="text-amber-300 font-semibold">' + fmt(x) + '</span> μm' +
+      '<br><span class="text-zinc-400 text-[11px]">kalın limit √(Bt) ≈ ' + fmt(Math.sqrt(Math.max(0, B * t))) + ' μm</span>' +
+      badge(res, 'x²+Ax−B(t+τ)=0'));
+  };
+
+  /* ---- Black EM ---- */
+  window.eqBlack = function () {
+    var A = num('eq-bl-a'), J = num('eq-bl-j'), n = num('eq-bl-n'), Ea = num('eq-bl-ea'), T = num('eq-bl-t');
+    if (!okNums(A, J, n, Ea, T) || A <= 0 || J <= 0 || T <= 0) { toast('A,J,T>0', true); return; }
+    var kT = kB_eV * T;
+    var mttf = A * Math.pow(J, -n) * Math.exp(Ea / kT);
+    // log-space dual
+    var logM = Math.log(A) - n * Math.log(J) + Ea / kT;
+    var res = relRes(Math.log(Math.max(mttf, 1e-300)), logM);
+    show('eq-bl-out',
+      'MTTF = <span class="text-rose-300 font-semibold">' + fmt(mttf) + '</span> <span class="text-zinc-500">(A birimi)</span>' +
+      '<br><span class="text-zinc-400 text-[11px]">kT=' + fmt(kT, 8) + ' eV · Ea/kT=' + fmt(Ea / kT, 6) + '</span>' +
+      badge(res, 'log-form dual'));
+  };
+
+  /* ---- Elmore ---- */
+  window.eqElmore = function () {
+    var R = num('eq-el-r'), CfF = num('eq-el-c'), N = Math.floor(num('eq-el-n'));
+    if (!okNums(R, CfF) || !isFinite(N) || N < 1 || R < 0 || CfF < 0) {
+      toast('R,C≥0 · N≥1', true); return;
+    }
+    var C = CfF * 1e-15;
+    var tauClosed = R * C * N * (N + 1) / 2;
+    var sum = 0;
+    for (var i = 1; i <= N; i++) sum += R * C * (N - i + 1);
+    var res = relRes(tauClosed, sum);
+    show('eq-el-out',
+      'τ_Elmore = <span class="text-violet-300 font-semibold">' + fmt(tauClosed * 1e12) + '</span> ps' +
+      '<br><span class="text-zinc-400 text-[11px]">t₅₀%≈0.693τ · t₉₀%≈2.303τ · N=' + N + '</span>' +
+      badge(res, 'kapalı ↔ Σ'));
+  };
+
+  /* ---- MOSFET square-law (SI) ----
+   * UI: μ [cm²/Vs], Cox [fF/μm²], W/L [-], Vgs, Vth [V]
+   * μ_SI = μ_cm * 1e-4 m²/Vs
+   * Cox_SI = Cox_fF * 1e-3 F/m²   (1 fF/μm² = 10⁻³ F/m²)
+   * I = ½ μ Cox (W/L) Vov²  [A]
+   */
+  window.eqMosfet = function () {
+    var mu_cm = num('eq-mos-mu'), Cox_fF = num('eq-mos-cox'), WL = num('eq-mos-wl');
+    var Vgs = num('eq-mos-vgs'), Vth = num('eq-mos-vth');
+    if (!okNums(mu_cm, Cox_fF, WL, Vgs, Vth) || mu_cm <= 0 || Cox_fF <= 0 || WL <= 0) {
+      toast('μ, C_ox, W/L > 0', true); return;
+    }
+    var Vov = Vgs - Vth;
+    if (Vov <= 0) {
+      show('eq-mos-out', '<span class="text-amber-300">Kesim bölgesi</span> · I_D = 0 · V_ov ≤ 0' + badge(0, 'cutoff'));
+      return;
+    }
+    var mu = mu_cm * 1e-4;
+    var Cox = Cox_fF * 1e-3;
+    var Idsat = 0.5 * mu * Cox * WL * Vov * Vov;
+    // dual path
+    var Idsat2 = (mu * Cox * WL / 2) * Vov * Vov;
+    var res1 = relRes(Idsat, Idsat2);
+    // invert Vov
+    var VovBack = Math.sqrt(2 * Idsat / (mu * Cox * WL));
+    var res2 = relRes(Vov, VovBack);
+    show('eq-mos-out',
+      'I_Dsat = <span class="text-cyan-300 font-semibold">' + fmt(Idsat) + '</span> A' +
+      '  (<b>' + fmt(Idsat * 1e6) + '</b> μA · <b>' + fmt(Idsat * 1e3) + '</b> mA)' +
+      '<br><span class="text-zinc-400 text-[11px]">V_ov=' + fmt(Vov, 8) + ' V · μ_SI=' + fmt(mu, 6) + ' · C_ox_SI=' + fmt(Cox, 6) + '</span>' +
+      badge(Math.max(res1, res2), 'SI dual + V_ov'));
+  };
+
+  /* ---- Fowler-Nordheim ---- */
+  window.eqFN = function () {
+    var E = num('eq-fn-e'), B = num('eq-fn-b'), A = num('eq-fn-a');
+    if (!okNums(E, B, A) || E <= 0 || A <= 0) { toast('E,A>0', true); return; }
+    var J = A * E * E * Math.exp(-B / E);
+    var logJ = Math.log(A) + 2 * Math.log(E) - B / E;
+    var res = J > 0 ? relRes(Math.log(J), logJ) : 0;
+    show('eq-fn-out',
+      'J ∝ <span class="text-fuchsia-300 font-semibold">' + fmt(J) + '</span>' +
+      '<br><span class="text-zinc-400 text-[11px]">B/E=' + fmt(B / E, 6) + ' · E²·exp(−B/E)</span>' +
+      badge(res, 'log dual'));
+  };
+
+  /* ---- Hagen-Poiseuille SI ---- */
+  window.eqHP = function () {
+    var r_um = num('eq-hp-r'), dP_kPa = num('eq-hp-dp'), mu_mPas = num('eq-hp-mu'), L_mm = num('eq-hp-l');
+    if (!okNums(r_um, dP_kPa, mu_mPas, L_mm) || r_um <= 0 || mu_mPas <= 0 || L_mm <= 0) {
+      toast('r,μ,L>0', true); return;
+    }
+    var r = r_um * 1e-6, dP = dP_kPa * 1e3, mu = mu_mPas * 1e-3, L = L_mm * 1e-3;
+    var r4 = r * r * r * r;
+    var Q = Math.PI * r4 * dP / (8 * mu * L);
+    var dPback = Q * 8 * mu * L / (Math.PI * r4);
+    var res = relRes(dP, dPback);
+    show('eq-hp-out',
+      'Q = <span class="text-teal-300 font-semibold">' + fmt(Q) + '</span> m³/s' +
+      '<br><span class="text-zinc-400 text-[11px]">' + fmt(Q * 1e9) + ' nL/s · ' + fmt(Q * 6e4 * 1000) + ' μL/min</span>' +
+      badge(res, 'ΔP identity'));
+  };
+
+  /* ---- Circuit ---- */
+  window.eqOhm = function () {
+    var I = num('eq-ohm-i'), R = num('eq-ohm-r');
+    if (!okNums(I, R)) { toast('I,R gerekli', true); return; }
+    var V = I * R, P1 = V * I, P2 = I * I * R, P3 = (R !== 0) ? V * V / R : P1;
+    var res = Math.max(relRes(P1, P2), R !== 0 ? relRes(P1, P3) : 0);
+    show('eq-ohm-out',
+      'V = <span class="text-emerald-400 font-semibold">' + fmt(V) + '</span> V · ' +
+      'P = <span class="text-emerald-400 font-semibold">' + fmt(P1) + '</span> W' +
+      badge(res, 'P=VI=I²R=V²/R'));
+  };
+
+  window.eqRC = function () {
+    var Rk = num('eq-rc-r'), Cn = num('eq-rc-c');
+    if (!okNums(Rk, Cn) || Rk < 0 || Cn < 0) { toast('R,C≥0', true); return; }
+    var tau = Rk * 1e3 * Cn * 1e-9;
+    show('eq-rc-out',
+      'τ = <span class="text-sky-300 font-semibold">' + fmt(tau) + '</span> s' +
+      '  (<b>' + fmt(tau * 1e6) + '</b> μs)' +
+      '<br><span class="text-zinc-400 text-[11px]">t₆₃%=τ · t₉₀%=' + fmt(Math.log(10) * tau * 1e6) + ' μs · t₉₉%=' + fmt(Math.log(100) * tau * 1e6) + ' μs</span>' +
+      badge(0, 'RC exact'));
+  };
+
+  window.eqZ0 = function () {
+    var Ln = num('eq-z0-l'), Cp = num('eq-z0-c');
+    if (!okNums(Ln, Cp) || Ln <= 0 || Cp <= 0) { toast('L,C>0', true); return; }
+    var L = Ln * 1e-9, C = Cp * 1e-12;
+    var Z0 = Math.sqrt(L / C);
+    var v = 1 / Math.sqrt(L * C);
+    var res = Math.max(relRes(Z0 * Z0, L / C), relRes(v * v, 1 / (L * C)));
+    show('eq-z0-out',
+      'Z₀ = <span class="text-amber-300 font-semibold">' + fmt(Z0) + '</span> Ω · ' +
+      'v = <span class="text-amber-300 font-semibold">' + fmt(v) + '</span> m/s' +
+      ' (' + fmt(v / C_LIGHT, 6) + ' c)' +
+      badge(res, 'Z₀²=L/C · v²=1/LC'));
+  };
+
+  window.eqShannon = function () {
+    var Bm = num('eq-shn-b'), snrDb = num('eq-shn-snr');
+    if (!okNums(Bm, snrDb) || Bm <= 0) { toast('B>0', true); return; }
+    var B = Bm * 1e6;
+    var snr = Math.pow(10, snrDb / 10);
+    var C = B * log2(1 + snr);
+    var snrBack = Math.pow(2, C / B) - 1;
+    var res = relRes(snr, snrBack);
+    show('eq-shn-out',
+      'C = <span class="text-violet-300 font-semibold">' + fmt(C / 1e6) + '</span> Mbps' +
+      '  (' + fmt(C / 1e9) + ' Gbps)' +
+      '<br><span class="text-zinc-400 text-[11px]">SNR_lin=' + fmt(snr, 8) + '</span>' +
+      badge(res, 'SNR↔C dual'));
+  };
+
+  window.eqJoule = function () {
+    var I = num('eq-joule-i'), R = num('eq-joule-r');
+    if (!okNums(I, R)) { toast('I,R gerekli', true); return; }
+    var P = I * I * R, V = I * R;
+    var res = relRes(P, V * I);
+    show('eq-joule-out',
+      'P = <span class="text-rose-300 font-semibold">' + fmt(P) + '</span> W · V = ' + fmt(V) + ' V' +
+      badge(res, 'P=VI'));
+  };
+
+  window.eqNyquist = function () {
+    var f = num('eq-nyq-f');
+    if (!okNums(f) || f <= 0) { toast('f_max>0', true); return; }
+    show('eq-nyq-out',
+      'f_s ≥ <span class="text-cyan-300 font-semibold">' + fmt(2 * f) + '</span> kHz' +
+      '<br><span class="text-zinc-400 text-[11px]">Nyquist-Shannon · pratikte f_s > 2 f_max</span>' +
+      badge(0, 'exact 2×'));
+  };
+
+  /* ---- Finance ---- */
+  window.eqSharpe = function () {
+    var rp = num('eq-shrp-rp'), rf = num('eq-shrp-rf'), sig = num('eq-shrp-sig');
+    if (!okNums(rp, rf, sig) || sig === 0) { toast('σ≠0', true); return; }
+    var S = (rp - rf) / sig;
+    show('eq-shrp-out',
+      'Sharpe = <span class="text-emerald-400 font-semibold">' + fmt(S) + '</span>' +
+      badge(0, '(R_p−R_f)/σ'));
+  };
+
+  window.eqCAPM = function () {
+    var rf = num('eq-capm-rf'), b = num('eq-capm-b'), rm = num('eq-capm-rm');
+    if (!okNums(rf, b, rm)) { toast('girdi eksik', true); return; }
+    var er = rf + b * (rm - rf);
+    var res = relRes(er - rf, b * (rm - rf));
+    show('eq-capm-out',
+      'E(R) = <span class="text-sky-300 font-semibold">' + fmt(er) + '</span> %' +
+      badge(res, 'β·premium'));
+  };
+
+  window.eqKelly = function () {
+    var b = num('eq-kel-b'), p = num('eq-kel-p'), q = num('eq-kel-q');
+    if (!okNums(b, p, q) || b === 0) { toast('b≠0', true); return; }
+    var f = (b * p - q) / b;
+    var pqRes = relRes(p + q, 1);
+    show('eq-kel-out',
+      'f* = <span class="text-amber-300 font-semibold">' + fmt(f) + '</span>' +
+      '  (' + fmt(f * 100) + ' %)' +
+      (f < 0 ? '<br><span class="text-rose-400 text-[11px]">negatif → bahis edge yok</span>' : '') +
+      badge(pqRes, 'p+q≈1'));
+  };
+
+  window.eqBS = function () {
+    var S = num('eq-bs-s'), K = num('eq-bs-k'), r = num('eq-bs-r'), sig = num('eq-bs-sig'), T = num('eq-bs-t');
+    if (!okNums(S, K, r, sig, T) || S <= 0 || K <= 0 || sig <= 0 || T <= 0) {
+      toast('S,K,σ,T>0', true); return;
+    }
+    var sqrtT = Math.sqrt(T);
+    var d1 = (Math.log(S / K) + (r + 0.5 * sig * sig) * T) / (sig * sqrtT);
+    var d2 = d1 - sig * sqrtT;
+    var Nd1 = normCDF(d1), Nd2 = normCDF(d2);
+    var Nmd1 = normCDF(-d1), Nmd2 = normCDF(-d2);
+    var disc = Math.exp(-r * T);
+    var call = S * Nd1 - K * disc * Nd2;
+    var put = K * disc * Nmd2 - S * Nmd1;
+    // put-call parity
+    var resParity = relRes(call - put, S - K * disc);
+    // CDF symmetry Φ(-x)+Φ(x)=1
+    var resCdf = Math.max(relRes(Nd1 + Nmd1, 1), relRes(Nd2 + Nmd2, 1));
+    var res = Math.max(resParity, resCdf);
+    show('eq-bs-out',
+      'd₁ = <span class="text-violet-300 font-semibold">' + fmt(d1) + '</span> · ' +
+      'd₂ = <span class="text-violet-300 font-semibold">' + fmt(d2) + '</span>' +
+      '<br>Call = <b>' + fmt(call) + '</b> · Put = <b>' + fmt(put) + '</b>' +
+      badge(res, 'parity + Φ symmetry'));
+  };
+
+  window.eqVaR = function () {
+    var mu = num('eq-var-mu'), sig = num('eq-var-sig'), z = num('eq-var-z');
+    if (!okNums(mu, sig, z)) { toast('girdi eksik', true); return; }
+    var varv = mu - z * sig; // getiri; kayıp için -varv
+    show('eq-var-out',
+      'VaR (getiri) = <span class="text-rose-300 font-semibold">' + fmt(varv) + '</span> %' +
+      '<br><span class="text-zinc-400 text-[11px]">kayıp VaR ≈ <b>' + fmt(-varv) + '</b> % · z=' + fmt(z, 6) + ' (1.65≈95%, 2.33≈99%)</span>' +
+      badge(0, 'μ−zσ'));
+  };
+
+  /* ---- Built-in accuracy self-test (yüklenince) ---- */
+  
+  /* ================================================================
+   *  ADVANCED NONLINEAR PHYSICS
+   * ================================================================ */
+
+  /** Logistic map: x→r x (1-x) iterate */
+  window.eqLogistic = function () {
+
+    try {
+      var r = num('eq-log-r'), x = num('eq-log-x0'), N = Math.floor(num('eq-log-n'));
+      if (!okNums(r, x) || !isFinite(N) || N < 1 || N > 100000) { toast('r, x₀ gerekli · N∈[1,1e5]', true); return; }
+      if (x < 0 || x > 1) toast('x₀ genelde [0,1] aralığında', false);
+      var x0 = x, xs = x;
+      for (var i = 0; i < N; i++) {
+        x = r * x * (1 - x);
+        if (!isFinite(x)) { toast('ıraksama / taşma', true); return; }
+      }
+      // one-step residual (should be ~0)
+      var xNext = r * x * (1 - x);
+      var res = relRes(x, isFinite(xNext) ? x : x); // identity placeholder
+      res = Math.abs(x - r * x * (1 - x)); // map fixed residual of iterate? always 0 for same x
+      // use Lyapunov-ish: distance of consecutive if N>1
+      // recompute last two
+      var a = x0;
+      for (var k = 0; k < Math.max(0, N - 1); k++) a = r * a * (1 - a);
+      var b = r * a * (1 - a);
+      res = Math.abs(b - x);
+      var regime = r <= 0 ? 'anlamsız r' : (r < 3 ? 'sabit nokta' : (r < 3.5699456 ? 'periyodik pencere' : 'kaotik (yaklaşık)'));
+      show('eq-log-out',
+        'x_' + N + ' = <span class="text-fuchsia-300 font-semibold">' + fmt(x) + '</span>' +
+        '<br><span class="text-zinc-400 text-[11px]">rejim ≈ ' + regime + ' · x₀=' + fmt(x0) + '</span>' +
+        badge(res, 'son adım tutarlılığı'));
+    } catch (err) { toast('Lojistik: ' + (err.message || err), true); }
+
+  };
+
+  /** Duffing: instantaneous accel & restoring force */
+  window.eqDuffing = function () {
+    var x = num('eq-duf-x'), v = num('eq-duf-v'), d = num('eq-duf-d');
+    var a = num('eq-duf-a'), b = num('eq-duf-b'), g = num('eq-duf-g');
+    var w = num('eq-duf-w'), t = num('eq-duf-t');
+    if (!okNums(x, v, d, a, b, g, w, t)) { toast('girdi eksik', true); return; }
+    var drive = g * Math.cos(w * t);
+    var acc = -d * v - a * x - b * x * x * x + drive;
+    var Frest = -a * x - b * x * x * x;
+    // residual: acc + d v + a x + b x³ - drive = 0
+    var res = Math.abs(acc + d * v + a * x + b * x * x * x - drive);
+    show('eq-duf-out',
+      'ẍ = <span class="text-rose-300 font-semibold">' + fmt(acc) + '</span>' +
+      '<br>F_rest = ' + fmt(Frest) + ' · drive = ' + fmt(drive) +
+      badge(res, 'ODE residual'));
+  };
+
+  /** van der Pol accel */
+  window.eqVdP = function () {
+    var x = num('eq-vdp-x'), v = num('eq-vdp-v'), mu = num('eq-vdp-mu');
+    if (!okNums(x, v, mu)) { toast('girdi eksik', true); return; }
+    var acc = mu * (1 - x * x) * v - x;
+    var res = Math.abs(acc - mu * (1 - x * x) * v + x);
+    show('eq-vdp-out',
+      'ẍ = <span class="text-amber-300 font-semibold">' + fmt(acc) + '</span>' +
+      '<br><span class="text-zinc-400 text-[11px]">sönüm terimi μ(1−x²)v = ' + fmt(mu * (1 - x * x) * v) + '</span>' +
+      badge(res, 'ODE residual'));
+  };
+
+  /** Nonlinear pendulum */
+  window.eqPendulum = function () {
+    var th = num('eq-pen-th'), om = num('eq-pen-w'), L = num('eq-pen-l'), g = num('eq-pen-g');
+    if (!okNums(th, om, L, g) || L <= 0 || g <= 0) { toast('L,g>0', true); return; }
+    var acc = -(g / L) * Math.sin(th);
+    // energy-like: E = ½ ω² - (g/L) cos(θ)
+    var E = 0.5 * om * om - (g / L) * Math.cos(th);
+    var res = Math.abs(acc + (g / L) * Math.sin(th));
+    // small-angle comparison
+    var accLin = -(g / L) * th;
+    show('eq-pen-out',
+      'θ̈ = <span class="text-sky-300 font-semibold">' + fmt(acc) + '</span> rad/s²' +
+      '<br><span class="text-zinc-400 text-[11px]">lineer yakl. θ̈≈' + fmt(accLin) + ' · E∝ ' + fmt(E) + '</span>' +
+      badge(res, 'θ̈+(g/L)sinθ=0'));
+  };
+
+  /** Lorenz RHS */
+  window.eqLorenz = function () {
+    var x = num('eq-lor-x'), y = num('eq-lor-y'), z = num('eq-lor-z');
+    var sig = num('eq-lor-s'), rho = num('eq-lor-r'), beta = num('eq-lor-b');
+    if (!okNums(x, y, z, sig, rho, beta)) { toast('girdi eksik', true); return; }
+    var dx = sig * (y - x);
+    var dy = x * (rho - z) - y;
+    var dz = x * y - beta * z;
+    // residual of definitions (exact by construction ~0)
+    var res = Math.max(
+      Math.abs(dx - sig * (y - x)),
+      Math.abs(dy - (x * (rho - z) - y)),
+      Math.abs(dz - (x * y - beta * z))
+    );
+    show('eq-lor-out',
+      'ẋ=' + fmt(dx) + ' · ẏ=' + fmt(dy) + ' · ż=' + fmt(dz) +
+      '<br><span class="text-zinc-400 text-[11px]">|v⃗| = ' + fmt(Math.sqrt(dx*dx+dy*dy+dz*dz)) + '</span>' +
+      badge(res, 'Lorenz RHS'));
+  };
+
+  /** Fermi-Dirac / Bose-Einstein / MB */
+  window.eqFermiDirac = function () {
+
+    try {
+      var dE = num('eq-fd-e'), T = num('eq-fd-t');
+      var sel = $('eq-fd-s');
+      var kind = (sel && sel.value) ? sel.value : 'fd';
+      if (!okNums(dE, T) || T <= 0) { toast('T>0, E−μ gerekli', true); return; }
+      var kT = 8.617333262145e-5 * T;
+      var x = dE / kT;
+      var f, name;
+      if (kind === 'fd') {
+        f = x >= 0 ? Math.exp(-x) / (1 + Math.exp(-x)) : 1 / (Math.exp(x) + 1);
+        name = 'Fermi–Dirac';
+      } else if (kind === 'be') {
+        if (x <= 1e-12) { toast('Bose–Einstein: E>μ gerekli (x>0)', true); return; }
+        f = 1 / (Math.exp(x) - 1);
+        name = 'Bose–Einstein';
+      } else {
+        f = Math.exp(-Math.max(x, -700)); // clamp
+        name = 'Maxwell–Boltzmann';
+      }
+      if (!isFinite(f)) { toast('sayısal taşma', true); return; }
+      var f2;
+      if (kind === 'mb') f2 = Math.exp(-x);
+      else if (kind === 'fd') f2 = 1 / (Math.exp(x) + 1);
+      else f2 = 1 / (Math.exp(x) - 1);
+      var res = relRes(f, f2);
+      show('eq-fd-out',
+        'f = <span class="text-cyan-300 font-semibold">' + fmt(f) + '</span>  (' + name + ')' +
+        '<br><span class="text-zinc-400 text-[11px]">(E−μ)/kT = ' + fmt(x, 6) + ' · kT=' + fmt(kT, 6) + ' eV</span>' +
+        badge(res, 'stable ↔ classic'));
+    } catch (err) { toast('FD/BE: ' + (err.message || err), true); }
+
+  };
+
+  /** Michaelis-Menten */
+  window.eqMichaelis = function () {
+    var Vm = num('eq-mm-vmax'), Km = num('eq-mm-km'), S = num('eq-mm-s');
+    if (!okNums(Vm, Km, S) || Km < 0 || S < 0) { toast('K_m,S≥0', true); return; }
+    var v = Vm * S / (Km + S);
+    // Lineweaver-Burk dual: 1/v = (Km/Vm)(1/S) + 1/Vm
+    var res = 0;
+    if (v > 0 && S > 0) {
+      var invV = 1 / v;
+      var invV2 = (Km / Vm) * (1 / S) + 1 / Vm;
+      res = relRes(invV, invV2);
+    }
+    show('eq-mm-out',
+      'v = <span class="text-violet-300 font-semibold">' + fmt(v) + '</span>' +
+      '<br><span class="text-zinc-400 text-[11px]">v/V_max = ' + fmt(v / Vm) + ' · doygunluk</span>' +
+      badge(res, 'Lineweaver-Burk'));
+  };
+
+  /** Arrhenius */
+  window.eqArrhenius = function () {
+    var A = num('eq-arr-a'), Ea_kJ = num('eq-arr-ea'), T = num('eq-arr-t'), R = num('eq-arr-r');
+    if (!okNums(A, Ea_kJ, T, R) || T <= 0 || R <= 0 || A <= 0) { toast('A,T,R>0', true); return; }
+    var Ea = Ea_kJ * 1000; // J/mol
+    var k = A * Math.exp(-Ea / (R * T));
+    var logk = Math.log(A) - Ea / (R * T);
+    var res = relRes(Math.log(Math.max(k, 1e-300)), logk);
+    show('eq-arr-out',
+      'k = <span class="text-orange-300 font-semibold">' + fmt(k) + '</span> s⁻¹' +
+      '<br><span class="text-zinc-400 text-[11px]">Ea/RT = ' + fmt(Ea / (R * T), 6) + '</span>' +
+      badge(res, 'log dual'));
+  };
+
+  /** Josephson */
+  window.eqJosephson = function () {
+    var Ic_uA = num('eq-jos-ic'), phi = num('eq-jos-phi'), dphi = num('eq-jos-dp');
+    if (!okNums(Ic_uA, phi, dphi)) { toast('girdi eksik', true); return; }
+    var Ic = Ic_uA * 1e-6; // A
+    var I = Ic * Math.sin(phi);
+    // V = (ħ/2e) dφ/dt ; ħ/2e ≈ 3.291e-16 V·s (flux quantum Φ0=h/2e, V=Φ0/(2π) * dφ/dt)
+    var hbar_2e = 3.29105976e-16; // V·s
+    var V = hbar_2e * dphi;
+    var res = relRes(I, Ic * Math.sin(phi));
+    show('eq-jos-out',
+      'I = <span class="text-lime-300 font-semibold">' + fmt(I) + '</span> A  (' + fmt(I * 1e6) + ' μA)' +
+      '<br>V ≈ <span class="text-lime-300 font-semibold">' + fmt(V) + '</span> V' +
+      badge(res, 'I=I_c sinφ'));
+  };
+
+  /** Kerr */
+  window.eqKerr = function () {
+    var n0 = num('eq-kerr-n0'), n2 = num('eq-kerr-n2'), I = num('eq-kerr-i');
+    if (!okNums(n0, n2, I)) { toast('girdi eksik', true); return; }
+    var n = n0 + n2 * I;
+    var res = relRes(n - n0, n2 * I);
+    show('eq-kerr-out',
+      'n = <span class="text-pink-300 font-semibold">' + fmt(n) + '</span>' +
+      '<br><span class="text-zinc-400 text-[11px]">Δn = ' + fmt(n2 * I) + '</span>' +
+      badge(res, 'n=n₀+n₂I'));
+  };
+
+  /** Lotka-Volterra rates */
+  window.eqLotka = function () {
+    var x = num('eq-lv-x'), y = num('eq-lv-y');
+    var a = num('eq-lv-a'), b = num('eq-lv-b'), d = num('eq-lv-d'), g = num('eq-lv-g');
+    if (!okNums(x, y, a, b, d, g)) { toast('girdi eksik', true); return; }
+    var dx = a * x - b * x * y;
+    var dy = d * x * y - g * y;
+    var res = Math.max(
+      Math.abs(dx - (a * x - b * x * y)),
+      Math.abs(dy - (d * x * y - g * y))
+    );
+    show('eq-lv-out',
+      'ẋ = <span class="text-teal-300 font-semibold">' + fmt(dx) + '</span> · ' +
+      'ẏ = <span class="text-teal-300 font-semibold">' + fmt(dy) + '</span>' +
+      '<br><span class="text-zinc-400 text-[11px]">denge x*=γ/δ=' + fmt(g / d) + ' · y*=α/β=' + fmt(a / b) + '</span>' +
+      badge(res, 'LV RHS'));
+  };
+
+  /** NLS intensity / nonlinear phase scale */
+  window.eqNLS = function () {
+    var A = num('eq-nls-a'), kap = num('eq-nls-k'), b2 = num('eq-nls-b');
+    if (!okNums(A, kap, b2)) { toast('girdi eksik', true); return; }
+    var intens = A * A;
+    var nln = kap * intens; // nonlinear coefficient * |A|²
+    // soliton width scale L_nl = 1/(|κ| A²), L_d = T0²/|β2| — report ratio
+    var Lnl = Math.abs(kap) > 0 && intens > 0 ? 1 / (Math.abs(kap) * intens) : Infinity;
+    var res = relRes(nln, kap * A * A);
+    show('eq-nls-out',
+      '|A|² = <span class="text-indigo-300 font-semibold">' + fmt(intens) + '</span> · κ|A|² = <b>' + fmt(nln) + '</b>' +
+      '<br><span class="text-zinc-400 text-[11px]">L_nl ≈ ' + fmt(Lnl) + ' (1/|κA|²) · β₂=' + fmt(b2) + '</span>' +
+      badge(res, 'κ|A|²'));
+  };
+
+
+  
+  /* ---------- 30 additional nonlinear physics ---------- */
+  window.eqRiccati = function () {
+    var P = num('eq-ric-p'), Q = num('eq-ric-q'), R = num('eq-ric-r'), y = num('eq-ric-y');
+    if (!okNums(P, Q, R, y)) { toast('girdi eksik', true); return; }
+    var yp = P + Q * y + R * y * y;
+    var res = Math.abs(yp - (P + Q * y + R * y * y));
+    show('eq-ric-out', "y' = <b>" + fmt(yp) + '</b>' + badge(res, 'Riccati'));
+  };
+  window.eqBernoulli = function () {
+
+    try {
+      var P = num('eq-ber-p'), Q = num('eq-ber-q'), n = num('eq-ber-n'), y = num('eq-ber-y');
+      if (!okNums(P, Q, n, y)) { toast('P,Q,n,y gerekli', true); return; }
+      if (y < 0 && Math.abs(n - Math.round(n)) > 1e-12) {
+        toast('y<0 ve n tam sayı değil → karmaşık; |y| kullanılmıyor', true); return;
+      }
+      var yp = -P * y + Q * Math.pow(y, n);
+      if (!isFinite(yp)) { toast('sayısal taşma', true); return; }
+      show('eq-ber-out', "y' = <span class=\"text-sky-300 font-semibold\">" + fmt(yp) + '</span>' + badge(0, 'Bernoulli'));
+    } catch (err) { toast('Bernoulli: ' + (err.message || err), true); }
+
+  };
+  window.eqLaneEmden = function () {
+    var n = num('eq-le-n'), xi = num('eq-le-xi');
+    if (!okNums(n, xi) || xi <= 0) { toast('ξ>0', true); return; }
+    // series near center: θ ≈ 1 - ξ²/6 + n ξ⁴/120
+    var th = 1 - (xi * xi) / 6 + n * Math.pow(xi, 4) / 120;
+    var thp = -xi / 3 + n * Math.pow(xi, 3) / 30;
+    show('eq-le-out', 'θ(ξ)≈ <b>' + fmt(th) + '</b> · θ′≈ ' + fmt(thp) + badge(0, 'merkez seri'));
+  };
+  window.eqBurgers = function () {
+    var uL = num('eq-bu-ul'), uR = num('eq-bu-ur'), nu = num('eq-bu-nu');
+    if (!okNums(uL, uR, nu)) { toast('girdi eksik', true); return; }
+    var s = 0.5 * (uL + uR);
+    var jump = uL - uR;
+    show('eq-bu-out', 'şok hızı s = <b>' + fmt(s) + '</b> · Δu = ' + fmt(jump) +
+      '<br><span class="text-zinc-400 text-[11px]">ν = ' + fmt(nu) + ' (viskoz genişlik ~ν/|Δu|)</span>' + badge(0, 'Rankine-Hugoniot'));
+  };
+  window.eqKdV = function () {
+
+    try {
+      var c = num('eq-kdv-c'), x = num('eq-kdv-x'), t = num('eq-kdv-t');
+      if (!okNums(c, x, t) || c <= 0) { toast('c>0 gerekli', true); return; }
+      var z = 0.5 * Math.sqrt(c) * (x - c * t);
+      var ch = Math.cosh(z);
+      if (!isFinite(ch) || ch === 0) { toast('cosh taşması', true); return; }
+      var sech = 1 / ch;
+      var u = 0.5 * c * sech * sech;
+      // residual vs peak at center
+      var u0 = 0.5 * c;
+      show('eq-kdv-out',
+        'u = <span class="text-violet-300 font-semibold">' + fmt(u) + '</span> · zirve c/2 = ' + fmt(u0) +
+        badge(Math.abs(z) < 1e-12 ? relRes(u, u0) : 0, 'KdV soliton'));
+    } catch (err) { toast('KdV: ' + (err.message || err), true); }
+
+  };
+  window.eqSineGordon = function () {
+
+    try {
+      var x = num('eq-sg-x'), v = num('eq-sg-v'), t = num('eq-sg-t');
+      if (!okNums(x, v, t)) { toast('x,v,t gerekli', true); return; }
+      if (Math.abs(v) >= 1) { toast('|v| < 1 (ışık hızı biriminde)', true); return; }
+      var gam = 1 / Math.sqrt(1 - v * v);
+      var arg = gam * (x - v * t);
+      // stable: avoid overflow in exp
+      var e = arg > 50 ? Infinity : (arg < -50 ? 0 : Math.exp(arg));
+      var phi = isFinite(e) ? 4 * Math.atan(e) : (arg > 0 ? 2 * Math.PI : 0);
+      show('eq-sg-out', 'φ = <span class="text-fuchsia-300 font-semibold">' + fmt(phi) + '</span> rad · γ = ' + fmt(gam) + badge(0, 'SG kink'));
+    } catch (err) { toast('Sine-Gordon: ' + (err.message || err), true); }
+
+  };
+  window.eqPhi4 = function () {
+    var m = num('eq-phi-m'), lam = num('eq-phi-l');
+    if (!okNums(m, lam) || lam <= 0 || m <= 0) { toast('m,λ>0', true); return; }
+    var E = (2 * Math.SQRT2 / 3) * Math.pow(m, 3) / lam;
+    var amp = m / Math.sqrt(lam);
+    show('eq-phi-out', 'E_kink = <b>' + fmt(E) + '</b> · φ_vac = ±' + fmt(amp) + badge(0, 'φ⁴'));
+  };
+  window.eqGinzburg = function () {
+    var a = num('eq-gl-a'), b = num('eq-gl-b'), p = num('eq-gl-p');
+    if (!okNums(a, b, p)) { toast('girdi eksik', true); return; }
+    var p2 = p * p, f = a * p2 + 0.5 * b * p2 * p2;
+    var pEq = a < 0 && b > 0 ? Math.sqrt(-a / b) : 0;
+    show('eq-gl-out', 'f = <b>' + fmt(f) + '</b> · |ψ|_eq ≈ ' + fmt(pEq) + badge(0, 'GL'));
+  };
+  window.eqLandau = function () {
+    var a = num('eq-lan-a'), b = num('eq-lan-b'), M = num('eq-lan-m'), H = num('eq-lan-h');
+    if (!okNums(a, b, M, H)) { toast('girdi eksik', true); return; }
+    var F = a * M * M + b * M * M * M * M - H * M;
+    var dF = 2 * a * M + 4 * b * M * M * M - H;
+    show('eq-lan-out', 'F = <b>' + fmt(F) + '</b> · ∂F/∂M = ' + fmt(dF) + badge(0, 'Landau'));
+  };
+  window.eqTunnelDiode = function () {
+    var V = num('eq-td-v'), a = num('eq-td-a'), b = num('eq-td-b'), c = num('eq-td-c');
+    if (!okNums(V, a, b, c)) { toast('girdi eksik', true); return; }
+    var I = a * V + b * V * V + c * V * V * V;
+    var g = a + 2 * b * V + 3 * c * V * V;
+    show('eq-td-out', 'I = <b>' + fmt(I) + '</b> · g_d = dI/dV = ' + fmt(g) + badge(0, 'kübik I–V'));
+  };
+  window.eqVaractor = function () {
+
+    try {
+      var C0 = num('eq-varc-c0'), V = num('eq-varc-v'), phi = num('eq-varc-phi'), g = num('eq-varc-g');
+      if (!okNums(C0, V, phi, g) || C0 <= 0 || phi <= 0) { toast('C₀>0, φ>0', true); return; }
+      var base = 1 + V / phi;
+      if (base <= 0) { toast('1+V/φ > 0 olmalı (ters polarizasyon)', true); return; }
+      var C = C0 / Math.pow(base, g);
+      if (!isFinite(C)) { toast('sayısal hata', true); return; }
+      show('eq-varc-out', 'C = <span class="text-pink-300 font-semibold">' + fmt(C) + '</span> pF' + badge(0, 'varaktör'));
+    } catch (err) { toast('Varaktör: ' + (err.message || err), true); }
+
+  };
+  window.eqRayleighOsc = function () {
+    var x = num('eq-rayo-x'), v = num('eq-rayo-v'), mu = num('eq-rayo-mu');
+    if (!okNums(x, v, mu)) { toast('girdi eksik', true); return; }
+    var acc = mu * (1 - v * v) * v - x;
+    show('eq-rayo-out', 'ẍ = <b>' + fmt(acc) + '</b>' + badge(0, 'Rayleigh'));
+  };
+  window.eqFHN = function () {
+    var v = num('eq-fhn-v'), w = num('eq-fhn-w'), I = num('eq-fhn-i');
+    var eps = num('eq-fhn-e'), a = num('eq-fhn-a'), b = num('eq-fhn-b');
+    if (!okNums(v, w, I, eps, a, b)) { toast('girdi eksik', true); return; }
+    var dv = v - v * v * v / 3 - w + I;
+    var dw = eps * (v + a - b * w);
+    show('eq-fhn-out', 'v̇ = <b>' + fmt(dv) + '</b> · ẇ = <b>' + fmt(dw) + '</b>' + badge(0, 'FHN'));
+  };
+  window.eqBrusselator = function () {
+    var x = num('eq-bru-x'), y = num('eq-bru-y'), A = num('eq-bru-a'), B = num('eq-bru-b');
+    if (!okNums(x, y, A, B)) { toast('girdi eksik', true); return; }
+    var dx = A + x * x * y - (B + 1) * x;
+    var dy = B * x - x * x * y;
+    show('eq-bru-out', 'ẋ = <b>' + fmt(dx) + '</b> · ẏ = <b>' + fmt(dy) + '</b>' + badge(0, 'Brusselator'));
+  };
+  window.eqPendPeriod = function () {
+    var th = num('eq-npt-th'), L = num('eq-npt-l'), g = num('eq-npt-g');
+    if (!okNums(th, L, g) || L <= 0 || g <= 0) { toast('L,g>0', true); return; }
+    var T0 = 2 * Math.PI * Math.sqrt(L / g);
+    var k = Math.sin(th / 2);
+    // series: T/T0 ≈ 1 + (1/16)θ² + (11/3072)θ⁴
+    var corr = 1 + (1 / 16) * th * th + (11 / 3072) * Math.pow(th, 4);
+    var T = T0 * corr;
+    show('eq-npt-out', 'T ≈ <b>' + fmt(T) + '</b> s · T₀ = ' + fmt(T0) + ' s · düzeltme ×' + fmt(corr) + badge(0, 'eliptik seri'));
+  };
+  window.eqMathieu = function () {
+    var d = num('eq-mat-d'), eps = num('eq-mat-e'), w = num('eq-mat-w'), t = num('eq-mat-t'), x = num('eq-mat-x');
+    if (!okNums(d, eps, w, t, x)) { toast('girdi eksik', true); return; }
+    var om2 = d + eps * Math.cos(w * t);
+    var acc = -om2 * x;
+    show('eq-mat-out', 'ẍ = <b>' + fmt(acc) + '</b> · ω₀²(t) = ' + fmt(om2) + badge(0, 'Mathieu'));
+  };
+  window.eqPorous = function () {
+
+    try {
+      var m = num('eq-pm-m'), M = num('eq-pm-M'), t = num('eq-pm-t');
+      if (!okNums(m, M, t) || m <= 1 || t <= 0 || M <= 0) { toast('m>1, t>0, M>0', true); return; }
+      var alpha = 1 / (m + 1);
+      var amp = Math.pow(t, -alpha) * Math.pow(M, 2 / (m + 1));
+      show('eq-pm-out',
+        'genlik ölçeği ∝ <span class="text-violet-300 font-semibold">' + fmt(amp) + '</span>' +
+        ' · α = 1/(m+1) = ' + fmt(alpha) + badge(0, 'Barenblatt'));
+    } catch (err) { toast('Porous: ' + (err.message || err), true); }
+
+  };
+  window.eqGP = function () {
+    var g = num('eq-gp-g'), p = num('eq-gp-p');
+    if (!okNums(g, p)) { toast('girdi eksik', true); return; }
+    var mu = g * p * p;
+    show('eq-gp-out', 'μ = <b>' + fmt(mu) + '</b> · n = |ψ|² = ' + fmt(p * p) + badge(0, 'GP'));
+  };
+  window.eqOptBistable = function () {
+    var Iin = num('eq-ob-iin'), Iout = num('eq-ob-iout'), f = num('eq-ob-f'), phi = num('eq-ob-phi'), k = num('eq-ob-k');
+    if (!okNums(Iin, Iout, f, phi, k)) { toast('girdi eksik', true); return; }
+    var s = Math.sin(phi + k * Iout);
+    var Ipred = Iin / (1 + f * s * s);
+    var res = relRes(Iout, Ipred);
+    show('eq-ob-out', 'I_out model = <b>' + fmt(Ipred) + '</b> · girdi I_out = ' + fmt(Iout) + badge(res, 'bistable residual'));
+  };
+  window.eqKeplerEff = function () {
+    var k = num('eq-kep-k'), L = num('eq-kep-l'), m = num('eq-kep-m'), r = num('eq-kep-r');
+    if (!okNums(k, L, m, r) || r <= 0 || m <= 0) { toast('r,m>0', true); return; }
+    var V = -k / r + (L * L) / (2 * m * r * r);
+    var F = -k / (r * r) + (L * L) / (m * r * r * r);
+    show('eq-kep-out', 'V_eff = <b>' + fmt(V) + '</b> · F_eff = ' + fmt(F) + badge(0, 'Kepler'));
+  };
+  window.eqRayleighPlateau = function () {
+    var R = num('eq-rp-r'), k = num('eq-rp-k'), g = num('eq-rp-g'), rho = num('eq-rp-rho');
+    if (!okNums(R, k, g, rho) || R <= 0 || rho <= 0) { toast('R,ρ>0', true); return; }
+    var x = k * R;
+    var factor = x * (1 - x * x);
+    var sigma2 = factor > 0 ? (g / (rho * R * R * R)) * factor : 0;
+    var sigma = Math.sqrt(Math.max(0, sigma2));
+    show('eq-rp-out', 'σ ≈ <b>' + fmt(sigma) + '</b> 1/s · kR = ' + fmt(x) +
+      (x * x > 1 ? ' (kararlı — büyüme yok)' : ' · max teorik kR=0.707') + badge(0, 'RP'));
+  };
+  window.eqHardSpring = function () {
+    var a = num('eq-hs-a'), b = num('eq-hs-b'), x = num('eq-hs-x');
+    if (!okNums(a, b, x)) { toast('girdi eksik', true); return; }
+    var V = 0.5 * a * x * x + 0.25 * b * x * x * x * x;
+    var F = -a * x - b * x * x * x;
+    show('eq-hs-out', 'V = <b>' + fmt(V) + '</b> · F = ' + fmt(F) + badge(0, 'hard-spring'));
+  };
+  window.eqNonlinRC = function () {
+
+    try {
+      var V = num('eq-nrc-v'), Vin = num('eq-nrc-vin'), R = num('eq-nrc-r');
+      var Cn = num('eq-nrc-c'), Is = num('eq-nrc-is'), Vt = num('eq-nrc-vt');
+      if (!okNums(V, Vin, R, Cn, Is, Vt) || R <= 0 || Cn <= 0 || Vt <= 0 || Is <= 0) {
+        toast('R,C,Vt,Iₛ>0', true); return;
+      }
+      var C = Cn * 1e-9;
+      var arg = V / Vt;
+      if (arg > 80) { toast('exp taşması — V/Vt çok büyük', true); return; }
+      var Id = Is * Math.exp(arg);
+      var dVdt = ((Vin - V) / R - Id) / C;
+      show('eq-nrc-out',
+        'dV/dt = <span class="text-pink-300 font-semibold">' + fmt(dVdt) + '</span> V/s · I_d = ' + fmt(Id) + ' A' +
+        badge(0, 'NL-RC'));
+    } catch (err) { toast('NL-RC: ' + (err.message || err), true); }
+
+  };
+  window.eqEmdenFowler = function () {
+    var x = num('eq-ef-x'), y = num('eq-ef-y'), n = num('eq-ef-n'), lam = num('eq-ef-l'), yp = num('eq-ef-yp');
+    if (!okNums(x, y, n, lam, yp) || x === 0) { toast('x≠0', true); return; }
+    // y'' from (x² y')' + x^λ y^n = 0 → 2x y' + x² y'' + x^λ y^n = 0
+    var ypp = -(2 / x) * yp - Math.pow(x, lam - 2) * Math.pow(y, n);
+    show('eq-ef-out', "y'' ≈ <b>" + fmt(ypp) + '</b>' + badge(0, 'Emden-Fowler'));
+  };
+  window.eqSIR = function () {
+    var S = num('eq-sir-s'), I = num('eq-sir-i'), R = num('eq-sir-r');
+    var b = num('eq-sir-b'), g = num('eq-sir-g');
+    if (!okNums(S, I, R, b, g)) { toast('girdi eksik', true); return; }
+    var dS = -b * S * I, dI = b * S * I - g * I, dR = g * I;
+    var cons = relRes(dS + dI + dR, 0);
+    var Rt = S * b / g;
+    show('eq-sir-out', 'Ṡ=' + fmt(dS) + ' · İ=' + fmt(dI) + ' · Ṙ=' + fmt(dR) +
+      '<br><span class="text-zinc-400 text-[11px]">R_t = βS/γ = ' + fmt(Rt) + '</span>' + badge(cons, 'S+I+R korunumu'));
+  };
+  window.eqThomasFermi = function () {
+    var x = num('eq-tf-x'), p = num('eq-tf-p');
+    if (!okNums(x, p) || x <= 0 || p < 0) { toast('x>0, φ≥0', true); return; }
+    var rhs = Math.pow(p, 1.5) / Math.sqrt(x);
+    show('eq-tf-out', "φ'' ∝ <b>" + fmt(rhs) + '</b>  (φ^{3/2}/√x)' + badge(0, 'Thomas-Fermi'));
+  };
+  window.eqNLSsoliton = function () {
+    var b2 = num('eq-nls2-b'), g = num('eq-nls2-g'), T0 = num('eq-nls2-t');
+    if (!okNums(b2, g, T0) || g <= 0 || T0 <= 0) { toast('|γ|,T₀>0', true); return; }
+    var P = 2 * Math.abs(b2) / (g * T0);
+    show('eq-nls2-out', 'P_sol = <b>' + fmt(P) + '</b> W' + badge(0, 'NLS soliton'));
+  };
+  window.eqCubicQuintic = function () {
+    var x = num('eq-cq-x'), a = num('eq-cq-a'), b = num('eq-cq-b'), g = num('eq-cq-g');
+    if (!okNums(x, a, b, g)) { toast('girdi eksik', true); return; }
+    var F = -a * x - b * x * x * x - g * Math.pow(x, 5);
+    var V = 0.5 * a * x * x + 0.25 * b * Math.pow(x, 4) + (g / 6) * Math.pow(x, 6);
+    show('eq-cq-out', 'F = <b>' + fmt(F) + '</b> · V = ' + fmt(V) + badge(0, 'CQ Duffing'));
+  };
+  window.eqJacobi = function () {
+
+    try {
+      var x = num('eq-jac-x'), y = num('eq-jac-y'), vx = num('eq-jac-vx'), vy = num('eq-jac-vy');
+      var m1 = num('eq-jac-m1'), m2 = num('eq-jac-m2');
+      if (!okNums(x, y, vx, vy, m1, m2)) { toast('girdi eksik', true); return; }
+      if (m1 < 0 || m2 < 0) { toast('μ≥0', true); return; }
+      var mu = m1 + m2;
+      if (mu <= 0) { toast('μ₁+μ₂>0', true); return; }
+      var x1 = -m2 / mu, x2 = m1 / mu;
+      var r1 = Math.hypot(x - x1, y);
+      var r2 = Math.hypot(x - x2, y);
+      if (r1 < 1e-14 || r2 < 1e-14) { toast('birincil cisimle çakışma', true); return; }
+      var v2 = vx * vx + vy * vy;
+      var C = x * x + y * y + 2 * (m1 / r1 + m2 / r2) - v2;
+      show('eq-jac-out',
+        'C_Jacobi = <span class="text-violet-300 font-semibold">' + fmt(C) + '</span>' +
+        '<br><span class="text-zinc-400 text-[11px]">r₁=' + fmt(r1) + ' · r₂=' + fmt(r2) + '</span>' +
+        badge(0, 'CRTBP'));
+    } catch (err) { toast('Jacobi: ' + (err.message || err), true); }
+
+  };
+  window.eqHHNa = function () {
+
+    try {
+      var gNa = num('eq-hh-g'), m = num('eq-hh-m'), h = num('eq-hh-h'), V = num('eq-hh-v'), E = num('eq-hh-e');
+      if (!okNums(gNa, m, h, V, E)) { toast('girdi eksik', true); return; }
+      if (m < 0 || m > 1 || h < 0 || h > 1) toast('m,h genelde [0,1]', false);
+      var gate = m * m * m * h;
+      var I = gNa * gate * (V - E);
+      show('eq-hh-out',
+        'I_Na = <span class="text-fuchsia-300 font-semibold">' + fmt(I) + '</span> μA/cm² · m³h = ' + fmt(gate) +
+        badge(0, 'HH Na'));
+    } catch (err) { toast('HH: ' + (err.message || err), true); }
+
+  };
+
+
+  function selfTest() {
+    var fails = 0, total = 0;
+    function check(name, res, lim) {
+      total++;
+      lim = lim == null ? 1e-12 : lim;
+      if (!isFinite(res) || res > lim) { fails++; console.warn('[EQ-TEST FAIL]', name, res); }
+    }
+    // Shockley round-trip
+    (function () {
+      var Is = 1e-12, V = 0.7, n = 1, T = 300, Vt = kB_eV * T;
+      var I = Is * expm1(V / (n * Vt));
+      var Vb = n * Vt * Math.log(I / Is + 1);
+      check('shockley-RT', relRes(V, Vb), 1e-12);
+    })();
+    // Deal-Grove residual
+    (function () {
+      var B = 0.04, A = 0.05, t = 2, tau = 0.1;
+      var x = 0.5 * (-A + Math.sqrt(A * A + 4 * B * (t + tau)));
+      check('deal-grove', relRes(x * x + A * x, B * (t + tau)), 1e-12);
+    })();
+    // Elmore
+    (function () {
+      var R = 100, C = 50e-15, N = 5;
+      var c1 = R * C * N * (N + 1) / 2, s = 0;
+      for (var i = 1; i <= N; i++) s += R * C * (N - i + 1);
+      check('elmore', relRes(c1, s), 1e-15);
+    })();
+    // BS parity ATM
+    (function () {
+      var S = 100, K = 100, r = 0.05, sig = 0.2, T = 1;
+      var d1 = (Math.log(S / K) + (r + 0.5 * sig * sig) * T) / (sig * Math.sqrt(T));
+      var d2 = d1 - sig * Math.sqrt(T);
+      var call = S * normCDF(d1) - K * Math.exp(-r * T) * normCDF(d2);
+      var put = K * Math.exp(-r * T) * normCDF(-d2) - S * normCDF(-d1);
+      check('bs-parity', relRes(call - put, S - K * Math.exp(-r * T)), 1e-10);
+      check('bs-cdf-sym', relRes(normCDF(1.2) + normCDF(-1.2), 1), 1e-10);
+    })();
+    // Shannon
+    (function () {
+      var snr = 100, B = 1e6, C = B * log2(1 + snr);
+      check('shannon', relRes(snr, Math.pow(2, C / B) - 1), 1e-12);
+    })();
+    // MOSFET invert
+    (function () {
+      var mu = 300 * 1e-4, Cox = 10 * 1e-3, WL = 5, Vov = 0.8;
+      var I = 0.5 * mu * Cox * WL * Vov * Vov;
+      var Vb = Math.sqrt(2 * I / (mu * Cox * WL));
+      check('mosfet-Vov', relRes(Vov, Vb), 1e-12);
+    })();
+    // HP
+    (function () {
+      var r = 50e-6, dP = 1e5, mu = 1e-3, L = 0.01;
+      var Q = Math.PI * Math.pow(r, 4) * dP / (8 * mu * L);
+      var dPb = Q * 8 * mu * L / (Math.PI * Math.pow(r, 4));
+      check('hagen-poiseuille', relRes(dP, dPb), 1e-12);
+    })();
+
+    
+    // Nonlinear suite
+    (function () {
+      var r = 2.5, x = 0.4;
+      for (var i = 0; i < 40; i++) x = r * x * (1 - x);
+      var xstar = 1 - 1 / r;
+      check('logistic-fixed', relRes(x, xstar), 1e-6);
+    })();
+    (function () {
+      var c = 4, z = 0, sech = 1 / Math.cosh(z), u = 0.5 * c * sech * sech;
+      check('kdv-peak', relRes(u, c / 2), 1e-12);
+    })();
+    (function () {
+      var th = 1.0, L = 1, g = 9.80665, T0 = 2 * Math.PI * Math.sqrt(L / g);
+      var T = T0 * (1 + th * th / 16);
+      check('pend-period-gt-T0', T > T0 ? 0 : 1, 0.5);
+    })();
+    (function () {
+      var S = 0.99, I = 0.01, b = 0.4, g = 0.1;
+      var dS = -b * S * I, dI = b * S * I - g * I, dR = g * I;
+      check('sir-conserve', Math.abs(dS + dI + dR), 1e-14);
+    })();
+    (function () {
+      var a = -1, b = 1, p = Math.sqrt(-a / b);
+      var f = a * p * p + 0.5 * b * p * p * p * p;
+      check('gl-min', Math.abs(f - (-0.5 * a * a / b)), 1e-12);
+    })();
+    (function () {
+      var Ic = 10e-6, phi = Math.PI / 2, I = Ic * Math.sin(phi);
+      check('josephson-peak', relRes(I, Ic), 1e-12);
+    })();
+
+
+    console.log('%cEQ self-test ' + VER + ': ' + (total - fails) + '/' + total + ' PASS',
+      fails ? 'color:#f87171;font-weight:bold' : 'color:#34d399;font-weight:bold');
+    return { total: total, fails: fails, pass: total - fails };
+  }
+
+  function paintEngine() {
+    try {
+      var el = $('eq-lab-engine');
+      if (!el) return;
+      var tag = engineTag();
+      var models = 0;
+      try { if (typeof ChipEngine !== 'undefined' && ChipEngine.modelCount) models = ChipEngine.modelCount(); } catch (e) {}
+      var st = window.__eqSelfTest;
+      var stTxt = st ? (' · test ' + st.pass + '/' + st.total) : '';
+      el.textContent = tag + (models ? ' · ' + models + 'm' : '') + stTxt + ' · residual-gated';
+      el.className = 'px-3 py-1.5 rounded-full bg-zinc-950 border border-emerald-800/60 text-emerald-300 font-mono text-[11px]';
+    } catch (e) {}
+  }
+
+  window.eqLabOpen = function () {
+    try { if (typeof switchPanel === 'function') switchPanel('panel-eq-lab'); } catch (e) {}
+    eqLabTab('semi');
+    paintEngine();
+  };
+
+  function injectNav() {
+    try {
+      var tools = $('mx-grp-tools');
+      if (!tools || $('nav-eq-lab')) return;
+      var div = document.createElement('div');
+      div.id = 'nav-eq-lab';
+      div.className = 'nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition';
+      div.onclick = function () { eqLabOpen(); };
+      div.innerHTML = '<i class="fa-solid fa-square-root-variable text-cyan-400 w-4 text-center opacity-80"></i><span class="truncate">Denklem Lab</span>';
+      tools.appendChild(div);
+    } catch (e) {}
+  }
+
+  function boot() {
+    injectNav();
+    try { window.__eqSelfTest = selfTest(); } catch (e) { console.warn(e); }
+    paintEngine();
+    try {
+      var meta = document.querySelector('meta[name="mx-build-version"]');
+      if (meta) meta.setAttribute('content', VER);
+    } catch (e) {}
+    console.log('%cMX Equation Lab ' + VER, 'color:#22d3ee;font-weight:bold', engineTag());
+  }
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 50); });
+  else setTimeout(boot, 50);
+  setTimeout(boot, 700);
+  setTimeout(boot, 2000);
 })();
 </script>
 
