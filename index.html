@@ -5,7 +5,7 @@
 <meta name="mx-build-note" content="GFortran Professional Lab · Equation Lab · Semiconductor · Circuit · Finance · residual-gated"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MühendisX Professional · v30.6.60 · FIX · Fortran · CODATA</title>
+    <title>MühendisX Professional · v30.7.0 · PRO</title>
     <meta name="description" content="Profesyonel mühendislik hesaplama platformu. NumPy, SciPy DOP853/BDF, SymPy exact, C++17/WASM ChipEngine, CODATA 2018 SI, residual-gated doğrulama.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -124,7 +124,20 @@
       .mx-nav-row.nav-active { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35); }
       .mx-nav-group button { user-select: none; }
     </style>
-    </head>
+    
+<style id="mx-pro-layer">
+.mxpro-toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:0 0 1rem}
+.mxpro-search{flex:1;min-width:180px;background:#09090b;border:1px solid #3f3f46;border-radius:12px;padding:.55rem .8rem;color:#e4e4e7;font-size:13px}
+.mxpro-search:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
+.mxpro-chip{font-size:10px;color:#a1a1aa;background:#18181b;border:1px solid #27272a;border-radius:999px;padding:.2rem .55rem}
+.mxpro-copy{margin-top:.4rem;font-size:10px;color:#a1a1aa;background:#18181b;border:1px solid #3f3f46;border-radius:8px;padding:.2rem .5rem;cursor:pointer}
+.mxpro-copy:hover{color:#fff;border-color:#71717a}
+.mxpro-toast{position:fixed;bottom:18px;right:18px;z-index:99999;background:#18181b;border:1px solid #3f3f46;color:#e4e4e7;padding:.7rem 1rem;border-radius:12px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .25s}
+.mxpro-toast.show{opacity:1}
+input.modern-input:invalid,input.mxpro-bad{border-color:#f43f5e}
+</style>
+
+</head>
 <body class="bg-zinc-950 text-zinc-200">
     <!-- Navbar -->
     <nav class="border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-xl sticky top-0 z-50">
@@ -336,6 +349,13 @@
 <div id="nav-space-batch" onclick="switchPanel('panel-space-batch')" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-satellite text-indigo-300 w-4 text-center opacity-80"></i><span class="truncate">Uzay · Uydu</span></div>
 <div id="nav-space100" onclick="switchPanel('panel-space100')" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-shuttle-space text-indigo-400 w-4 text-center opacity-80"></i><span class="truncate">Uzay 100</span></div>
 <div id="nav-space50pro" onclick="switchPanel('panel-space50pro');setTimeout(function(){try{space50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-satellite text-cyan-300 w-4 text-center opacity-80"></i><span class="truncate">50 İleri Uzay <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-spacenav" onclick="switchPanel('panel-spacenav');setTimeout(function(){try{spacenavRender()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-compass text-blue-300 w-4 text-center opacity-80"></i><span class="truncate">Uzay Navigasyon Pro <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-compass" onclick="switchPanel('panel-compass');setTimeout(function(){try{compassRender()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-location-arrow text-rose-300 w-4 text-center opacity-80"></i><span class="truncate">Uzay Pusulası <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-ac50" onclick="switchPanel('panel-ac50');setTimeout(function(){try{ac50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-plane text-sky-300 w-4 text-center opacity-80"></i><span class="truncate">50 Uçak İnşa <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-arch50" onclick="switchPanel('panel-arch50');setTimeout(function(){try{arch50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-building text-amber-300 w-4 text-center opacity-80"></i><span class="truncate">50 Mimari İnşaat <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-farm50" onclick="switchPanel('panel-farm50');setTimeout(function(){try{farm50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-wheat-awn text-lime-300 w-4 text-center opacity-80"></i><span class="truncate">50 Tarım / Çiftçi <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-mch50" onclick="switchPanel('panel-mch50');setTimeout(function(){try{mch50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-gears text-orange-300 w-4 text-center opacity-80"></i><span class="truncate">50 Makine İmalat <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
+<div id="nav-acc50" onclick="switchPanel('panel-acc50');setTimeout(function(){try{acc50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-calculator text-emerald-300 w-4 text-center opacity-80"></i><span class="truncate">50 Muhasebe <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
 <div id="nav-fusion50" onclick="switchPanel('panel-fusion50');setTimeout(function(){try{fusion50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-atom text-amber-300 w-4 text-center opacity-80"></i><span class="truncate">50 Füzyon Reaktör <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
 <div id="nav-ship50" onclick="switchPanel('panel-ship50');setTimeout(function(){try{ship50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-ship text-sky-300 w-4 text-center opacity-80"></i><span class="truncate">50 Gemi İnşa <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
 <div id="nav-universe50" onclick="switchPanel('panel-universe50');setTimeout(function(){try{universe50Render()}catch(e){}},50)" class="nav-item mx-nav-row px-3 py-2 flex items-center gap-x-2.5 text-[13px] cursor-pointer hover:bg-zinc-800/80 rounded-xl transition"><i class="fa-solid fa-globe text-violet-300 w-4 text-center opacity-80"></i><span class="truncate">50 Evren Formülü <span class="text-[9px] text-zinc-500">YENİ</span></span></div>
@@ -10952,6 +10972,77 @@ json.dumps(out)
                 <p class="text-sm text-zinc-500 mb-2">Lawson · triple product · beta · confınment · tokamak · nötron yükü · tritium · Q faktörü · MHD limitleri</p>
                 <p class="text-[11px] text-zinc-600 mb-6 font-mono">SI · plazma fiziği · domain koruması · ITER/SPARC tipi mühendislik formülleri · silah tasarımı değil</p>
                 <div id="fusion50-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        
+        
+        
+        
+        
+        
+        
+        <div id="panel-acc50" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-calculator text-emerald-400"></i> 50 Muhasebe Formülü</h2>
+                <p class="text-sm text-zinc-500 mb-2">KDV · faiz · amortisman · oranlar · maliyet · başa baş · bordro mertebesi · iskonto</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">Muhasebe matematiği · resmi beyanname yerine geçmez · oranlar dönemsel</p>
+                <div id="acc50-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="panel-mch50" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-gears text-orange-400"></i> 50 Makine İmalat Formülü</h2>
+                <p class="text-sm text-zinc-500 mb-2">Mil · dişli · rulman · kayış · yay · kaynak · talaş · tolerans · mukavemet · titreşim · ısı</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">SI · makine elemanları + imalat + mukavemet · profesyonel mertebe · standart yerine geçmez</p>
+                <div id="mch50-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="panel-farm50" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-wheat-awn text-lime-400"></i> 50 Tarım / Çiftçi Formülü</h2>
+                <p class="text-sm text-zinc-500 mb-2">Alan · tohum · gübre · sulama · verim · yem · hayvan · depo · makine</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">SI + tarla birimleri · agronomi mertebesi · tarla tavsiyesi yerine geçmez</p>
+                <div id="farm50-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="panel-arch50" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-building text-amber-400"></i> 50 Mimari / Ev İnşaat Formülü</h2>
+                <p class="text-sm text-zinc-500 mb-2">Alan · hacim · merdiven · çatı · döşeme · duvar · yük · beton · ısı · aydınlatma · statik kabaca</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">SI · mimari tasarım + yapı statiği mertebesi · yönetmelik yerine geçmez</p>
+                <div id="arch50-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="panel-ac50" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-plane text-sky-400"></i> 50 Uçak İnşa Formülü</h2>
+                <p class="text-sm text-zinc-500 mb-2">İskelet / spar · kanat geometrisi · kaldırma-sürükleme · motor / pervane / jet · performans · dayanım</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">SI · uçak yapısı + kanat + tahrik · domain koruması · havacılık mühendisliği</p>
+                <div id="ac50-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="panel-compass" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-location-arrow text-rose-400"></i> Uzay Pusulası</h2>
+                <p class="text-sm text-zinc-500 mb-2">Kuzey · Güney · Doğu · Batı · LVLH · nadir/zenit · hız yönü · manyetik · güneş azimut</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">Yörünge yerel ufku · coğrafi yönler · tutum pusulası · profesyonel uzay yön sistemi</p>
+                <div id="compass-visual" class="mb-6 flex justify-center"></div>
+                <div id="compass-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="panel-spacenav" class="panel hidden">
+            <div class="max-w-screen-2xl mx-auto px-4 md:px-8 py-8">
+                <h2 class="text-2xl font-bold mb-2 flex items-center gap-x-3"><i class="fa-solid fa-compass text-blue-400"></i> Uzay Navigasyon Pro</h2>
+                <p class="text-sm text-zinc-500 mb-2">Yörünge elemanları · Lambert · CW randevu · yer izi · görüş penceresi · tutum · GDOP · fazlama · navigasyon hatası</p>
+                <p class="text-[11px] text-zinc-600 mb-6 font-mono">Profesyonel GN&C · SI · domain-guarded · uzay aracı navigasyon mühendisliği</p>
+                <div id="spacenav-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
             </div>
         </div>
 
@@ -115073,11 +115164,16 @@ Generated by ${VER}
     var y = Array.isArray(y0) ? y0.slice() : y0;
     var isArr = Array.isArray(y);
     var hist = [{ t: t, y: isArr ? y.slice() : y }];
-    function finiteY(yy) {
+    function isFiniteY(yy) {
       if (isArr) {
-        for (var j = 0; j < yy.length; j++) if (!isFinite(yy[j])) throw new Error('Sayısal patlama (NaN/Inf) — adım veya parametreleri küçültün');
-      } else if (!isFinite(yy)) throw new Error('Sayısal patlama (NaN/Inf) — adım veya parametreleri küçültün');
+        for (var j = 0; j < yy.length; j++) if (!isFinite(yy[j])) return false;
+        return true;
+      }
+      return isFinite(yy);
     }
+    rk4.lastWarn = '';
+    var yPrev = isArr ? y.slice() : y;
+    var tPrev = t;
     for (var i = 0; i < nSteps; i++) {
       var k1 = f(t, y);
       if (isArr) {
@@ -115095,7 +115191,12 @@ Generated by ${VER}
         var k4s = f(t + h, y + h * k3s);
         y = y + (h / 6) * (k1 + 2 * k2s + 2 * k3s + k4s);
       }
-      finiteY(y);
+      if (!isFiniteY(y)) {
+        rk4.lastWarn = 'Sayısal patlama t≈'+tPrev+' — son geçerli durum gösterildi. t_son / adım / parametre küçültün.';
+        return { t: tPrev, y: yPrev, hist: hist, steps: i, warn: rk4.lastWarn };
+      }
+      yPrev = isArr ? y.slice() : y;
+      tPrev = t + h;
       t += h;
       if (i % Math.max(1, Math.floor(nSteps / 8)) === 0 || i === nSteps - 1) {
         hist.push({ t: t, y: isArr ? y.slice() : y });
@@ -115232,8 +115333,8 @@ Generated by ${VER}
       inputs: [{key:'I',label:'I',def:'3'},{key:'x0',label:'x0',def:'-1'},{key:'y0',label:'y0',def:'0'},{key:'z0',label:'z0',def:'0'},{key:'t1',label:'t son',def:'100'}],
       run: function(v){ var I=+v.I; var res=rk4(function(t,u){return [u[1]-u[0]*u[0]*u[0]+3*u[0]*u[0]-u[2]+I,1-5*u[0]*u[0]-u[1],0.001*(4*(u[0]+1.6)-u[2])];},0,[+v.x0,+v.y0,+v.z0],+v.t1,2000); return 'x,y,z = '+res.y.map(fN).join(', ')+'\n\n'+tableHist(res.hist,['x','y','z']); }},
     { key: 'oregonator', title: 'Oregonator', desc: "BZ salınım reaksiyonu",
-      inputs: [{key:'s',label:'s',def:'77.27'},{key:'q',label:'q',def:'8.375e-6'},{key:'w',label:'w',def:'0.161'},{key:'f',label:'f',def:'1'},{key:'x0',label:'x0',def:'1'},{key:'y0',label:'y0',def:'1'},{key:'z0',label:'z0',def:'1'},{key:'t1',label:'t son',def:'50'}],
-      run: function(v){ var s=+v.s,q=+v.q,w=+v.w,f=+v.f; var res=rk4(function(t,u){return [s*(u[1]-u[0]*u[1]+u[0]-q*u[0]*u[0]),(1/s)*(-u[1]-u[0]*u[1]+f*u[2]),w*(u[0]-u[2])];},0,[+v.x0,+v.y0,+v.z0],+v.t1,1500); return 'x,y,z = '+res.y.map(fN).join(', ')+'\n\n'+tableHist(res.hist,['x','y','z']); }},
+      inputs: [{key:'s',label:'s',def:'8'},{key:'q',label:'q',def:'0.08'},{key:'w',label:'w',def:'0.16'},{key:'f',label:'f',def:'1'},{key:'x0',label:'x0',def:'1'},{key:'y0',label:'y0',def:'1'},{key:'z0',label:'z0',def:'1'},{key:'t1',label:'t son',def:'15'}],
+      run: function(v){ var s=+v.s,q=+v.q,w=+v.w,f=+v.f; if(Math.abs(s)<1e-9) throw new Error('s ≠ 0'); if(q<0) throw new Error('q ≥ 0'); if(+v.t1>30) throw new Error('t_son ≤ 30 (sert sistem)'); var res=rk4(function(t,u){return [s*(u[1]-u[0]*u[1]+u[0]-q*u[0]*u[0]),(1/s)*(-u[1]-u[0]*u[1]+f*u[2]),w*(u[0]-u[2])];},0,[+v.x0,+v.y0,+v.z0],+v.t1,2000); return 'x,y,z = '+res.y.map(fN).join(', ')+'\n\n'+tableHist(res.hist,['x','y','z']); }},
     { key: 'rabinovich', title: 'Rabinovich–Fabrikant', desc: "Kaotik 3D sistem",
       inputs: [{key:'alpha',label:'α',def:'0.98'},{key:'gamma',label:'γ',def:'0.1'},{key:'x0',label:'x0',def:'-1'},{key:'y0',label:'y0',def:'0'},{key:'z0',label:'z0',def:'0.5'},{key:'t1',label:'t son',def:'40'}],
       run: function(v){ var al=+v.alpha,ga=+v.gamma; var res=rk4(function(t,u){return [u[1]*(u[2]-1+u[0]*u[0])+ga*u[0],u[0]*(3*u[2]+1-u[0]*u[0])+ga*u[1],-2*u[2]*(al+u[0]*u[1])];},0,[+v.x0,+v.y0,+v.z0],+v.t1,1500); return 'x,y,z = '+res.y.map(fN).join(', ')+'\n\n'+tableHist(res.hist,['x','y','z']); }},
@@ -115310,7 +115411,10 @@ Generated by ${VER}
         var el = document.getElementById('de50c-in-' + key + '-' + inp.key);
         vals[inp.key] = el ? el.value : '';
       });
-      out.textContent = c.run(vals);
+      rk4.lastWarn = '';
+      var txt = c.run(vals);
+      if (rk4.lastWarn) txt = '⚠ ' + rk4.lastWarn + '\n\n' + txt;
+      out.textContent = txt;
       out.classList.remove('hidden');
     } catch (e) {
       out.textContent = '⚠ Hata: ' + (e && e.message ? e.message : String(e));
@@ -117423,7 +117527,7 @@ Generated by ${VER}
         var P=E*I/e_C*e_C; // E(J)*I(A/e *e) = E_beam(eV)*e * (I/e) wait
         // P(W) = E(eV) * e * (particles/s) ; I_eq = e * particles/s → P = E_eV * I
         var Pw = num(v.E)*1e3 * num(v.I); // eV*A = W
-        return 'P_NBI ≈ '+fN(Pw/1e6)+' MW\n(E_keV × I_A = kW ölçeği → ×1000)';
+        return 'P_NBI ≈ '+fN(Pw/1e6)+' MW\n(E_keV × 1000 × I_A = W → /1e6 = MW)';
       }},
     // 29 ECRH resonance
     { key: 'ecrh', title: 'ECRH Rezonans', desc: 'f = n f_ce  (n=1,2,…)',
@@ -118035,7 +118139,7 @@ Generated by ${VER}
         var m=num(v.disp)*1000, V=num(v.V)*0.514444, R=num(v.R)*1000;
         if(R<=0) throw new Error('R > 0');
         var s=m*V*V/(2*R);
-        return 's ≈ '+fN(s)+' m  ('+fN(s/num(v.disp)>0?s/150:0)+' × L varsayımı yok)\n(Direnç+ters pervane modeli basitleştirildi)';
+        return 's ≈ '+fN(s)+' m\n(Direnç + ters pervane modeli basitleştirildi)';
       }},
     // 41 Bow thruster force
     { key: 'bowthrust', title: 'Baş Manevra İtki', desc: 'T ≈ ρ Q V_j  (pompa/jet kabaca)',
@@ -118372,7 +118476,7 @@ Generated by ${VER}
       inputs: [],
       run: function(){
         var mp=Math.sqrt(hbar*c/G);
-        return 'm_p = '+fN(mp)+' kg\n= '+fN(mp/1e9/e*c*c)+' GeV/c² mertebesi kontrol';
+        return 'm_p = '+fN(mp)+' kg\n= '+fN(mp*c*c/e/1e9)+' GeV/c²';
       }},
     // 18 Fine structure
     { key: 'alpha', title: 'İnce Yapı Sabiti α', desc: 'α = e² / (4π ε₀ ħ c)',
@@ -118417,7 +118521,7 @@ Generated by ${VER}
           if(lam<=0) throw new Error('λ > 0');
           E=h*c/lam;
         }
-        return 'E = '+fN(E)+' J\n= '+fN(E/e)+' eV\n= '+fN(E/e/1.602e-19*1e-19?E/e:E/e)+' eV';
+        return 'E = '+fN(E)+' J\n= '+fN(E/e)+' eV';
       }},
     // 23 Wien displacement
     { key: 'wien', title: 'Wien Kayma Yasası', desc: 'λ_max T = b ≈ 2.897e-3 m·K',
@@ -118528,7 +118632,7 @@ Generated by ${VER}
         var T=num(v.T);
         var a=4*sigma_SB/c;
         var u=a*Math.pow(T,4);
-        return 'u_CMB ≈ '+fN(u)+' J/m³\n≈ '+fN(u/e*1e6)+' eV/cm³ mertebesi';
+        return 'u_CMB ≈ '+fN(u)+' J/m³\n≈ '+fN(u/e/1e6)+' eV/cm³';
       }},
     // 36 Vacuum energy density from Lambda
     { key: 'lambda', title: 'Kozmolojik Sabit → ρ_Λ', desc: 'ρ_Λ = Λ c² / (8π G)',
@@ -118757,8 +118861,8 @@ var CARDS=[
 {key:'chem_pot',title:'Kimyasal potansiyel',desc:'μ=μ°+RT ln a',inputs:[{key:'mu0',label:'μ° kJ',def:'0'},{key:'a',label:'a',def:'0.5'},{key:'T',label:'T',def:'298'}],run:function(v){return 'μ = '+fN(num(v.mu0)+8.314e-3*num(v.T)*Math.log(num(v.a)))+' kJ/mol';}},
 {key:'fugacity',title:'Fugasite',desc:'f=φP',inputs:[{key:'phi',label:'φ',def:'1'},{key:'P',label:'P',def:'1'}],run:function(v){return 'f = '+fN(num(v.phi)*num(v.P))+' bar';}},
 {key:'activity',title:'Aktivite',desc:'a=γ m',inputs:[{key:'g',label:'γ',def:'0.8'},{key:'m',label:'m',def:'0.1'}],run:function(v){return 'a = '+fN(num(v.g)*num(v.m));}},
-{key:'ionicI',title:'İyonik kuvvet',desc:'I=½Σcz²',inputs:[{key:'c1',label:'c1',def:'0.1'},{key:'z1',label:'z1',def:'1'},{key:'c2',label:'c2',def:'0.1'},{key:'z2',label:'z2',def:'1'}],run:function(v){return 'I = '+fN(0.5*(num(v.c1)*num(v.z1)**2+num(v.c2)*num(v.z2)**2));}},
-{key:'debyeH',title:'Debye-Hückel',desc:'logγ=-Az²√I',inputs:[{key:'A',label:'A',def:'0.51'},{key:'z',label:'z',def:'1'},{key:'I',label:'I',def:'0.01'}],run:function(v){var lg=-num(v.A)*num(v.z)**2*Math.sqrt(num(v.I));return 'logγ = '+fN(lg)+'\nγ = '+fN(Math.pow(10,lg));}},
+{key:'ionicI',title:'İyonik kuvvet',desc:'I=½Σcz²',inputs:[{key:'c1',label:'c1',def:'0.1'},{key:'z1',label:'z1',def:'1'},{key:'c2',label:'c2',def:'0.1'},{key:'z2',label:'z2',def:'1'}],run:function(v){return 'I = '+fN(0.5*(num(v.c1)*Math.pow(num(v.z1),2)+num(v.c2)*Math.pow(num(v.z2),2)));}},
+{key:'debyeH',title:'Debye-Hückel',desc:'logγ=-Az²√I',inputs:[{key:'A',label:'A',def:'0.51'},{key:'z',label:'z',def:'1'},{key:'I',label:'I',def:'0.01'}],run:function(v){var lg=-num(v.A)*Math.pow(num(v.z),2)*Math.sqrt(num(v.I));return 'logγ = '+fN(lg)+'\nγ = '+fN(Math.pow(10,lg));}},
 {key:'extent',title:'İlerleme ξ',desc:'n=n0+νξ',inputs:[{key:'n0',label:'n0',def:'1'},{key:'nu',label:'ν',def:'-1'},{key:'xi',label:'ξ',def:'0.3'}],run:function(v){return 'n = '+fN(num(v.n0)+num(v.nu)*num(v.xi));}},
 {key:'Kc',title:'K_c',desc:'[C]^c/([A]^a[B]^b)',inputs:[{key:'C',label:'[C]',def:'2'},{key:'A',label:'[A]',def:'1'},{key:'B',label:'[B]',def:'1'},{key:'c',label:'c',def:'1'},{key:'a',label:'a',def:'1'},{key:'b',label:'b',def:'1'}],run:function(v){return 'Kc = '+fN(Math.pow(num(v.C),num(v.c))/(Math.pow(num(v.A),num(v.a))*Math.pow(num(v.B),num(v.b))));}},
 {key:'Kp',title:'Kp=Kc(RT)^Δn',desc:'',inputs:[{key:'Kc',label:'Kc',def:'10'},{key:'dn',label:'Δn',def:'1'},{key:'T',label:'T',def:'298'},{key:'R',label:'R',def:'0.08314'}],run:function(v){return 'Kp = '+fN(num(v.Kc)*Math.pow(num(v.R)*num(v.T),num(v.dn)));}},
@@ -118808,7 +118912,7 @@ var CARDS=[
 {key:'boltzmann_pop',title:'Boltzmann N2/N1',desc:'exp(-ΔE/kT)',inputs:[{key:'dE',label:'ΔE J',def:'1e-20'},{key:'T',label:'T',def:'300'}],run:function(v){return 'N2/N1 = '+fN(Math.exp(-num(v.dE)/(1.381e-23*num(v.T))));}},
 {key:'young',title:'Young açı',desc:'cosθ=(γSV-γSL)/γLV',inputs:[{key:'gsv',label:'γSV',def:'0.05'},{key:'gsl',label:'γSL',def:'0.03'},{key:'glv',label:'γLV',def:'0.072'}],run:function(v){var cos=(num(v.gsv)-num(v.gsl))/num(v.glv);if(Math.abs(cos)>1)return 'cosθ='+fN(cos);return 'θ = '+fN(Math.acos(cos)*180/Math.PI)+'°';}},
 {key:'laplace',title:'Laplace ΔP',desc:'2γ/r',inputs:[{key:'g',label:'γ',def:'0.072'},{key:'r',label:'r m',def:'1e-6'}],run:function(v){return 'ΔP = '+fN(2*num(v.g)/num(v.r))+' Pa';}},
-{key:'stokes',title:'Stokes v',desc:'2r²Δρg/(9η)',inputs:[{key:'r',label:'r',def:'1e-5'},{key:'rho',label:'ρ',def:'2000'},{key:'rhof',label:'ρf',def:'1000'},{key:'eta',label:'η',def:'0.001'}],run:function(v){return 'v = '+fN(2*num(v.r)**2*(num(v.rho)-num(v.rhof))*9.81/(9*num(v.eta)))+' m/s';}},
+{key:'stokes',title:'Stokes v',desc:'2r²Δρg/(9η)',inputs:[{key:'r',label:'r',def:'1e-5'},{key:'rho',label:'ρ',def:'2000'},{key:'rhof',label:'ρf',def:'1000'},{key:'eta',label:'η',def:'0.001'}],run:function(v){return 'v = '+fN(2*Math.pow(num(v.r),2)*(num(v.rho)-num(v.rhof))*9.81/(9*num(v.eta)))+' m/s';}},
 {key:'henry',title:'Henry',desc:'p=KH x',inputs:[{key:'KH',label:'KH',def:'1000'},{key:'x',label:'x',def:'0.001'}],run:function(v){return 'p = '+fN(num(v.KH)*num(v.x));}},
 {key:'langmuir',title:'Langmuir',desc:'θ=Kp/(1+Kp)',inputs:[{key:'K',label:'K',def:'1'},{key:'p',label:'p',def:'1'}],run:function(v){return 'θ = '+fN(num(v.K)*num(v.p)/(1+num(v.K)*num(v.p)));}},
 {key:'freundlich',title:'Freundlich',desc:'K c^1/n',inputs:[{key:'K',label:'K',def:'1'},{key:'c',label:'c',def:'0.5'},{key:'n',label:'n',def:'2'}],run:function(v){return 'q = '+fN(num(v.K)*Math.pow(num(v.c),1/num(v.n)));}},
@@ -118826,6 +118930,1713 @@ host.addEventListener('click',function(e){var btn=e.target.closest('[data-ch100-
 function run(key){var c=CARDS.filter(function(x){return x.key===key;})[0];if(!c)return;var out=document.getElementById('ch100-out-'+key);try{var vals={};(c.inputs||[]).forEach(function(inp){var el=document.getElementById('ch100-in-'+key+'-'+inp.key);vals[inp.key]=el?el.value:'';});out.textContent=c.run(vals);out.classList.remove('hidden');}catch(e){out.textContent='⚠ Hata: '+(e&&e.message?e.message:String(e));out.classList.remove('hidden');}}
 window.chem100Render=render;window.chem100Run=run;
 function boot(){try{render();}catch(e){console.warn('CHEM100',e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,50);});else setTimeout(boot,50);
+})();
+</script>
+
+<script>
+/* ========================================================================
+   SPACE-NAV PRO · Profesyonel Uzay Navigasyonu & GN&C
+   Yörünge · randevu · rehberlik · yer istasyonu · tutum · hata bütçesi
+   ======================================================================== */
+(function () {
+  'use strict';
+
+  var MU = 3.986004418e14;
+  var RE = 6378137;
+  var OMEGA_E = 7.2921159e-5;
+  var J2 = 1.08262668e-3;
+  var C = 299792458;
+  var DEG = Math.PI / 180;
+  var RAD = 180 / Math.PI;
+
+  function fN(x, d) {
+    d = d || 6;
+    if (typeof x !== 'number' || !isFinite(x)) return isNaN(x) ? 'NaN' : String(x);
+    if (Math.abs(x) >= 1e6 || (Math.abs(x) > 0 && Math.abs(x) < 1e-4)) return x.toExponential(4);
+    return String(Math.round(x * Math.pow(10, d)) / Math.pow(10, d));
+  }
+  function num(v, name, def) {
+    if (v === undefined || v === null || String(v).trim() === '') {
+      if (def !== undefined) return def;
+      throw new Error((name || 'Parametre') + ' boş olamaz');
+    }
+    var x = Number(v);
+    if (!isFinite(x)) throw new Error((name || 'Parametre') + ' sayı olmalı');
+    return x;
+  }
+  function wrap360(d) { d = d % 360; if (d < 0) d += 360; return d; }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+
+  var CARDS = [
+    // —— Orbital elements / state ——
+    { key: 'coe_period', title: 'Periyot & n (COE)', desc: 'T = 2π√(a³/μ)  ·  n = √(μ/a³)',
+      inputs: [{key:'a',label:'a (km)',def:'6778'},{key:'mu',label:'μ (km³/s²)',def:'398600.4418'}],
+      run: function(v){
+        var a=num(v.a)*1000, mu=num(v.mu)*1e9;
+        if(a<=0) throw new Error('a > 0');
+        var n=Math.sqrt(mu/(a*a*a)), T=2*Math.PI/n;
+        return 'n = '+fN(n)+' rad/s\nn = '+fN(n*RAD*86400)+' °/gün\nT = '+fN(T)+' s  ('+fN(T/60)+' dk)';
+      }},
+    { key: 'rv_to_energy', title: 'r,v → Enerji & a', desc: 'ε = v²/2 − μ/r  ·  a = −μ/(2ε)',
+      inputs: [{key:'r',label:'r (km)',def:'6778'},{key:'v',label:'v (km/s)',def:'7.67'},{key:'mu',label:'μ',def:'398600.4418'}],
+      run: function(v){
+        var r=num(v.r)*1000, vel=num(v.v)*1000, mu=num(v.mu)*1e9;
+        var eps=vel*vel/2 - mu/r;
+        var a = Math.abs(eps)>1e-12 ? -mu/(2*eps) : Infinity;
+        return 'ε = '+fN(eps)+' J/kg\na = '+(isFinite(a)?fN(a/1000)+' km':'∞')+'\n'+(eps<0?'Eliptik':eps===0?'Parabolik':'Hiperbolik');
+      }},
+    { key: 'coe_rp_ra', title: 'rp, ra → a, e', desc: 'a=(rp+ra)/2  ·  e=(ra−rp)/(ra+rp)',
+      inputs: [{key:'rp',label:'rp (km)',def:'6678'},{key:'ra',label:'ra (km)',def:'42164'}],
+      run: function(v){
+        var rp=num(v.rp), ra=num(v.ra);
+        if(ra<rp||rp<=0) throw new Error('ra ≥ rp > 0');
+        var a=0.5*(rp+ra), e=(ra-rp)/(ra+rp);
+        return 'a = '+fN(a)+' km\ne = '+fN(e)+'\np = '+fN(a*(1-e*e))+' km';
+      }},
+    { key: 'true_anom', title: 'E → ν (gerçek anomali)', desc: 'tan(ν/2)=√((1+e)/(1−e)) tan(E/2)',
+      inputs: [{key:'E',label:'E (°)',def:'60'},{key:'e',label:'e',def:'0.2'}],
+      run: function(v){
+        var E=num(v.E)*DEG, e=num(v.e);
+        if(e<0||e>=1) throw new Error('0 ≤ e < 1');
+        var nu=2*Math.atan2(Math.sqrt(1+e)*Math.sin(E/2), Math.sqrt(1-e)*Math.cos(E/2));
+        return 'ν = '+fN(wrap360(nu*RAD))+' °';
+      }},
+    { key: 'mean_anom', title: 'M → E (Kepler, Newton)', desc: 'E − e sin E = M',
+      inputs: [{key:'M',label:'M (°)',def:'60'},{key:'e',label:'e',def:'0.3'}],
+      run: function(v){
+        var M=num(v.M)*DEG, e=num(v.e);
+        if(e<0||e>=1) throw new Error('0 ≤ e < 1');
+        var E=M;
+        for(var i=0;i<20;i++){ var d=E-e*Math.sin(E)-M; E-=d/(1-e*Math.cos(E)); if(Math.abs(d)<1e-12) break; }
+        return 'E = '+fN(wrap360(E*RAD))+' °\nresidual = '+fN(Math.abs(E-e*Math.sin(E)-M));
+      }},
+    { key: 'flight_path', title: 'Uçuş Yolu Açısı φ', desc: 'tan φ = e sinν / (1+e cosν)',
+      inputs: [{key:'e',label:'e',def:'0.15'},{key:'nu',label:'ν (°)',def:'45'}],
+      run: function(v){
+        var e=num(v.e), nu=num(v.nu)*DEG;
+        var phi=Math.atan2(e*Math.sin(nu), 1+e*Math.cos(nu));
+        return 'φ = '+fN(phi*RAD)+' °';
+      }},
+    { key: 'arglat', title: 'Argument of Latitude', desc: 'u = ω + ν',
+      inputs: [{key:'w',label:'ω (°)',def:'30'},{key:'nu',label:'ν (°)',def:'40'}],
+      run: function(v){ return 'u = '+fN(wrap360(num(v.w)+num(v.nu)))+' °'; }},
+
+    // —— Relative motion / rendezvous ——
+    { key: 'cw_n', title: 'CW n (hedef yörünge)', desc: 'n = √(μ/a³)  — Clohessy–Wiltshire',
+      inputs: [{key:'a',label:'a hedef (km)',def:'6778'}],
+      run: function(v){
+        var a=num(v.a)*1000;
+        var n=Math.sqrt(MU/(a*a*a));
+        return 'n = '+fN(n)+' rad/s\nT = '+fN(2*Math.PI/n/60)+' dk';
+      }},
+    { key: 'cw_state', title: 'CW Durum (t)', desc: 'Lineer relatif hareket — x radial, y along-track',
+      inputs: [{key:'n',label:'n (rad/s)',def:'0.00113'},{key:'x0',label:'x0 (m)',def:'0'},{key:'y0',label:'y0 (m)',def:'1000'},{key:'z0',label:'z0 (m)',def:'0'},{key:'vx0',label:'vx0',def:'0'},{key:'vy0',label:'vy0',def:'0'},{key:'vz0',label:'vz0',def:'0'},{key:'t',label:'t (s)',def:'500'}],
+      run: function(v){
+        var n=num(v.n),x0=num(v.x0),y0=num(v.y0),z0=num(v.z0),vx0=num(v.vx0),vy0=num(v.vy0),vz0=num(v.vz0),t=num(v.t);
+        var s=Math.sin(n*t),c=Math.cos(n*t);
+        var x = x0*(4-3*c) + vx0*s/n + 2*vy0*(1-c)/n;
+        var y = 6*x0*(s-n*t) + y0 - 2*vx0*(1-c)/n + vy0*(4*s/n - 3*t);
+        var z = z0*c + vz0*s/n;
+        return 'x = '+fN(x)+' m\ny = '+fN(y)+' m\nz = '+fN(z)+' m\nρ = '+fN(Math.hypot(x,y,z))+' m';
+      }},
+    { key: 'cw_vbar', title: 'V-bar Yaklaşma', desc: 'Along-track drift: ẏ ≈ −1.5 n x  (doğal)',
+      inputs: [{key:'n',label:'n',def:'0.00113'},{key:'x',label:'x radial (m)',def:'-50'}],
+      run: function(v){
+        var n=num(v.n),x=num(v.x);
+        var vyd=-1.5*n*x;
+        return 'Doğal ẏ ≈ '+fN(vyd)+' m/s\n(Drift yönü: x<0 → öne)';
+      }},
+    { key: 'phase_angle', title: 'Faz Açısı (Hohmann randevu)', desc: 'φ = π(1 − ((r1+r2)/(2 r2))^{3/2})',
+      inputs: [{key:'r1',label:'r_chaser (km)',def:'6778'},{key:'r2',label:'r_target (km)',def:'6878'}],
+      run: function(v){
+        var r1=num(v.r1), r2=num(v.r2);
+        if(r1<=0||r2<=0) throw new Error('r > 0');
+        var phi=Math.PI*(1-Math.pow((r1+r2)/(2*r2),1.5));
+        return 'φ_lead ≈ '+fN(phi*RAD)+' °';
+      }},
+    { key: 'wait_time', title: 'Bekleme Süresi (faz)', desc: 't = Δφ / |ω2−ω1|',
+      inputs: [{key:'dphi',label:'Δφ (°)',def:'30'},{key:'a1',label:'a1 (km)',def:'6778'},{key:'a2',label:'a2 (km)',def:'6878'}],
+      run: function(v){
+        var dp=num(v.dphi)*DEG;
+        var a1=num(v.a1)*1000, a2=num(v.a2)*1000;
+        var w1=Math.sqrt(MU/(a1*a1*a1)), w2=Math.sqrt(MU/(a2*a2*a2));
+        var tw=Math.abs(dp/Math.abs(w2-w1));
+        return 't_bekleme ≈ '+fN(tw)+' s  ('+fN(tw/60)+' dk)';
+      }},
+    { key: 'coelliptic', title: 'Koelliptik ΔH', desc: 'ΔH ≈ (3/2) H · (Δa/a)  along-track ayırma',
+      inputs: [{key:'H',label:'H along (km)',def:'10'},{key:'a',label:'a (km)',def:'6778'},{key:'da',label:'Δa (km)',def:'1'}],
+      run: function(v){
+        var H=num(v.H), a=num(v.a), da=num(v.da);
+        return 'ΔH ≈ '+fN(1.5*H*(da/a))+' km (ölçek)\n(Koelliptik güvenlik ayırması)';
+      }},
+
+    // —— Lambert / transfer nav ——
+    { key: 'lambert_tof', title: 'Lambert TOF (min enerji)', desc: 'TOF ≈ π √(a_H³/μ)  (Hohmann)',
+      inputs: [{key:'r1',label:'r1 (km)',def:'6778'},{key:'r2',label:'r2 (km)',def:'42164'}],
+      run: function(v){
+        var r1=num(v.r1)*1000, r2=num(v.r2)*1000;
+        var aH=0.5*(r1+r2);
+        var TOF=Math.PI*Math.sqrt(aH*aH*aH/MU);
+        return 'a_transfer = '+fN(aH/1000)+' km\nTOF = '+fN(TOF)+' s  ('+fN(TOF/3600)+' saat)';
+      }},
+    { key: 'lambert_chord', title: 'Lambert kiriş & c', desc: 'c = |r2−r1|  ·  s = (r1+r2+c)/2',
+      inputs: [{key:'r1',label:'r1 (km)',def:'6778'},{key:'r2',label:'r2 (km)',def:'42164'},{key:'dtheta',label:'Δθ (°)',def:'180'}],
+      run: function(v){
+        var r1=num(v.r1), r2=num(v.r2), dt=num(v.dtheta)*DEG;
+        var c=Math.sqrt(r1*r1+r2*r2-2*r1*r2*Math.cos(dt));
+        var s=0.5*(r1+r2+c);
+        return 'c = '+fN(c)+' km\ns = '+fN(s)+' km\n(Lambert parametreleri)';
+      }},
+    { key: 'hohmann_nav', title: 'Hohmann Δv (nav bütçe)', desc: 'İki impulslu transfer Δv toplamı',
+      inputs: [{key:'r1',label:'r1 (km)',def:'6778'},{key:'r2',label:'r2 (km)',def:'42164'}],
+      run: function(v){
+        var r1=num(v.r1)*1000, r2=num(v.r2)*1000;
+        var aH=0.5*(r1+r2);
+        var v1=Math.sqrt(MU/r1), v2=Math.sqrt(MU/r2);
+        var vp=Math.sqrt(MU*(2/r1-1/aH)), va=Math.sqrt(MU*(2/r2-1/aH));
+        var dv=Math.abs(vp-v1)+Math.abs(v2-va);
+        return 'Δv1 = '+fN(Math.abs(vp-v1))+' m/s\nΔv2 = '+fN(Math.abs(v2-va))+' m/s\nΔv_tot = '+fN(dv)+' m/s';
+      }},
+    { key: 'plane_change_nav', title: 'Düzlem Değişimi (nav)', desc: 'Δv = 2 v sin(θ/2)  — apojede ucuz',
+      inputs: [{key:'v',label:'v (km/s)',def:'3.1'},{key:'theta',label:'θ (°)',def:'28.5'}],
+      run: function(v){
+        var vel=num(v.v)*1000, th=num(v.theta)*DEG;
+        var dv=2*vel*Math.sin(th/2);
+        return 'Δv = '+fN(dv)+' m/s  ('+fN(dv/1000)+' km/s)';
+      }},
+
+    // —— Ground track / station ——
+    { key: 'ground_shift', title: 'Yer İzi Kayması', desc: 'ΔL = −ω_E · T  (boylam / tur)',
+      inputs: [{key:'T',label:'T (dk)',def:'92'}],
+      run: function(v){
+        var T=num(v.T)*60;
+        var dL=-OMEGA_E*T*RAD;
+        return 'ΔL / tur ≈ '+fN(dL)+' °\n(Batıya, prograde)';
+      }},
+    { key: 'nodal_period', title: 'Düğümsel Periyot', desc: 'T_Ω ≈ T / (1 − Ω̇/n)  (J2 düzeltmeli kabaca)',
+      inputs: [{key:'a',label:'a (km)',def:'6778'},{key:'e',label:'e',def:'0'},{key:'i',label:'i (°)',def:'51.6'}],
+      run: function(v){
+        var a=num(v.a)*1000, e=num(v.e), i=num(v.i)*DEG;
+        var n=Math.sqrt(MU/(a*a*a));
+        var dO=-1.5*n*J2*Math.pow(RE/a,2)*Math.cos(i)/Math.pow(1-e*e,2);
+        var T=2*Math.PI/n;
+        var Tn=T/(1-dO/n);
+        return 'T = '+fN(T/60)+' dk\nT_düğümsel ≈ '+fN(Tn/60)+' dk\nΩ̇ = '+fN(dO*RAD*86400)+' °/gün';
+      }},
+    { key: 'access_elev', title: 'Yer İstasyonu Yükseklik Açısı', desc: 'sin ε = (r cosδ − R_E) / ρ  kabaca',
+      inputs: [{key:'h',label:'uydu h (km)',def:'500'},{key:'delta',label:'nadir açı δ (°)',def:'30'}],
+      run: function(v){
+        var h=num(v.h)*1000, d=num(v.delta)*DEG;
+        var r=RE+h;
+        var rho=Math.sqrt(r*r + RE*RE - 2*r*RE*Math.cos(d));
+        var sinE=(r*Math.cos(d)-RE)/rho;
+        var el=Math.asin(clamp(sinE,-1,1))*RAD;
+        return 'ρ ≈ '+fN(rho/1000)+' km\nε_yükseklik ≈ '+fN(el)+' °';
+      }},
+    { key: 'max_elev', title: 'Maksimum Yükseklik (overhead)', desc: 'ε_max zenit geçişinde',
+      inputs: [{key:'h',label:'h (km)',def:'500'},{key:'lat_diff',label:'Δlat min (°)',def:'5'}],
+      run: function(v){
+        var h=num(v.h)*1000, dl=num(v.lat_diff)*DEG;
+        var r=RE+h;
+        var rho=Math.sqrt(r*r+RE*RE-2*r*RE*Math.cos(dl));
+        var el=Math.asin(clamp((r*Math.cos(dl)-RE)/rho,-1,1))*RAD;
+        return 'ε_max ≈ '+fN(el)+' °\n(Δlat minimum yaklaşım)';
+      }},
+    { key: 'pass_duration', title: 'Geçiş Süresi (kabaca)', desc: 't ≈ (2 α) / n  · α yer yayı',
+      inputs: [{key:'a',label:'a (km)',def:'6878'},{key:'alpha',label:'yer yayı α (°)',def:'20'}],
+      run: function(v){
+        var a=num(v.a)*1000, al=num(v.alpha)*DEG;
+        var n=Math.sqrt(MU/(a*a*a));
+        var t=2*al/n;
+        return 't_geçiş ≈ '+fN(t)+' s  ('+fN(t/60)+' dk)';
+      }},
+    { key: 'eclipse', title: 'Gölge Süresi (silindir kabaca)', desc: 't_ecl ≈ (T/π) arccos(√(h(2R+h))/(R+h))',
+      inputs: [{key:'h',label:'h (km)',def:'500'},{key:'a',label:'a (km)',def:'6878'}],
+      run: function(v){
+        var h=num(v.h)*1000, a=num(v.a)*1000;
+        var T=2*Math.PI*Math.sqrt(a*a*a/MU);
+        var arg=Math.sqrt(h*(2*RE+h))/(RE+h);
+        arg=clamp(arg,0,1);
+        var te=T/Math.PI*Math.acos(arg);
+        return 'T = '+fN(T/60)+' dk\nt_gölge ≈ '+fN(te)+' s  ('+fN(te/60)+' dk)\n(ekliptik/mevsim ihmal)';
+      }},
+
+    // —— Attitude / sensors ——
+    { key: 'sun_angle', title: 'Güneş Açısı (vektör)', desc: 'cos θ = ŝ · n̂',
+      inputs: [{key:'sx',label:'ŝ_x',def:'1'},{key:'sy',label:'ŝ_y',def:'0'},{key:'sz',label:'ŝ_z',def:'0'},{key:'nx',label:'n_x',def:'0.7'},{key:'ny',label:'n_y',def:'0.7'},{key:'nz',label:'n_z',def:'0'}],
+      run: function(v){
+        var s=[num(v.sx),num(v.sy),num(v.sz)], n=[num(v.nx),num(v.ny),num(v.nz)];
+        var ns=Math.hypot(s[0],s[1],s[2])||1, nn=Math.hypot(n[0],n[1],n[2])||1;
+        var c=(s[0]*n[0]+s[1]*n[1]+s[2]*n[2])/(ns*nn);
+        return 'θ = '+fN(Math.acos(clamp(c,-1,1))*RAD)+' °';
+      }},
+    { key: 'star_sep', title: 'Yıldız Ayrım Açısı', desc: 'İki yön vektörü arası açı (star tracker)',
+      inputs: [{key:'a1',label:'α1 (°)',def:'10'},{key:'d1',label:'δ1 (°)',def:'20'},{key:'a2',label:'α2 (°)',def:'15'},{key:'d2',label:'δ2 (°)',def:'25'}],
+      run: function(v){
+        function v3(a,d){a*=DEG;d*=DEG;return [Math.cos(d)*Math.cos(a),Math.cos(d)*Math.sin(a),Math.sin(d)];}
+        var u=v3(num(v.a1),num(v.d1)), w=v3(num(v.a2),num(v.d2));
+        var c=u[0]*w[0]+u[1]*w[1]+u[2]*w[2];
+        return 'ayrım = '+fN(Math.acos(clamp(c,-1,1))*RAD)+' °';
+      }},
+    { key: 'slew_time', title: 'Slew Süresi (sabit ω)', desc: 't = θ / ω',
+      inputs: [{key:'theta',label:'θ (°)',def:'90'},{key:'w',label:'ω (°/s)',def:'1'}],
+      run: function(v){
+        var th=num(v.theta), w=num(v.w);
+        if(w<=0) throw new Error('ω > 0');
+        return 't = '+fN(th/w)+' s';
+      }},
+    { key: 'euler_rate', title: 'Euler Oranı (basit)', desc: 'θ̇ ≈ ω  (küçük açı / tek eksen)',
+      inputs: [{key:'w',label:'ω (°/s)',def:'0.5'},{key:'t',label:'t (s)',def:'10'}],
+      run: function(v){ return 'Δθ ≈ '+fN(num(v.w)*num(v.t))+' °'; }},
+    { key: 'q_norm', title: 'Quaternion Norm', desc: '|q| = √(q0²+q1²+q2²+q3²) → 1',
+      inputs: [{key:'q0',label:'q0',def:'1'},{key:'q1',label:'q1',def:'0.1'},{key:'q2',label:'q2',def:'0'},{key:'q3',label:'q3',def:'0'}],
+      run: function(v){
+        var q=[num(v.q0),num(v.q1),num(v.q2),num(v.q3)];
+        var n=Math.hypot(q[0],q[1],q[2],q[3]);
+        return '|q| = '+fN(n)+'\nnormalize: ['+[0,1,2,3].map(function(i){return fN(q[i]/n);}).join(', ')+']';
+      }},
+
+    // —— GNSS / ranging ——
+    { key: 'gdop_rough', title: 'GDOP (4 uydu kabaca)', desc: 'GDOP ≥ 1  ·  geometriye bağlı',
+      inputs: [{key:'elev_min',label:'min elev (°)',def:'10'},{key:'n_sat',label:'görünen uydu',def:'8'}],
+      run: function(v){
+        var el=num(v.elev_min), n=num(v.n_sat)|0;
+        // very rough empirical
+        var gdop=Math.max(1.5, 6/(Math.sin(el*DEG)+0.1)) * Math.sqrt(4/Math.max(n,4));
+        return 'GDOP_ölçek ≈ '+fN(gdop)+'\n(Gerçek GDOP tasarım matrisi ister)';
+      }},
+    { key: 'range_time', title: 'Işık Süresi (ranging)', desc: 't = ρ / c',
+      inputs: [{key:'rho',label:'ρ (km)',def:'20000'}],
+      run: function(v){
+        var rho=num(v.rho)*1000;
+        return 't = '+fN(rho/C)+' s\n= '+fN(rho/C*1e6)+' μs';
+      }},
+    { key: 'doppler_nav', title: 'Doppler Navigasyon', desc: 'Δf/f = v_rad / c',
+      inputs: [{key:'f',label:'f (Hz)',def:'2.2e9'},{key:'vrad',label:'v_rad (km/s)',def:'7'}],
+      run: function(v){
+        var f=num(v.f), vr=num(v.vrad)*1000;
+        return 'Δf ≈ '+fN(f*vr/C)+' Hz';
+      }},
+    { key: 'twoway_range', title: 'İki Yönlü Mesafe', desc: 'ρ = c · τ / 2',
+      inputs: [{key:'tau',label:'τ (ms)',def:'0.2'}],
+      run: function(v){
+        var tau=num(v.tau)/1000;
+        return 'ρ = '+fN(C*tau/2/1000)+' km';
+      }},
+
+    // —— Error budgets / filters ——
+    { key: 'rss_error', title: 'RSS Hata Bütçesi', desc: 'σ = √(σ₁²+σ₂²+…)',
+      inputs: [{key:'s1',label:'σ1',def:'10'},{key:'s2',label:'σ2',def:'5'},{key:'s3',label:'σ3',def:'3'}],
+      run: function(v){
+        var s=Math.sqrt(Math.pow(num(v.s1),2)+Math.pow(num(v.s2),2)+Math.pow(num(v.s3),2));
+        return 'σ_RSS = '+fN(s);
+      }},
+    { key: 'kalman_1d', title: '1D Kalman Güncelleme', desc: 'K = P/(P+R)  ·  x̂ = x̂ + K(z−x̂)',
+      inputs: [{key:'x',label:'x̂⁻',def:'100'},{key:'P',label:'P⁻',def:'25'},{key:'z',label:'ölçüm z',def:'102'},{key:'R',label:'R',def:'4'}],
+      run: function(v){
+        var x=num(v.x),P=num(v.P),z=num(v.z),R=num(v.R);
+        var K=P/(P+R);
+        var xn=x+K*(z-x);
+        var Pn=(1-K)*P;
+        return 'K = '+fN(K)+'\nx̂⁺ = '+fN(xn)+'\nP⁺ = '+fN(Pn);
+      }},
+    { key: 'clock_bias', title: 'Saat Sapması (mesafe)', desc: 'δρ = c · δt',
+      inputs: [{key:'dt',label:'δt (ns)',def:'10'}],
+      run: function(v){
+        var dt=num(v.dt)*1e-9;
+        return 'δρ = '+fN(C*dt)+' m';
+      }},
+    { key: 'tropo_delay', title: 'Troposfer Gecikme (kabaca)', desc: 'δρ ≈ 2.3 / sin(ε)  m  (zenit ~2.3 m)',
+      inputs: [{key:'elev',label:'ε (°)',def:'30'}],
+      run: function(v){
+        var el=num(v.elev)*DEG;
+        if(Math.sin(el)<0.05) throw new Error('elev çok düşük');
+        return 'δρ_tropo ≈ '+fN(2.3/Math.sin(el))+' m';
+      }},
+
+    // —— Interplanetary / deep space nav ——
+    { key: 'tof_planet', title: 'Gezegenler Arası Hohmann TOF', desc: 'TOF = π √(a_H³/μ_sun)',
+      inputs: [{key:'r1',label:'r1 (AU)',def:'1'},{key:'r2',label:'r2 (AU)',def:'1.52'}],
+      run: function(v){
+        var AU=1.495978707e11, MU_S=1.3271244e20;
+        var r1=num(v.r1)*AU, r2=num(v.r2)*AU;
+        var aH=0.5*(r1+r2);
+        var TOF=Math.PI*Math.sqrt(aH*aH*aH/MU_S);
+        return 'TOF = '+fN(TOF/86400)+' gün  ('+fN(TOF/86400/365.25)+' yıl)';
+      }},
+    { key: 'synodic_nav', title: 'Sinodik Dönem (fırlatma penceresi)', desc: '1/Tsyn = |1/T1 − 1/T2|',
+      inputs: [{key:'T1',label:'T1 (gün)',def:'365.25'},{key:'T2',label:'T2 (gün)',def:'686.98'}],
+      run: function(v){
+        var T1=num(v.T1), T2=num(v.T2);
+        var Ts=1/Math.abs(1/T1-1/T2);
+        return 'T_sinodik ≈ '+fN(Ts)+' gün  ('+fN(Ts/365.25)+' yıl)';
+      }},
+    { key: 'vinf_nav', title: 'v∞ & C3 (kaçış navigasyonu)', desc: 'C3 = v∞²',
+      inputs: [{key:'v',label:'v (km/s)',def:'11.5'},{key:'r',label:'r (km)',def:'6578'}],
+      run: function(v){
+        var vel=num(v.v)*1000, r=num(v.r)*1000;
+        var vinf2=vel*vel-2*MU/r;
+        if(vinf2<0) throw new Error('Eliptik (v < vesc)');
+        var vinf=Math.sqrt(vinf2);
+        return 'v∞ = '+fN(vinf/1000)+' km/s\nC3 = '+fN(vinf2/1e6)+' km²/s²';
+      }},
+    { key: 'bplane', title: 'B-plane hedef yarıçap (kabaca)', desc: 'B ≈ r_p √(1+2μ/(r_p v∞²))',
+      inputs: [{key:'rp',label:'rp (km)',def:'6778'},{key:'vinf',label:'v∞ (km/s)',def:'3'}],
+      run: function(v){
+        var rp=num(v.rp)*1000, vinf=num(v.vinf)*1000;
+        var B=rp*Math.sqrt(1+2*MU/(rp*vinf*vinf));
+        return 'B ≈ '+fN(B/1000)+' km\n(Hyperbolic aiming)';
+      }},
+    { key: 'comm_fspl', title: 'FSPL (derin uzay link)', desc: 'FSPL = (4π d f / c)²',
+      inputs: [{key:'d',label:'d (AU)',def:'1.5'},{key:'f',label:'f (GHz)',def:'8.4'}],
+      run: function(v){
+        var d=num(v.d)*1.495978707e11, f=num(v.f)*1e9;
+        var fspl=Math.pow(4*Math.PI*d*f/C,2);
+        return 'FSPL = '+fN(10*Math.log10(fspl))+' dB';
+      }},
+    { key: 'oneway_light', title: 'Tek Yön Işık Süresi', desc: 't = d/c',
+      inputs: [{key:'d',label:'d (AU)',def:'1'}],
+      run: function(v){
+        var d=num(v.d)*1.495978707e11;
+        return 't = '+fN(d/C)+' s  ('+fN(d/C/60)+' dk)';
+      }},
+
+    // —— Misc pro nav ——
+    { key: 'hill_sphere_nav', title: 'Hill Küresi (SOI nav)', desc: 'r_H ≈ a (m/3M)^{1/3}',
+      inputs: [{key:'a',label:'a (km)',def:'384400'},{key:'m',label:'m (kg)',def:'7.342e22'},{key:'M',label:'M (kg)',def:'5.972e24'}],
+      run: function(v){
+        var a=num(v.a)*1000, m=num(v.m), M=num(v.M);
+        return 'r_Hill ≈ '+fN(a*Math.pow(m/(3*M),1/3)/1000)+' km';
+      }},
+    { key: 'sphere_inf', title: 'Etki Küresi r_SOI', desc: 'r_SOI ≈ a (m/M)^{2/5}',
+      inputs: [{key:'a',label:'a (km)',def:'149597870'},{key:'m',label:'m',def:'5.972e24'},{key:'M',label:'M',def:'1.9885e30'}],
+      run: function(v){
+        var a=num(v.a)*1000, m=num(v.m), M=num(v.M);
+        return 'r_SOI ≈ '+fN(a*Math.pow(m/M,0.4)/1000)+' km';
+      }},
+    { key: 'j2_raan_nav', title: 'J2 Ω̇ (navigasyon)', desc: 'Ω̇ = −1.5 n J2 (R/a)² cos i /(1−e²)²',
+      inputs: [{key:'a',label:'a (km)',def:'7078'},{key:'e',label:'e',def:'0'},{key:'i',label:'i (°)',def:'98'}],
+      run: function(v){
+        var a=num(v.a)*1000, e=num(v.e), i=num(v.i)*DEG;
+        var n=Math.sqrt(MU/(a*a*a));
+        var dO=-1.5*n*J2*Math.pow(RE/a,2)*Math.cos(i)/Math.pow(1-e*e,2);
+        return 'Ω̇ = '+fN(dO*RAD*86400)+' °/gün';
+      }},
+    { key: 'sso_nav', title: 'SSO Eğim (nav tasarım)', desc: 'Ω̇ = 360°/yıl → i',
+      inputs: [{key:'a',label:'a (km)',def:'7078'},{key:'e',label:'e',def:'0'}],
+      run: function(v){
+        var a=num(v.a)*1000, e=num(v.e);
+        var n=Math.sqrt(MU/(a*a*a));
+        var dO_tgt=2*Math.PI/(365.2421897*86400);
+        var cosi=-dO_tgt/(1.5*n*J2*Math.pow(RE/a,2)/Math.pow(1-e*e,2));
+        if(Math.abs(cosi)>1) throw new Error('SSO bu a için yok');
+        return 'i_SSO ≈ '+fN(Math.acos(cosi)*RAD)+' °';
+      }},
+    { key: 'rel_nav_sensor', title: 'Relatif Nav Sensör (açı→mesafe)', desc: 'ρ ≈ b / θ  (küçük açı, baseline b)',
+      inputs: [{key:'b',label:'baseline b (m)',def:'2'},{key:'theta',label:'θ (°)',def:'0.5'}],
+      run: function(v){
+        var b=num(v.b), th=num(v.theta)*DEG;
+        if(th<=0) throw new Error('θ > 0');
+        return 'ρ ≈ '+fN(b/th)+' m';
+      }},
+    { key: 'dv_budget', title: 'Δv Navigasyon Bütçesi', desc: 'Σ Δv_i  (margin ile)',
+      inputs: [{key:'dv1',label:'Δv1 m/s',def:'50'},{key:'dv2',label:'Δv2',def:'20'},{key:'dv3',label:'Δv3',def:'10'},{key:'margin',label:'margin %',def:'15'}],
+      run: function(v){
+        var s=num(v.dv1)+num(v.dv2)+num(v.dv3);
+        var m=num(v.margin)/100;
+        return 'ΣΔv = '+fN(s)+' m/s\n+margin = '+fN(s*(1+m))+' m/s';
+      }}
+  ];
+
+  function render() {
+    var host = document.getElementById('spacenav-grid');
+    if (!host || host.dataset.built) return;
+    host.dataset.built = '1';
+    var frag = document.createDocumentFragment();
+    CARDS.forEach(function (c, idx) {
+      var card = document.createElement('div');
+      card.className = 'bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+      var inputsHtml = (c.inputs || []).map(function (inp) {
+        return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">' + inp.label + '</label>' +
+          '<input id="snav-in-' + c.key + '-' + inp.key + '" type="text" value="' + (inp.def || '') + '" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';
+      }).join('');
+      card.innerHTML =
+        '<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-compass text-blue-400"></i> ' + (idx + 1) + '. ' + c.title + '</div>' +
+        '<div class="text-[11px] text-zinc-500 mb-2">' + c.desc + '</div>' +
+        inputsHtml +
+        '<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-snav-key="' + c.key + '">Hesapla</button>' +
+        '<div id="snav-out-' + c.key + '" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-blue-200 border border-zinc-800"></div>';
+      frag.appendChild(card);
+    });
+    host.appendChild(frag);
+    host.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-snav-key]');
+      if (!btn) return;
+      run(btn.getAttribute('data-snav-key'));
+    });
+  }
+
+  function run(key) {
+    var c = CARDS.filter(function (x) { return x.key === key; })[0];
+    if (!c) return;
+    var out = document.getElementById('snav-out-' + key);
+    try {
+      var vals = {};
+      (c.inputs || []).forEach(function (inp) {
+        var el = document.getElementById('snav-in-' + key + '-' + inp.key);
+        vals[inp.key] = el ? el.value : '';
+      });
+      out.textContent = c.run(vals);
+      out.classList.remove('hidden');
+    } catch (e) {
+      out.textContent = '⚠ Hata: ' + (e && e.message ? e.message : String(e));
+      out.classList.remove('hidden');
+    }
+  }
+
+  window.spacenavRender = render;
+  window.spacenavRun = run;
+
+  function boot() { try { render(); } catch (e) { console.warn('SPACENAV', e); } }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 50); });
+  else setTimeout(boot, 50);
+})();
+</script>
+
+<script>
+/* ========================================================================
+   UZAY PUSULASI · Space Compass System
+   Coğrafi N/S/E/W · LVLH (R/S/W) · nadir · hız · manyetik · güneş
+   ======================================================================== */
+(function () {
+  'use strict';
+
+  var DEG = Math.PI / 180;
+  var RAD = 180 / Math.PI;
+  var RE = 6378.137; // km
+
+  function fN(x, d) {
+    d = d || 4;
+    if (typeof x !== 'number' || !isFinite(x)) return String(x);
+    return String(Math.round(x * Math.pow(10, d)) / Math.pow(10, d));
+  }
+  function num(v, name, def) {
+    if (v === undefined || v === null || String(v).trim() === '') {
+      if (def !== undefined) return def;
+      throw new Error((name || 'Parametre') + ' boş');
+    }
+    var x = Number(v);
+    if (!isFinite(x)) throw new Error('sayı değil');
+    return x;
+  }
+  function wrap360(a) { a = a % 360; if (a < 0) a += 360; return a; }
+  function cardDir(az) {
+    az = wrap360(az);
+    var names = ['Kuzey','Kuzeydoğu','Doğu','Güneydoğu','Güney','Güneybatı','Batı','Kuzeybatı'];
+    var i = Math.round(az / 45) % 8;
+    return names[i];
+  }
+
+  // —— Visual compass ——
+  function drawCompass(heading, mode) {
+    var host = document.getElementById('compass-visual');
+    if (!host) return;
+    heading = wrap360(Number(heading)||0); if(!isFinite(heading)) heading=0;
+    mode = mode || 'GEO';
+    var labels = mode === 'LVLH'
+      ? [{a:0,t:'+R'},{a:90,t:'+S'},{a:180,t:'-R'},{a:270,t:'-S'}]
+      : [{a:0,t:'K'},{a:45,t:'KD'},{a:90,t:'D'},{a:135,t:'GD'},{a:180,t:'G'},{a:225,t:'GB'},{a:270,t:'B'},{a:315,t:'KB'}];
+    var size = 220, cx = 110, cy = 110, r = 95;
+    var svg = '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" class="drop-shadow-lg">';
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#0c0c0f" stroke="#3f3f46" stroke-width="2"/>';
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="70" fill="none" stroke="#27272a" stroke-width="1"/>';
+    // ticks
+    for (var i = 0; i < 36; i++) {
+      var ang = (i * 10 - heading) * DEG;
+      var outer = r - 2, inner = i % 3 === 0 ? r - 14 : r - 8;
+      var x1 = cx + outer * Math.sin(ang), y1 = cy - outer * Math.cos(ang);
+      var x2 = cx + inner * Math.sin(ang), y2 = cy - inner * Math.cos(ang);
+      svg += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+(i%9===0?'#f43f5e':'#52525b')+'" stroke-width="'+(i%9===0?2:1)+'"/>';
+    }
+    // labels
+    labels.forEach(function (L) {
+      var ang = (L.a - heading) * DEG;
+      var lr = 52;
+      var x = cx + lr * Math.sin(ang), y = cy - lr * Math.cos(ang);
+      var col = (L.a === 0) ? '#f43f5e' : '#a1a1aa';
+      svg += '<text x="'+x+'" y="'+y+'" text-anchor="middle" dominant-baseline="middle" fill="'+col+'" font-size="12" font-weight="600" font-family="system-ui">'+String(L.t)+'</text>';
+    });
+    // needle
+    svg += '<polygon points="'+cx+','+(cy-62)+' '+(cx-7)+','+(cy+8)+' '+cx+','+(cy+2)+' '+(cx+7)+','+(cy+8)+'" fill="#f43f5e"/>';
+    svg += '<polygon points="'+cx+','+(cy+55)+' '+(cx-6)+','+(cy-4)+' '+cx+','+(cy+2)+' '+(cx+6)+','+(cy-4)+'" fill="#e4e4e7"/>';
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="5" fill="#fafafa" stroke="#f43f5e" stroke-width="2"/>';
+    svg += '<text x="'+cx+'" y="'+(size-8)+'" text-anchor="middle" fill="#a1a1aa" font-size="11" font-family="monospace">'+mode+' · '+fN(heading,1)+'°</text>';
+    svg += '</svg>';
+    host.innerHTML = '<div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 inline-block">'+svg+'</div>';
+  }
+
+  var CARDS = [
+    { key: 'heading_card', title: 'Pusula Yönü (Azimut → Kart)', desc: '0° Kuzey · 90° Doğu · 180° Güney · 270° Batı',
+      inputs: [{key:'az',label:'Azimut / heading (°)',def:'45'}],
+      run: function(v){
+        var az = wrap360(num(v.az));
+        drawCompass(az, 'GEO');
+        return 'Azimut = '+fN(az,1)+' °\nYön = '+cardDir(az)+'\n\nK=0°  D=90°  G=180°  B=270°';
+      }},
+    { key: 'geo_to_card', title: 'Lat/Lon Hareket → Yön', desc: 'İki nokta arası coğrafi azimut (büyük daire)',
+      inputs: [{key:'lat1',label:'lat1 (°)',def:'41.0'},{key:'lon1',label:'lon1 (°)',def:'29.0'},{key:'lat2',label:'lat2 (°)',def:'41.5'},{key:'lon2',label:'lon2 (°)',def:'32.0'}],
+      run: function(v){
+        var lat1=num(v.lat1)*DEG, lon1=num(v.lon1)*DEG, lat2=num(v.lat2)*DEG, lon2=num(v.lon2)*DEG;
+        var dlon=lon2-lon1;
+        var y=Math.sin(dlon)*Math.cos(lat2);
+        var x=Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(dlon);
+        var az=wrap360(Math.atan2(y,x)*RAD);
+        drawCompass(az, 'GEO');
+        return 'Azimut = '+fN(az,2)+' °\nYön = '+cardDir(az);
+      }},
+    { key: 'lvlh_axes', title: 'LVLH Eksenleri (Yörünge Pusulası)', desc: '+R = zenit (yukarı) · +S = hız/along-track · +W = orbit normal',
+      inputs: [{key:'mode',label:'göster (0=LVLH)',def:'0'}],
+      run: function(v){
+        drawCompass(0, 'LVLH');
+        return 'LVLH / RSW çerçevesi:\n\n+R  Radial dış (Zenit / nadir karşıtı)\n−R  Nadir (Dünya merkezi yönü)\n+S  Along-track (prograde, hız yönü yaklaşık)\n−S  Retrograde\n+W  Orbit normal (açısal momentum h)\n−W  Anti-normal\n\nYerel “Kuzey” çoğu zaman +W veya coğrafi N ile hizalanır (eğime bağlı).';
+      }},
+    { key: 'nadir_zenith', title: 'Nadir / Zenit', desc: 'Nadir = Dünya merkezi · Zenit = −Nadir (yerel yukarı)',
+      inputs: [{key:'lat',label:'alt-lat (°)',def:'0'},{key:'lon',label:'alt-lon (°)',def:'0'}],
+      run: function(v){
+        var lat=num(v.lat), lon=num(v.lon);
+        return 'Alt nokta: '+fN(lat,2)+'°N, '+fN(lon,2)+'°E\n\nNadir vektörü: Dünya merkezine\nZenit: yerel gökyüzü (anti-nadir)\nUydu “aşağısı” = Nadir = coğrafi olarak alt nokta yönü';
+      }},
+    { key: 'velocity_dir', title: 'Hız Yönü (prograde)', desc: 'Dairesel yörüngede +S ≈ coğrafi azimut (i, u ile)',
+      inputs: [{key:'i',label:'eğim i (°)',def:'51.6'},{key:'u',label:'arg. latitude u (°)',def:'30'}],
+      run: function(v){
+        var i=num(v.i)*DEG, u=num(v.u)*DEG;
+        // heading of velocity relative to local north (approx for circular)
+        // cos(heading) related to inclination and argument of latitude
+        var az = Math.atan2(Math.cos(i), -Math.sin(i)*Math.cos(u))*RAD;
+        // better: flight azimuth
+        var az2 = wrap360(Math.atan2(Math.cos(i), Math.sin(i)*Math.cos(u))*RAD);
+        drawCompass(az2, 'GEO');
+        return 'Yaklaşık hız azimutu ≈ '+fN(az2,1)+' °\nKart = '+cardDir(az2)+'\n\ni=0 → her zaman Doğu (90°)\ni=90 kutup → u\'ya bağlı N/S';
+      }},
+    { key: 'orbit_north', title: 'Yörünge “Kuzeyi” (+W)', desc: 'Orbit normal h = r × v  ·  kuzey yarımküreye bakan taraf',
+      inputs: [{key:'i',label:'i (°)',def:'51.6'}],
+      run: function(v){
+        var i=num(v.i);
+        return 'Eğim i = '+fN(i,1)+' °\n\n+W (orbit normal):\n  i < 90° → genel olarak kuzey yarımküreye eğimli\n  i = 90° → kutupsal (doğrudan N-S düzlemi)\n  i > 90° → retrograd, normal güneye kayar\n\nYerel coğrafi Kuzey ≠ +W (ancak i≈90 ve ekvatorda yakınlaşır).';
+      }},
+    { key: 'heading_lvlh', title: 'Coğrafi Heading → LVLH bileşen', desc: 'Yerel ufukta N/E heading’i RSW’ye izdüşüm (yaklaşık)',
+      inputs: [{key:'heading',label:'heading ° (0=N)',def:'90'},{key:'i',label:'i (°)',def:'51.6'},{key:'u',label:'u (°)',def:'0'}],
+      run: function(v){
+        var h=num(v.heading)*DEG, i=num(v.i)*DEG, u=num(v.u)*DEG;
+        // simplified: project horizontal heading onto along-track / cross-track
+        var along = Math.sin(h)*Math.cos(i) + Math.cos(h)*Math.sin(i)*Math.cos(u);
+        var cross = Math.sin(h)*Math.sin(i)*Math.sin(u) - Math.cos(h)*Math.cos(u); // rough
+        drawCompass(num(v.heading), 'GEO');
+        return 'Heading '+fN(num(v.heading),1)+'° ('+cardDir(num(v.heading))+')\n\nAlong-track bileşen ölçeği ≈ '+fN(along,3)+'\nCross-track bileşen ölçeği ≈ '+fN(cross,3)+'\n(Normalize yön kosinüsleri — tutum için detaylı DCM gerekir)';
+      }},
+    { key: 'sun_az_el', title: 'Güneş Azimut / Elevasyon (kabaca)', desc: 'Yerel ufka göre Güneş yönü (basit model)',
+      inputs: [{key:'lat',label:'lat (°)',def:'41'},{key:'dec',label:'δ Güneş (°)',def:'0'},{key:'H',label:'saat açısı H (°)',def:'30'}],
+      run: function(v){
+        var lat=num(v.lat)*DEG, dec=num(v.dec)*DEG, H=num(v.H)*DEG;
+        var sinEl=Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(H);
+        var el=Math.asin(Math.max(-1,Math.min(1,sinEl)))*RAD;
+        var cosAz=(Math.sin(dec)-Math.sin(lat)*sinEl)/(Math.cos(lat)*Math.cos(el*DEG)+1e-12);
+        cosAz=Math.max(-1,Math.min(1,cosAz));
+        var az=Math.acos(cosAz)*RAD;
+        if(Math.sin(H)>0) az=360-az;
+        az=wrap360(az);
+        drawCompass(az, 'GEO');
+        return 'Güneş elevasyon ≈ '+fN(el,1)+' °\nGüneş azimut ≈ '+fN(az,1)+' °\nYön = '+cardDir(az)+'\n(el<0 → ufuk altında)';
+      }},
+    { key: 'mag_dip', title: 'Manyetik Pusula (dipol)', desc: 'Dipol eğim: tan I = 2 tan λ  ·  sapma kabaca',
+      inputs: [{key:'lat',label:'manyetik lat λ (°)',def:'41'}],
+      run: function(v){
+        var lat=num(v.lat)*DEG;
+        var I=Math.atan(2*Math.tan(lat))*RAD;
+        return 'Manyetik eğim I ≈ '+fN(I,1)+' °\n\nKuzey yarımküre: iğne aşağı (pozitif I)\nEkvator: I≈0 (yatay)\n\nNot: Gerçek manyetik sapma (declination) haritaya bağlıdır; LEO’da IGRF modeli kullanılır.';
+      }},
+    { key: 'body_axes', title: 'Gövde Eksenleri (Yaw/Pitch/Roll)', desc: 'Hava/uzay aracı: +X burnu · +Z nadir (çoğu uydu) · +Y kanat',
+      inputs: [{key:'convention',label:'0=uydu nadir, 1=uçak',def:'0'}],
+      run: function(v){
+        var c=num(v.convention)|0;
+        if(c===1) return 'Uçak / mekik benzeri:\n+X ileri (burnu)\n+Y sağ kanat\n+Z aşağı (karın)\n\nYaw = Z etrafı · Pitch = Y · Roll = X';
+        return 'Tipik nadir-pointing uydu:\n+Z = Nadir (Dünya’ya)\n+X = along-track (hız)\n+Y = tamamlar (sağ el)\n\nYaw / Pitch / Roll bu eksenlere göre tanımlanır.\nPusula “Kuzey”i coğrafi N veya +Y/+W ile eşleştirilebilir.';
+      }},
+    { key: 'bearing_ns', title: 'Kuzey–Güney / Doğu–Batı Bileşen', desc: 'Mesafeyi N/S ve E/W’ye ayır (düzlem yaklaşımı)',
+      inputs: [{key:'dist',label:'mesafe (km)',def:'100'},{key:'az',label:'azimut (°)',def:'30'}],
+      run: function(v){
+        var d=num(v.dist), az=num(v.az)*DEG;
+        var ns=d*Math.cos(az), ew=d*Math.sin(az);
+        drawCompass(num(v.az), 'GEO');
+        return 'Kuzey bileşeni = '+fN(ns,2)+' km '+(ns>=0?'(Kuzeye)':'(Güneye)')+'\nDoğu bileşeni = '+fN(ew,2)+' km '+(ew>=0?'(Doğuya)':'(Batıya)');
+      }},
+    { key: 'set_heading', title: 'Pusulayı Döndür (görsel)', desc: 'İstediğiniz heading’e çevir — pusula güncellenir',
+      inputs: [{key:'az',label:'heading (°)',def:'0'},{key:'frame',label:'0=GEO 1=LVLH',def:'0'}],
+      run: function(v){
+        var az=wrap360(num(v.az));
+        var mode=num(v.frame)|0 ? 'LVLH' : 'GEO';
+        drawCompass(az, mode);
+        return mode+' çerçevesi\nİğne yönü = '+fN(az,1)+' °\n'+(mode==='GEO'?cardDir(az):'LVLH referansı');
+      }},
+    { key: 'equator_east', title: 'Ekvatoral Yörünge → Doğu', desc: 'i≈0 ise hız her zaman coğrafi Doğu',
+      inputs: [{key:'i',label:'i (°)',def:'0.1'}],
+      run: function(v){
+        var i=Math.abs(num(v.i));
+        drawCompass(90, 'GEO');
+        return 'i = '+fN(i,2)+' °\n\nEkvatoral (i→0): uydu sürekli Doğuya (90°) gider.\nKutupsal (i→90): bir yarıda Kuzey, diğerinde Güney baskın.\n\nPusula ipucu: LEO ISS (i≈51.6°) çoğu geçişte KD–GD arası azimutlar görür.';
+      }},
+    { key: 'pass_az_el', title: 'Yer İstasyonu: Uydu Az/El', desc: 'Yerel K/D/G/B’ye göre uydu nerede?',
+      inputs: [{key:'az',label:'uydu azimut (°)',def:'135'},{key:'el',label:'uydu elevasyon (°)',def:'40'}],
+      run: function(v){
+        var az=wrap360(num(v.az)), el=num(v.el);
+        drawCompass(az, 'GEO');
+        return 'Uydu azimut = '+fN(az,1)+' ° → '+cardDir(az)+'\nElevasyon = '+fN(el,1)+' °\n\n'+(el<10?'Ufka yakın / alçak geçiş':el>70?'Neredeyse zenit':'Orta yükseklik');
+      }},
+    { key: 'anti_nadir', title: 'Anti-Nadir (derin uzay bakış)', desc: 'Zenit yönü = yıldız / atalet boşluğu',
+      inputs: [{key:'lat',label:'alt lat (°)',def:'0'}],
+      run: function(v){
+        return 'Nadir: Dünya\nAnti-nadir / Zenit: yerel gök kutbuna doğru değil, radyal dış\n\nYıldız tracker bu yöne (Dünya dışı) bakar.\nPusula “yukarı” = Zenit ≠ coğrafi Kuzey.';
+      }},
+    { key: 'cw_dirs', title: 'CW / Randevu Yönleri', desc: 'x=+R · y=+S · z=+W  (Clohessy–Wiltshire)',
+      inputs: [{key:'x',label:'x radial m',def:'0'},{key:'y',label:'y along m',def:'100'},{key:'z',label:'z cross m',def:'0'}],
+      run: function(v){
+        var x=num(v.x), y=num(v.y), z=num(v.z);
+        var dirs=[];
+        if(x>0) dirs.push('Zenit tarafı (+R)'); else if(x<0) dirs.push('Nadir tarafı (−R)');
+        if(y>0) dirs.push('İleri / along-track (+S)'); else if(y<0) dirs.push('Geri (−S)');
+        if(z>0) dirs.push('Orbit normal (+W)'); else if(z<0) dirs.push('Anti-normal (−W)');
+        return 'Relatif konum:\nx='+fN(x,1)+'  y='+fN(y,1)+'  z='+fN(z,1)+' m\n\n'+dirs.join('\n')+'\n\nRandevu dili: V-bar = along-track · R-bar = radial';
+      }},
+    { key: 'compass_help', title: 'Pusula Sözlüğü', desc: 'Uzayda yön isimleri',
+      inputs: [],
+      run: function(){
+        drawCompass(0, 'GEO');
+        return 'COĞRAFİ (yer istasyonu / alt nokta):\n  K Kuzey · D Doğu · G Güney · B Batı\n\nYÖRÜNGE LVLH:\n  +R Zenit · −R Nadir\n  +S Hız / prograde · −S retro\n  +W Normal · −W anti-normal\n\nRANDEVU:\n  R-bar = radial hat\n  V-bar = hız hattı (along-track)\n\nGÖVDE:\n  Roll / Pitch / Yaw (eksen seçimine bağlı)';
+      }}
+  ];
+
+  function render() {
+    var host = document.getElementById('compass-grid');
+    if (!host || host.dataset.built) return;
+    host.dataset.built = '1';
+    drawCompass(0, 'GEO');
+    var frag = document.createDocumentFragment();
+    CARDS.forEach(function (c, idx) {
+      var card = document.createElement('div');
+      card.className = 'bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+      var inputsHtml = (c.inputs || []).map(function (inp) {
+        return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">' + inp.label + '</label>' +
+          '<input id="cmp-in-' + c.key + '-' + inp.key + '" type="text" value="' + (inp.def || '') + '" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';
+      }).join('');
+      card.innerHTML =
+        '<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-location-arrow text-rose-400"></i> ' + (idx + 1) + '. ' + c.title + '</div>' +
+        '<div class="text-[11px] text-zinc-500 mb-2">' + c.desc + '</div>' +
+        inputsHtml +
+        '<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-cmp-key="' + c.key + '">Hesapla / Göster</button>' +
+        '<div id="cmp-out-' + c.key + '" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-rose-200 border border-zinc-800"></div>';
+      frag.appendChild(card);
+    });
+    host.appendChild(frag);
+    host.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-cmp-key]');
+      if (!btn) return;
+      run(btn.getAttribute('data-cmp-key'));
+    });
+  }
+
+  function run(key) {
+    var c = CARDS.filter(function (x) { return x.key === key; })[0];
+    if (!c) return;
+    var out = document.getElementById('cmp-out-' + key);
+    try {
+      var vals = {};
+      (c.inputs || []).forEach(function (inp) {
+        var el = document.getElementById('cmp-in-' + key + '-' + inp.key);
+        vals[inp.key] = el ? el.value : '';
+      });
+      out.textContent = c.run(vals);
+      out.classList.remove('hidden');
+    } catch (e) {
+      out.textContent = '⚠ Hata: ' + (e && e.message ? e.message : String(e));
+      out.classList.remove('hidden');
+    }
+  }
+
+  window.compassRender = render;
+  window.compassRun = run;
+  window.compassDraw = drawCompass;
+
+  function boot() { try { render(); } catch (e) { console.warn('COMPASS', e); } }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 50); });
+  else setTimeout(boot, 50);
+})();
+</script>
+
+<script>
+/* AC-50 · Uçak İnşa: iskelet / kanat / motor · SI */
+(function(){
+'use strict';
+var G=9.80665, R_AIR=287.05, GAMMA=1.4;
+function fN(x,d){d=d||5;if(typeof x!=='number'||!isFinite(x))return String(x);if(Math.abs(x)>=1e6||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(4);return String(Math.round(x*Math.pow(10,d))/Math.pow(10,d));}
+function num(v,n,def){if(v===undefined||v===null||String(v).trim()===''){if(def!==undefined)return def;throw new Error((n||'P')+' boş');}var x=Number(v);if(!isFinite(x))throw new Error('sayı değil');return x;}
+var CARDS=[
+{key:'s_wing',title:'Kanat Alanı S',desc:'S = b · c̄  (dikdörtgen) · trapez: S=(c_r+c_t)b/2',
+ inputs:[{key:'b',label:'açıklık b (m)',def:'12'},{key:'cr',label:'kök kiriş c_r (m)',def:'2'},{key:'ct',label:'uç kiriş c_t (m)',def:'1'}],
+ run:function(v){var b=num(v.b),cr=num(v.cr),ct=num(v.ct);if(b<=0)throw new Error('b>0');var S=0.5*(cr+ct)*b;return 'S = '+fN(S)+' m²\nc̄ = '+fN(S/b)+' m';}},
+{key:'AR',title:'En-Boy Oranı AR',desc:'AR = b² / S',
+ inputs:[{key:'b',label:'b (m)',def:'12'},{key:'S',label:'S (m²)',def:'18'}],
+ run:function(v){var b=num(v.b),S=num(v.S);if(S<=0)throw new Error('S>0');return 'AR = '+fN(b*b/S);}},
+{key:'taper',title:'Taper Oranı λ',desc:'λ = c_t / c_r',
+ inputs:[{key:'ct',label:'c_t',def:'1'},{key:'cr',label:'c_r',def:'2'}],
+ run:function(v){var cr=num(v.cr);if(cr<=0)throw new Error('c_r>0');return 'λ = '+fN(num(v.ct)/cr);}},
+{key:'mac',title:'MAC (Ortalama Aerodinamik Kiriş)',desc:'c̄ = (2/3) c_r (1+λ+λ²)/(1+λ)',
+ inputs:[{key:'cr',label:'c_r (m)',def:'2'},{key:'lam',label:'λ',def:'0.5'}],
+ run:function(v){var cr=num(v.cr),l=num(v.lam);if(l<-0.99)throw new Error('λ');return 'MAC ≈ '+fN((2/3)*cr*(1+l+l*l)/(1+l))+' m';}},
+{key:'sweep',title:'Sweep (c/4) Geometri',desc:'tan Λ_c/4 = tan Λ_LE − (1−λ)/(AR(1+λ))',
+ inputs:[{key:'LE',label:'Λ_LE (°)',def:'25'},{key:'AR',label:'AR',def:'8'},{key:'lam',label:'λ',def:'0.4'}],
+ run:function(v){var le=num(v.LE)*Math.PI/180,AR=num(v.AR),l=num(v.lam);var t=Math.tan(le)-(1-l)/(AR*(1+l));return 'Λ_c/4 ≈ '+fN(Math.atan(t)*180/Math.PI)+' °';}},
+{key:'dihedral',title:'Dihedral Yükseklik',desc:'h = (b/2) tan Γ',
+ inputs:[{key:'b',label:'b (m)',def:'12'},{key:'G',label:'Γ (°)',def:'5'}],
+ run:function(v){return 'uç yükselme ≈ '+fN((num(v.b)/2)*Math.tan(num(v.G)*Math.PI/180))+' m';}},
+{key:'twist',title:'Geometrik Twist',desc:'Δα = α_kök − α_uç',
+ inputs:[{key:'ar',label:'α_kök (°)',def:'4'},{key:'at',label:'α_uç (°)',def:'1'}],
+ run:function(v){return 'twist = '+fN(num(v.ar)-num(v.at))+' ° (genelde washout >0)';}},
+{key:'t_c',title:'Kalınlık Oranı t/c',desc:'profil kalınlığı / kiriş',
+ inputs:[{key:'t',label:'t_max (m)',def:'0.24'},{key:'c',label:'c (m)',def:'2'}],
+ run:function(v){var c=num(v.c);if(c<=0)throw new Error('c>0');return 't/c = '+fN(num(v.t)/c)+'  ('+fN(100*num(v.t)/c)+' %)';}},
+{key:'rho_alt',title:'ISA Yoğunluk (kabaca)',desc:'ρ ≈ ρ0 (1−0.0065 h/T0)^{4.256}',
+ inputs:[{key:'h',label:'h (m)',def:'3000'}],
+ run:function(v){var h=num(v.h);if(h>11000) throw new Error('h≤11 km (troposfer)');var s=1-0.0065*h/288.15;var rho=1.225*Math.pow(s,4.256);var T=288.15-0.0065*h;var p=101325*Math.pow(s,5.256);return 'T = '+fN(T)+' K\np = '+fN(p)+' Pa\nρ = '+fN(rho)+' kg/m³';}},
+{key:'qbar',title:'Dinamik Basınç q̄',desc:'q̄ = ½ ρ V²',
+ inputs:[{key:'rho',label:'ρ',def:'1.225'},{key:'V',label:'V (m/s)',def:'60'}],
+ run:function(v){var q=0.5*num(v.rho)*num(v.V)*num(v.V);return 'q̄ = '+fN(q)+' Pa  ('+fN(q/1000)+' kPa)';}},
+{key:'lift',title:'Kaldırma L',desc:'L = q̄ S C_L',
+ inputs:[{key:'q',label:'q̄ (Pa)',def:'2200'},{key:'S',label:'S (m²)',def:'18'},{key:'CL',label:'C_L',def:'0.6'}],
+ run:function(v){var L=num(v.q)*num(v.S)*num(v.CL);return 'L = '+fN(L)+' N  ('+fN(L/G)+' kgf)';}},
+{key:'drag',title:'Sürükleme D',desc:'D = q̄ S C_D',
+ inputs:[{key:'q',label:'q̄ (Pa)',def:'2200'},{key:'S',label:'S',def:'18'},{key:'CD',label:'C_D',def:'0.035'}],
+ run:function(v){var D=num(v.q)*num(v.S)*num(v.CD);return 'D = '+fN(D)+' N';}},
+{key:'CL_alpha',title:'C_L = C_Lα (α−α0)',desc:'ince profil 2π/rad (2D)',
+ inputs:[{key:'a',label:'α (°)',def:'6'},{key:'a0',label:'α0 (°)',def:'-2'},{key:'cla',label:'C_Lα (1/rad)',def:'5.7'}],
+ run:function(v){var da=(num(v.a)-num(v.a0))*Math.PI/180;return 'C_L ≈ '+fN(num(v.cla)*da);}},
+{key:'CL_3d',title:'3D C_Lα (kanat)',desc:'C_Lα = C_lα / (1 + C_lα/(π e AR))',
+ inputs:[{key:'cla',label:'C_lα 2D',def:'5.7'},{key:'AR',label:'AR',def:'8'},{key:'e',label:'e Oswald',def:'0.8'}],
+ run:function(v){var cla=num(v.cla),AR=num(v.AR),e=num(v.e);return 'C_Lα_3D ≈ '+fN(cla/(1+cla/(Math.PI*e*AR)))+' 1/rad';}},
+{key:'induced',title:'İndüklenmiş Sürükleme',desc:'C_Di = C_L² / (π e AR)',
+ inputs:[{key:'CL',label:'C_L',def:'0.6'},{key:'AR',label:'AR',def:'8'},{key:'e',label:'e',def:'0.8'}],
+ run:function(v){var den=Math.PI*num(v.e)*num(v.AR);if(den<=0)throw new Error('e,AR>0');return 'C_Di = '+fN(num(v.CL)*num(v.CL)/den);}},
+{key:'CD_tot',title:'C_D = C_D0 + C_Di',desc:'parabolik kutup',
+ inputs:[{key:'CD0',label:'C_D0',def:'0.025'},{key:'CDi',label:'C_Di',def:'0.018'}],
+ run:function(v){return 'C_D = '+fN(num(v.CD0)+num(v.CDi));}},
+{key:'LD',title:'L/D Oranı',desc:'L/D = C_L / C_D',
+ inputs:[{key:'CL',label:'C_L',def:'0.6'},{key:'CD',label:'C_D',def:'0.04'}],
+ run:function(v){var cd=num(v.CD);if(cd<=0)throw new Error('C_D>0');return 'L/D = '+fN(num(v.CL)/cd);}},
+{key:'stall',title:'Stall Hızı',desc:'V_s = √(2 W / (ρ S C_Lmax))',
+ inputs:[{key:'W',label:'W (N)',def:'15000'},{key:'rho',label:'ρ',def:'1.225'},{key:'S',label:'S',def:'18'},{key:'CLmax',label:'C_Lmax',def:'1.6'}],
+ run:function(v){var den=num(v.rho)*num(v.S)*num(v.CLmax);if(den<=0)throw new Error('>0');var Vs=Math.sqrt(2*num(v.W)/den);return 'V_s = '+fN(Vs)+' m/s  ('+fN(Vs*1.94384)+' kt)';}},
+{key:'load_n',title:'Yük Faktörü n',desc:'n = L / W',
+ inputs:[{key:'L',label:'L (N)',def:'30000'},{key:'W',label:'W (N)',def:'15000'}],
+ run:function(v){var W=num(v.W);if(W<=0)throw new Error('W>0');return 'n = '+fN(num(v.L)/W)+' g';}},
+{key:'wing_load',title:'Kanat Yüklemesi',desc:'W/S',
+ inputs:[{key:'W',label:'W (N)',def:'15000'},{key:'S',label:'S (m²)',def:'18'}],
+ run:function(v){return 'W/S = '+fN(num(v.W)/num(v.S))+' N/m²  ('+fN(num(v.W)/num(v.S)/G)+' kg/m²)';}},
+{key:'root_BM',title:'Kanat Kök Eğilme (iskelet)',desc:'M_kök ≈ n W_wing_eq · b/6  (eliptik kabaca nW b/6)',
+ inputs:[{key:'n',label:'n',def:'3.8'},{key:'W',label:'W (N)',def:'15000'},{key:'b',label:'b (m)',def:'12'}],
+ run:function(v){var M=num(v.n)*num(v.W)*num(v.b)/6;return 'M_kök ölçek ≈ '+fN(M)+' N·m\n('+fN(M/1000)+' kN·m)\n(Gerçek: kaldırma dağılımı + yakıt + motor asma)';}},
+{key:'spar_I',title:'Spar I (dikdörtgen kapak)',desc:'I ≈ 2 · A_cap · (h/2)²',
+ inputs:[{key:'A',label:'A_cap (m²)',def:'0.002'},{key:'h',label:'h spar (m)',def:'0.25'}],
+ run:function(v){var I=2*num(v.A)*Math.pow(num(v.h)/2,2);return 'I ≈ '+fN(I)+' m⁴';}},
+{key:'spar_stress',title:'Spar Eğilme Gerilmesi',desc:'σ = M y / I',
+ inputs:[{key:'M',label:'M (N·m)',def:'12000'},{key:'y',label:'y (m)',def:'0.12'},{key:'I',label:'I (m⁴)',def:'6e-5'}],
+ run:function(v){var I=num(v.I);if(I<=0)throw new Error('I>0');var s=num(v.M)*num(v.y)/I;return 'σ = '+fN(s/1e6)+' MPa';}},
+{key:'shear_flow',title:'Kayma Akışı (ince cidar)',desc:'q = V Q / I',
+ inputs:[{key:'V',label:'V kesme (N)',def:'8000'},{key:'Q',label:'Q (m³)',def:'2e-4'},{key:'I',label:'I (m⁴)',def:'6e-5'}],
+ run:function(v){return 'q = '+fN(num(v.V)*num(v.Q)/num(v.I))+' N/m';}},
+{key:'rib_pitch',title:'Rib Aralığı (kabaca)',desc:'s_rib ∼ k · t_skin · √(E/q)',
+ inputs:[{key:'t',label:'t_skin (m)',def:'0.001'},{key:'E',label:'E (Pa)',def:'70e9'},{key:'q',label:'q (Pa)',def:'2200'}],
+ run:function(v){var q=num(v.q);if(q<=0)throw new Error('q>0');return 's_rib ölçek ≈ '+fN(0.8*num(v.t)*Math.sqrt(num(v.E)/q))+' m\n(burkulma/panel tasarımı için mertebe)';}},
+{key:'fus_skin',title:'Gövde Cidar Hoop',desc:'σ_θ = p r / t',
+ inputs:[{key:'p',label:'Δp (Pa)',def:'60000'},{key:'r',label:'r (m)',def:'1.4'},{key:'t',label:'t (m)',def:'0.0012'}],
+ run:function(v){var t=num(v.t);if(t<=0)throw new Error('t>0');return 'σ_hoop = '+fN(num(v.p)*num(v.r)/t/1e6)+' MPa';}},
+{key:'fus_long',title:'Gövde Boyuna σ',desc:'σ_x = p r / (2t)',
+ inputs:[{key:'p',label:'Δp',def:'60000'},{key:'r',label:'r',def:'1.4'},{key:'t',label:'t',def:'0.0012'}],
+ run:function(v){return 'σ_x = '+fN(num(v.p)*num(v.r)/(2*num(v.t))/1e6)+' MPa';}},
+{key:'land_gear',title:'İniş Takımı Dikey Yük',desc:'F = n_land · W',
+ inputs:[{key:'W',label:'W (N)',def:'15000'},{key:'n',label:'n_land',def:'3'}],
+ run:function(v){return 'F = '+fN(num(v.n)*num(v.W))+' N';}},
+{key:'cg_arm',title:'Ağırlık Merkezi',desc:'x_cg = Σ m_i x_i / Σ m_i',
+ inputs:[{key:'m1',label:'m1 (kg)',def:'400'},{key:'x1',label:'x1 (m)',def:'1'},{key:'m2',label:'m2',def:'300'},{key:'x2',label:'x2',def:'3'},{key:'m3',label:'m3',def:'200'},{key:'x3',label:'x3',def:'5'}],
+ run:function(v){var m1=num(v.m1),m2=num(v.m2),m3=num(v.m3);var M=m1+m2+m3;if(M<=0)throw new Error('m>0');return 'x_cg = '+fN((m1*num(v.x1)+m2*num(v.x2)+m3*num(v.x3))/M)+' m';}},
+{key:'static_margin',title:'Statik Marj',desc:'SM = (x_np − x_cg)/c̄',
+ inputs:[{key:'xnp',label:'x_np (m)',def:'2.2'},{key:'xcg',label:'x_cg (m)',def:'2.0'},{key:'c',label:'c̄ (m)',def:'1.5'}],
+ run:function(v){var c=num(v.c);if(c<=0)throw new Error('c>0');return 'SM = '+fN((num(v.xnp)-num(v.xcg))/c)+'\n(pozitif → statik kararlı)';}},
+{key:'tail_vol',title:'Yatay Kuyruk Hacim Katsayısı',desc:'V_H = S_H l_H / (S c̄)',
+ inputs:[{key:'SH',label:'S_H (m²)',def:'4'},{key:'lH',label:'l_H (m)',def:'5'},{key:'S',label:'S',def:'18'},{key:'c',label:'c̄',def:'1.5'}],
+ run:function(v){return 'V_H = '+fN(num(v.SH)*num(v.lH)/(num(v.S)*num(v.c)));}},
+{key:'vert_vol',title:'Dikey Kuyruk Hacim',desc:'V_V = S_V l_V / (S b)',
+ inputs:[{key:'SV',label:'S_V',def:'2'},{key:'lV',label:'l_V',def:'5'},{key:'S',label:'S',def:'18'},{key:'b',label:'b',def:'12'}],
+ run:function(v){return 'V_V = '+fN(num(v.SV)*num(v.lV)/(num(v.S)*num(v.b)));}},
+{key:'thrust_req',title:'Gerekli İtki',desc:'T_req = D = W / (L/D)',
+ inputs:[{key:'W',label:'W (N)',def:'15000'},{key:'LD',label:'L/D',def:'12'}],
+ run:function(v){var ld=num(v.LD);if(ld<=0)throw new Error('L/D>0');return 'T_req = '+fN(num(v.W)/ld)+' N';}},
+{key:'power_req',title:'Gerekli Güç',desc:'P_req = T V = D V',
+ inputs:[{key:'D',label:'D (N)',def:'1250'},{key:'V',label:'V (m/s)',def:'60'}],
+ run:function(v){var P=num(v.D)*num(v.V);return 'P_req = '+fN(P)+' W  ('+fN(P/1000)+' kW)';}},
+{key:'prop_thrust',title:'Pervane İtki (momentum)',desc:'T = ṁ ΔV  ·  ṁ=ρ A V_avg',
+ inputs:[{key:'rho',label:'ρ',def:'1.225'},{key:'D',label:'D pervane (m)',def:'1.8'},{key:'V0',label:'V0 (m/s)',def:'50'},{key:'Ve',label:'V_slip (m/s)',def:'70'}],
+ run:function(v){var A=Math.PI*Math.pow(num(v.D)/2,2);var Vavg=0.5*(num(v.V0)+num(v.Ve));var mdot=num(v.rho)*A*Vavg;var T=mdot*(num(v.Ve)-num(v.V0));return 'A = '+fN(A)+' m²\nṁ ≈ '+fN(mdot)+' kg/s\nT ≈ '+fN(T)+' N';}},
+{key:'prop_power',title:'Pervane Güç / η',desc:'P_shaft = T V / η_p  (yaklaşık)',
+ inputs:[{key:'T',label:'T (N)',def:'1500'},{key:'V',label:'V (m/s)',def:'50'},{key:'eta',label:'η_p',def:'0.8'}],
+ run:function(v){var e=num(v.eta);if(e<=0)throw new Error('η>0');var P=num(v.T)*num(v.V)/e;return 'P_shaft ≈ '+fN(P/1000)+' kW';}},
+{key:'act_disk',title:'Aktüatör Disk (ideal)',desc:'T = 2 ρ A v (v_i) ; v_i=√(V²/4 + T/(2ρA))−V/2',
+ inputs:[{key:'T',label:'T (N)',def:'2000'},{key:'rho',label:'ρ',def:'1.225'},{key:'D',label:'D (m)',def:'1.8'},{key:'V',label:'V (m/s)',def:'40'}],
+ run:function(v){var A=Math.PI*Math.pow(num(v.D)/2,2),T=num(v.T),rho=num(v.rho),V=num(v.V);var vi=Math.sqrt(V*V/4+T/(2*rho*A))-V/2;return 'A = '+fN(A)+' m²\nv_i ≈ '+fN(vi)+' m/s\nP_ideal ≈ '+fN(T*(V+vi)/1000)+' kW';}},
+{key:'jet_thrust',title:'Jet İtki',desc:'F = ṁ (V_e − V0) + (p_e−p_a)A_e',
+ inputs:[{key:'mdot',label:'ṁ (kg/s)',def:'20'},{key:'Ve',label:'V_e (m/s)',def:'450'},{key:'V0',label:'V0 (m/s)',def:'80'},{key:'dP',label:'p_e−p_a (Pa)',def:'0'},{key:'Ae',label:'A_e (m²)',def:'0.15'}],
+ run:function(v){var F=num(v.mdot)*(num(v.Ve)-num(v.V0))+num(v.dP)*num(v.Ae);return 'F = '+fN(F)+' N  ('+fN(F/1000)+' kN)';}},
+{key:'tsfc',title:'TSFC / SFC',desc:'ṁ_f = TSFC · T',
+ inputs:[{key:'tsfc',label:'TSFC (kg/s/N)',def:'2.5e-5'},{key:'T',label:'T (N)',def:'5000'}],
+ run:function(v){var mf=num(v.tsfc)*num(v.T);return 'ṁ_yakıt = '+fN(mf)+' kg/s\n= '+fN(mf*3600)+' kg/saat';}},
+{key:'breguet_jet',title:'Breguet Menzil (jet)',desc:'R = (V/c) (L/D) ln(W_i/W_f)',
+ inputs:[{key:'V',label:'V (m/s)',def:'120'},{key:'c',label:'c TSFC (1/s)',def:'2.5e-5'},{key:'LD',label:'L/D',def:'14'},{key:'Wi',label:'W_i (N)',def:'16000'},{key:'Wf',label:'W_f (N)',def:'13000'}],
+ run:function(v){var c=num(v.c),Wf=num(v.Wf);if(c<=0||Wf<=0)throw new Error('c,Wf>0');var R=num(v.V)/c*num(v.LD)*Math.log(num(v.Wi)/Wf);return 'R ≈ '+fN(R/1000)+' km';}},
+{key:'breguet_prop',title:'Breguet Menzil (pervane)',desc:'R = (η_p/c) (L/D) ln(W_i/W_f)',
+ inputs:[{key:'eta',label:'η_p',def:'0.8'},{key:'c',label:'c (1/s)',def:'8e-5'},{key:'LD',label:'L/D',def:'12'},{key:'Wi',label:'W_i',def:'15000'},{key:'Wf',label:'W_f',def:'12500'}],
+ run:function(v){var R=num(v.eta)/num(v.c)*num(v.LD)*Math.log(num(v.Wi)/num(v.Wf));return 'R ≈ '+fN(R/1000)+' km';}},
+{key:'takeoff',title:'Kalkış Mesafesi (kabaca)',desc:'s_TO ≈ 1.44 W² / (g ρ S C_Lmax T)',
+ inputs:[{key:'W',label:'W (N)',def:'15000'},{key:'rho',label:'ρ',def:'1.225'},{key:'S',label:'S',def:'18'},{key:'CLmax',label:'C_Lmax',def:'1.6'},{key:'T',label:'T (N)',def:'4000'}],
+ run:function(v){var den=G*num(v.rho)*num(v.S)*num(v.CLmax)*num(v.T);if(den<=0)throw new Error('>0');var s=1.44*num(v.W)*num(v.W)/den;return 's_TO ölçek ≈ '+fN(s)+' m';}},
+{key:'roc',title:'Tırmanış Oranı',desc:'ROC = V (T−D)/W',
+ inputs:[{key:'V',label:'V (m/s)',def:'50'},{key:'T',label:'T (N)',def:'3500'},{key:'D',label:'D (N)',def:'1200'},{key:'W',label:'W (N)',def:'15000'}],
+ run:function(v){return 'ROC = '+fN(num(v.V)*(num(v.T)-num(v.D))/num(v.W))+' m/s';}},
+{key:'ceiling_n',title:'Servis Tavanı (güç fazlası→0 kabaca)',desc:'T(h)=D(h) noktası — q̄ ve ρ ile kontrol',
+ inputs:[{key:'T0',label:'T_sl (N)',def:'4000'},{key:'k',label:'T∝ρ^k (k)',def:'1'},{key:'rho',label:'ρ hedef',def:'0.6'},{key:'rho0',label:'ρ0',def:'1.225'}],
+ run:function(v){var T=num(v.T0)*Math.pow(num(v.rho)/num(v.rho0),num(v.k));return 'T(h) ≈ '+fN(T)+' N\n(T≈D olduğunda tavan)';}},
+{key:'mach',title:'Mach Sayısı',desc:'M = V / a  ·  a=√(γ R T)',
+ inputs:[{key:'V',label:'V (m/s)',def:'80'},{key:'T',label:'T (K)',def:'268'}],
+ run:function(v){var a=Math.sqrt(GAMMA*R_AIR*num(v.T));return 'a = '+fN(a)+' m/s\nM = '+fN(num(v.V)/a);}},
+{key:'re_wing',title:'Kanat Reynolds',desc:'Re = V c / ν',
+ inputs:[{key:'V',label:'V (m/s)',def:'60'},{key:'c',label:'c (m)',def:'1.5'},{key:'nu',label:'ν (m²/s)',def:'1.5e-5'}],
+ run:function(v){return 'Re = '+fN(num(v.V)*num(v.c)/num(v.nu));}},
+{key:'glauert',title:'Süpersonik öncesi Prandtl-Glauert',desc:'C_p = C_p0 / √(1−M²)',
+ inputs:[{key:'Cp0',label:'C_p0',def:'-0.4'},{key:'M',label:'M',def:'0.6'}],
+ run:function(v){var M=num(v.M);if(M>=1)throw new Error('M<1');return 'C_p ≈ '+fN(num(v.Cp0)/Math.sqrt(1-M*M));}},
+{key:'engine_mount',title:'Motor Askı Yükü',desc:'F_z = n W_eng  ·  M = F · kol',
+ inputs:[{key:'meng',label:'m_motor (kg)',def:'180'},{key:'n',label:'n',def:'3.8'},{key:'arm',label:'kol (m)',def:'0.6'}],
+ run:function(v){var F=num(v.n)*num(v.meng)*G;return 'F_z = '+fN(F)+' N\nM_askı = '+fN(F*num(v.arm))+' N·m';}},
+{key:'fuel_frac',title:'Yakıt Kesri',desc:'W_f / W_TO',
+ inputs:[{key:'Wf',label:'W_f (N)',def:'2500'},{key:'WTO',label:'W_TO (N)',def:'15000'}],
+ run:function(v){return 'W_f/W_TO = '+fN(num(v.Wf)/num(v.WTO));}},
+{key:'oswald',title:'Oswald e (kabaca)',desc:'e ≈ 1.78(1−0.045 AR^{0.68})−0.64',
+ inputs:[{key:'AR',label:'AR',def:'8'}],
+ run:function(v){var AR=num(v.AR);var e=1.78*(1-0.045*Math.pow(AR,0.68))-0.64;return 'e ≈ '+fN(e)+'\n(düz kanat tahmini)';}},
+{key:'phugoid',title:'Fugoid Periyot (kabaca)',desc:'T ≈ π √2 · V / g',
+ inputs:[{key:'V',label:'V (m/s)',def:'60'}],
+ run:function(v){return 'T_fugoid ≈ '+fN(Math.PI*Math.SQRT2*num(v.V)/G)+' s';}},
+{key:'turn_r',title:'Dönüş Yarıçapı',desc:'R = V² / (g √(n²−1))',
+ inputs:[{key:'V',label:'V (m/s)',def:'60'},{key:'n',label:'n',def:'2'}],
+ run:function(v){var n=num(v.n);if(n<=1)throw new Error('n>1');return 'R = '+fN(num(v.V)*num(v.V)/(G*Math.sqrt(n*n-1)))+' m';}}
+];
+function render(){var host=document.getElementById('ac50-grid');if(!host||host.dataset.built)return;host.dataset.built='1';var frag=document.createDocumentFragment();
+CARDS.forEach(function(c,idx){var card=document.createElement('div');card.className='bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+var inputsHtml=(c.inputs||[]).map(function(inp){return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">'+inp.label+'</label><input id="ac50-in-'+c.key+'-'+inp.key+'" type="text" value="'+(inp.def||'')+'" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';}).join('');
+card.innerHTML='<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-plane text-sky-400"></i> '+(idx+1)+'. '+c.title+'</div><div class="text-[11px] text-zinc-500 mb-2">'+c.desc+'</div>'+inputsHtml+'<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-ac50-key="'+c.key+'">Hesapla</button><div id="ac50-out-'+c.key+'" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-sky-200 border border-zinc-800"></div>';
+frag.appendChild(card);});host.appendChild(frag);
+host.addEventListener('click',function(e){var btn=e.target.closest('[data-ac50-key]');if(!btn)return;run(btn.getAttribute('data-ac50-key'));});}
+function run(key){var c=CARDS.filter(function(x){return x.key===key;})[0];if(!c)return;var out=document.getElementById('ac50-out-'+key);try{var vals={};(c.inputs||[]).forEach(function(inp){var el=document.getElementById('ac50-in-'+key+'-'+inp.key);vals[inp.key]=el?el.value:'';});out.textContent=c.run(vals);out.classList.remove('hidden');}catch(e){out.textContent='⚠ Hata: '+(e&&e.message?e.message:String(e));out.classList.remove('hidden');}}
+window.ac50Render=render;window.ac50Run=run;
+function boot(){try{render();}catch(e){console.warn('AC50',e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,50);});else setTimeout(boot,50);
+})();
+</script>
+
+<script>
+/* ARCH-50 · Mimari tasarım + ev inşaat formülleri · SI */
+(function(){
+'use strict';
+var G=9.80665;
+function fN(x,d){d=d||4;if(typeof x!=='number'||!isFinite(x))return String(x);if(Math.abs(x)>=1e6||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(4);return String(Math.round(x*Math.pow(10,d))/Math.pow(10,d));}
+function num(v,n,def){if(v===undefined||v===null||String(v).trim()===''){if(def!==undefined)return def;throw new Error((n||'P')+' boş');}var x=Number(v);if(!isFinite(x))throw new Error('sayı değil');return x;}
+var CARDS=[
+{key:'area_rect',title:'Dikdörtgen Alan / Hacim',desc:'A=L·B  ·  V=A·H',
+ inputs:[{key:'L',label:'L (m)',def:'10'},{key:'B',label:'B (m)',def:'8'},{key:'H',label:'H (m)',def:'3'}],
+ run:function(v){var A=num(v.L)*num(v.B);return 'A = '+fN(A)+' m²\nV = '+fN(A*num(v.H))+' m³';}},
+{key:'area_trap',title:'Trapez Alan',desc:'A=(a+b)h/2',
+ inputs:[{key:'a',label:'a (m)',def:'6'},{key:'b',label:'b (m)',def:'10'},{key:'h',label:'h (m)',def:'4'}],
+ run:function(v){return 'A = '+fN(0.5*(num(v.a)+num(v.b))*num(v.h))+' m²';}},
+{key:'circle',title:'Daire / Silindir',desc:'A=πr²  V=πr²H',
+ inputs:[{key:'r',label:'r (m)',def:'2'},{key:'H',label:'H (m)',def:'3'}],
+ run:function(v){var A=Math.PI*num(v.r)*num(v.r);return 'A = '+fN(A)+' m²\nV = '+fN(A*num(v.H))+' m³\nçevre = '+fN(2*Math.PI*num(v.r))+' m';}},
+{key:'pyramid',title:'Piramit / Çatı Hacmi',desc:'V = A_taban · h / 3',
+ inputs:[{key:'A',label:'A_taban (m²)',def:'80'},{key:'h',label:'h (m)',def:'2.5'}],
+ run:function(v){return 'V = '+fN(num(v.A)*num(v.h)/3)+' m³';}},
+{key:'nsa',title:'Net / Brüt Alan Oranı',desc:'η = A_net / A_brüt',
+ inputs:[{key:'net',label:'A_net (m²)',def:'95'},{key:'brut',label:'A_brüt (m²)',def:'120'}],
+ run:function(v){var b=num(v.brut);if(b<=0)throw new Error('>0');return 'η = '+fN(num(v.net)/b)+'  ('+fN(100*num(v.net)/b)+' %)';}},
+{key:'far',title:'EMSAL / TAKS',desc:'EMSAL=A_insaat/A_arsa  TAKS=A_oturan/A_arsa',
+ inputs:[{key:'ains',label:'A_inşaat (m²)',def:'360'},{key:'aot',label:'A_oturum (m²)',def:'120'},{key:'arsa',label:'A_arsa (m²)',def:'300'}],
+ run:function(v){var a=num(v.arsa);if(a<=0)throw new Error('>0');return 'EMSAL = '+fN(num(v.ains)/a)+'\nTAKS = '+fN(num(v.aot)/a);}},
+{key:'kaks_h',title:'Kat Adedi / Yükseklik',desc:'n ≈ H / h_kat',
+ inputs:[{key:'H',label:'H_bina (m)',def:'12.5'},{key:'hk',label:'h_kat (m)',def:'3.1'}],
+ run:function(v){var hk=num(v.hk);if(hk<=0)throw new Error('>0');return 'kat ≈ '+fN(num(v.H)/hk);}},
+{key:'stair',title:'Merdiven 2R+A',desc:'2R+A ≈ 0.60–0.64 m (konut)',
+ inputs:[{key:'R',label:'rıht R (m)',def:'0.17'},{key:'A',label:'basamak A (m)',def:'0.28'}],
+ run:function(v){var s=2*num(v.R)+num(v.A);return '2R+A = '+fN(s)+' m\n'+(s>=0.60&&s<=0.65?'uygun aralık':'aralık dışı — kontrol edin');}},
+{key:'stair_n',title:'Merdiven Basamak Sayısı',desc:'n = H / R',
+ inputs:[{key:'H',label:'kat yüksekliği (m)',def:'3.06'},{key:'R',label:'R (m)',def:'0.17'}],
+ run:function(v){var R=num(v.R);if(R<=0)throw new Error('R>0');var n=num(v.H)/R;return 'n ≈ '+fN(n)+'\nyuvarlak n = '+Math.round(n)+'\ngerçek R = '+fN(num(v.H)/Math.round(n))+' m';}},
+{key:'stair_run',title:'Merdiven Koşu Uzunluğu',desc:'L = (n−1) · A',
+ inputs:[{key:'n',label:'basamak n',def:'18'},{key:'A',label:'A (m)',def:'0.28'}],
+ run:function(v){return 'L_koşu = '+fN((num(v.n)-1)*num(v.A))+' m';}},
+{key:'ramp',title:'Rampa Eğimi',desc:'i = h/L  (%)',
+ inputs:[{key:'h',label:'h (m)',def:'0.15'},{key:'L',label:'L (m)',def:'1.5'}],
+ run:function(v){var L=num(v.L);if(L<=0)throw new Error('L>0');var i=num(v.h)/L;return 'i = '+fN(i)+'  ('+fN(100*i)+' %)\nθ = '+fN(Math.atan(i)*180/Math.PI)+' °';}},
+{key:'roof_pitch',title:'Çatı Eğimi',desc:'i = H/L  ·  θ = arctan(H/L)',
+ inputs:[{key:'H',label:'H mahya (m)',def:'2.2'},{key:'L',label:'yatay L (m)',def:'5'}],
+ run:function(v){var L=num(v.L);if(L<=0)throw new Error('L>0');var i=num(v.H)/L;return 'i = '+fN(i)+' ('+fN(100*i)+' %)\nθ = '+fN(Math.atan(i)*180/Math.PI)+' °\neğik kenar = '+fN(Math.hypot(num(v.H),L))+' m';}},
+{key:'roof_area',title:'Eğik Çatı Alanı',desc:'A_eğik = A_yatay / cosθ',
+ inputs:[{key:'A',label:'A_yatay (m²)',def:'80'},{key:'th',label:'θ (°)',def:'25'}],
+ run:function(v){var c=Math.cos(num(v.th)*Math.PI/180);if(c<=0.1)throw new Error('θ aşırı');return 'A_eğik = '+fN(num(v.A)/c)+' m²';}},
+{key:'rafter',title:'Mertek Uzunluğu',desc:'L_m = √(H² + L_yatay²) + saçak',
+ inputs:[{key:'H',label:'H',def:'2.2'},{key:'L',label:'L_yatay',def:'4.5'},{key:'oh',label:'saçak (m)',def:'0.5'}],
+ run:function(v){return 'L_mertek = '+fN(Math.hypot(num(v.H),num(v.L))+num(v.oh))+' m';}},
+{key:'brick',title:'Tuğla Adedi',desc:'n = A_duvar / A_tuğla_görünür · fire',
+ inputs:[{key:'Ad',label:'A_duvar (m²)',def:'40'},{key:'lt',label:'tuğla L (m)',def:'0.19'},{key:'ht',label:'tuğla H (m)',def:'0.06'},{key:'fire',label:'fire',def:'1.05'}],
+ run:function(v){var at=num(v.lt)*num(v.ht);if(at<=0)throw new Error('>0');return 'n ≈ '+fN(num(v.Ad)/at*num(v.fire))+' adet';}},
+{key:'mortar',title:'Harç Hacmi (kabaca)',desc:'V_harç ≈ 0.25 · V_tuğla_duvar',
+ inputs:[{key:'Ad',label:'A_duvar (m²)',def:'40'},{key:'t',label:'kalınlık (m)',def:'0.19'},{key:'k',label:'harç oranı',def:'0.25'}],
+ run:function(v){return 'V_harç ≈ '+fN(num(v.Ad)*num(v.t)*num(v.k))+' m³';}},
+{key:'concrete',title:'Beton Hacmi',desc:'V = L·B·H  (eleman)',
+ inputs:[{key:'L',label:'L (m)',def:'6'},{key:'B',label:'B (m)',def:'0.3'},{key:'H',label:'H (m)',def:'0.5'}],
+ run:function(v){var V=num(v.L)*num(v.B)*num(v.H);return 'V = '+fN(V)+' m³\n≈ '+fN(V*2400)+' kg (2400 kg/m³)';}},
+{key:'rebar',title:'Donatı Ağırlığı',desc:'w = n · L · (π d²/4) · ρ',
+ inputs:[{key:'n',label:'adet',def:'6'},{key:'L',label:'L (m)',def:'6'},{key:'d',label:'d (mm)',def:'12'},{key:'rho',label:'ρ (kg/m³)',def:'7850'}],
+ run:function(v){var d=num(v.d)/1000;var w=num(v.n)*num(v.L)*(Math.PI*d*d/4)*num(v.rho);return 'w = '+fN(w)+' kg';}},
+{key:'slab_dl',title:'Döşeme Ölü Yük',desc:'g = γ · t',
+ inputs:[{key:'gamma',label:'γ (kN/m³)',def:'25'},{key:'t',label:'t (m)',def:'0.14'}],
+ run:function(v){return 'g = '+fN(num(v.gamma)*num(v.t))+' kN/m²';}},
+{key:'load_comb',title:'Yük Birleşimi (kabaca)',desc:'q = 1.4G + 1.6Q  (örnek)',
+ inputs:[{key:'G',label:'G (kN/m²)',def:'4'},{key:'Q',label:'Q (kN/m²)',def:'2'}],
+ run:function(v){return 'q ≈ '+fN(1.4*num(v.G)+1.6*num(v.Q))+' kN/m²\n(yönetmelik birleşimleri proje özelidir)';}},
+{key:'beam_udl',title:'Basit Kiriş UDL Moment',desc:'M_max = w L² / 8',
+ inputs:[{key:'w',label:'w (kN/m)',def:'12'},{key:'L',label:'L (m)',def:'5'}],
+ run:function(v){var M=num(v.w)*num(v.L)*num(v.L)/8;return 'M_max = '+fN(M)+' kN·m\nV_max = '+fN(num(v.w)*num(v.L)/2)+' kN';}},
+{key:'beam_stress',title:'Kiriş Eğilme σ',desc:'σ = M / W  ·  W=bh²/6',
+ inputs:[{key:'M',label:'M (kN·m)',def:'40'},{key:'b',label:'b (m)',def:'0.25'},{key:'h',label:'h (m)',def:'0.50'}],
+ run:function(v){var W=num(v.b)*num(v.h)*num(v.h)/6;if(W<=0)throw new Error('>0');var s=num(v.M)*1000/W;return 'W = '+fN(W)+' m³\nσ = '+fN(s/1e6)+' MPa';}},
+{key:'defl',title:'Sehim (basit kiriş UDL)',desc:'δ = 5 w L⁴ / (384 EI)',
+ inputs:[{key:'w',label:'w (N/m)',def:'12000'},{key:'L',label:'L (m)',def:'5'},{key:'E',label:'E (Pa)',def:'30e9'},{key:'I',label:'I (m⁴)',def:'0.0026'}],
+ run:function(v){var den=384*num(v.E)*num(v.I);if(den<=0)throw new Error('>0');var d=5*num(v.w)*Math.pow(num(v.L),4)/den;return 'δ = '+fN(d*1000)+' mm\nL/δ = '+fN(num(v.L)/d);}},
+{key:'col_stress',title:'Kolon Eksenel σ',desc:'σ = N / A',
+ inputs:[{key:'N',label:'N (kN)',def:'800'},{key:'b',label:'b (m)',def:'0.3'},{key:'h',label:'h (m)',def:'0.3'}],
+ run:function(v){var A=num(v.b)*num(v.h);return 'A = '+fN(A)+' m²\nσ = '+fN(num(v.N)*1000/A/1e6)+' MPa';}},
+{key:'euler',title:'Euler Burkulma (kabaca)',desc:'P_cr = π² EI / (K L)²',
+ inputs:[{key:'E',label:'E (Pa)',def:'30e9'},{key:'I',label:'I (m⁴)',def:'4.5e-4'},{key:'L',label:'L (m)',def:'3'},{key:'K',label:'K',def:'1'}],
+ run:function(v){var KL=num(v.K)*num(v.L);if(KL<=0)throw new Error('>0');var P=Math.PI*Math.PI*num(v.E)*num(v.I)/(KL*KL);return 'P_cr ≈ '+fN(P/1000)+' kN';}},
+{key:'found_q',title:'Temel Gerilme',desc:'q = N / A_temel',
+ inputs:[{key:'N',label:'N (kN)',def:'600'},{key:'B',label:'B (m)',def:'1.5'},{key:'L',label:'L (m)',def:'1.5'}],
+ run:function(v){var A=num(v.B)*num(v.L);return 'A = '+fN(A)+' m²\nq = '+fN(num(v.N)/A)+' kN/m²';}},
+{key:'soil_allow',title:'Güvenli Zemin — kontrol',desc:'q ≤ q_allow',
+ inputs:[{key:'q',label:'q (kN/m²)',def:'180'},{key:'qa',label:'q_allow',def:'200'}],
+ run:function(v){var q=num(v.q),qa=num(v.qa);return q<=qa?'q ≤ q_allow  (sağlar)':'⚠ q > q_allow';}},
+{key:'wind',title:'Rüzgar Basıncı (kabaca)',desc:'q_w = ½ ρ V² C',
+ inputs:[{key:'V',label:'V (m/s)',def:'30'},{key:'C',label:'C',def:'1.2'},{key:'rho',label:'ρ',def:'1.25'}],
+ run:function(v){var q=0.5*num(v.rho)*num(v.V)*num(v.V)*num(v.C);return 'q_w ≈ '+fN(q)+' Pa  ('+fN(q/1000)+' kPa)';}},
+{key:'snow',title:'Kar Yükü (kabaca)',desc:'s = s_k · C',
+ inputs:[{key:'sk',label:'s_k (kN/m²)',def:'0.75'},{key:'C',label:'C',def:'0.8'}],
+ run:function(v){return 's ≈ '+fN(num(v.sk)*num(v.C))+' kN/m²';}},
+{key:'uvalue',title:'Isı Kaybı (U)',desc:'Q = U A ΔT',
+ inputs:[{key:'U',label:'U (W/m²K)',def:'0.4'},{key:'A',label:'A (m²)',def:'80'},{key:'dT',label:'ΔT (K)',def:'20'}],
+ run:function(v){var Q=num(v.U)*num(v.A)*num(v.dT);return 'Q = '+fN(Q)+' W  ('+fN(Q/1000)+' kW)';}},
+{key:'rvalue',title:'Isıl Direnç R',desc:'R = t / λ  ·  U=1/ΣR',
+ inputs:[{key:'t',label:'t (m)',def:'0.05'},{key:'lam',label:'λ (W/mK)',def:'0.04'}],
+ run:function(v){var lam=num(v.lam);if(lam<=0)throw new Error('λ>0');var R=num(v.t)/lam;return 'R = '+fN(R)+' m²K/W\nU_tabaka ≈ '+fN(1/R)+' W/m²K';}},
+{key:'vent',title:'Havalandırma Debisi',desc:'Q = n · V / 3600  (n hava değişimi/saat)',
+ inputs:[{key:'n',label:'n (1/h)',def:'0.5'},{key:'V',label:'V oda (m³)',def:'60'}],
+ run:function(v){var Q=num(v.n)*num(v.V)/3600;return 'Q = '+fN(Q)+' m³/s  ('+fN(Q*3600)+' m³/h)';}},
+{key:'daylight',title:'Günışığı Oranı (kabaca)',desc:'DF ≈ A_pencere / A_zemin · τ',
+ inputs:[{key:'Aw',label:'A_pencere (m²)',def:'4'},{key:'Af',label:'A_zemin (m²)',def:'20'},{key:'tau',label:'τ',def:'0.7'}],
+ run:function(v){var Af=num(v.Af);if(Af<=0)throw new Error('>0');return 'DF ölçek ≈ '+fN(num(v.Aw)/Af*num(v.tau)*100)+' %';}},
+{key:'lux',title:'Aydınlık (kabaca)',desc:'E = Φ · CU · MF / A',
+ inputs:[{key:'Phi',label:'Φ (lm)',def:'8000'},{key:'CU',label:'CU',def:'0.6'},{key:'MF',label:'MF',def:'0.8'},{key:'A',label:'A (m²)',def:'20'}],
+ run:function(v){return 'E ≈ '+fN(num(v.Phi)*num(v.CU)*num(v.MF)/num(v.A))+' lux';}},
+{key:'reverb',title:'Sabine Reverberasyon',desc:'T = 0.161 V / A_sab',
+ inputs:[{key:'V',label:'V (m³)',def:'150'},{key:'A',label:'A_sab (m² sabin)',def:'30'}],
+ run:function(v){var A=num(v.A);if(A<=0)throw new Error('>0');return 'T_60 ≈ '+fN(0.161*num(v.V)/A)+' s';}},
+{key:'slope_drain',title:'Tesisat Eğimi',desc:'i = Δh / L',
+ inputs:[{key:'dh',label:'Δh (m)',def:'0.02'},{key:'L',label:'L (m)',def:'2'}],
+ run:function(v){return 'i = '+fN(num(v.dh)/num(v.L))+'  ('+fN(100*num(v.dh)/num(v.L))+' %)';}},
+{key:'pipe_Q',title:'Manning Debi (açık kanal kabaca)',desc:'Q = (1/n) A R^{2/3} S^{1/2}',
+ inputs:[{key:'A',label:'A (m²)',def:'0.02'},{key:'R',label:'R (m)',def:'0.03'},{key:'S',label:'S',def:'0.01'},{key:'n',label:'n',def:'0.013'}],
+ run:function(v){var n=num(v.n);if(n<=0)throw new Error('n>0');var Q=(1/n)*num(v.A)*Math.pow(num(v.R),2/3)*Math.sqrt(num(v.S));return 'Q ≈ '+fN(Q)+' m³/s';}},
+{key:'paint',title:'Boya Sarfiyatı',desc:'A / verim',
+ inputs:[{key:'A',label:'A (m²)',def:'120'},{key:'cov',label:'verim (m²/L)',def:'10'},{key:'kat',label:'kat',def:'2'}],
+ run:function(v){return 'V_boya ≈ '+fN(num(v.A)*num(v.kat)/num(v.cov))+' L';}},
+{key:'tile',title:'Kaplama Adedi',desc:'n = A / a_karo · fire',
+ inputs:[{key:'A',label:'A (m²)',def:'25'},{key:'a',label:'karo (m²)',def:'0.09'},{key:'fire',label:'fire',def:'1.08'}],
+ run:function(v){return 'n ≈ '+fN(num(v.A)/num(v.a)*num(v.fire))+' adet';}},
+{key:'excav',title:'Hafriyat',desc:'V = A · h · şişme',
+ inputs:[{key:'A',label:'A (m²)',def:'80'},{key:'h',label:'h (m)',def:'1.2'},{key:'s',label:'şişme',def:'1.2'}],
+ run:function(v){return 'V_kazı = '+fN(num(v.A)*num(v.h))+' m³\nV_nakliye ≈ '+fN(num(v.A)*num(v.h)*num(v.s))+' m³';}},
+{key:'formwork',title:'Kalıp Alanı',desc:'A = 2(L+B)H + L B (kiriş/perde kabaca)',
+ inputs:[{key:'L',label:'L',def:'5'},{key:'B',label:'B',def:'0.3'},{key:'H',label:'H',def:'0.5'}],
+ run:function(v){var L=num(v.L),B=num(v.B),H=num(v.H);return 'A_yan ≈ '+fN(2*(L+B)*H)+' m²';}},
+{key:'gold',title:'Altın Oran',desc:'φ = (1+√5)/2 ≈ 1.618  ·  b = a/φ',
+ inputs:[{key:'a',label:'uzun kenar (m)',def:'8'}],
+ run:function(v){var phi=(1+Math.sqrt(5))/2;return 'φ = '+fN(phi,6)+'\nkısa kenar ≈ '+fN(num(v.a)/phi)+' m';}},
+{key:'module',title:'Modül / Izgara',desc:'n = L / M',
+ inputs:[{key:'L',label:'L (m)',def:'7.2'},{key:'M',label:'modül (m)',def:'1.2'}],
+ run:function(v){var M=num(v.M);if(M<=0)throw new Error('>0');return 'n = '+fN(num(v.L)/M)+' modül';}},
+{key:'occupancy',title:'Kullanıcı Yükü',desc:'n = A / a_kişi',
+ inputs:[{key:'A',label:'A (m²)',def:'80'},{key:'ak',label:'m²/kişi',def:'8'}],
+ run:function(v){return 'n ≈ '+fN(num(v.A)/num(v.ak))+' kişi';}},
+{key:'parking',title:'Otopark Adedi',desc:'n = A_toplam / A_yer',
+ inputs:[{key:'A',label:'A (m²)',def:'400'},{key:'ay',label:'A_yer (m²)',def:'25'}],
+ run:function(v){return 'n ≈ '+fN(num(v.A)/num(v.ay))+' araç';}},
+{key:'window_ratio',title:'Pencere / Cephe Oranı WWR',desc:'WWR = A_cam / A_cephe',
+ inputs:[{key:'Aw',label:'A_cam',def:'18'},{key:'Af',label:'A_cephe',def:'60'}],
+ run:function(v){return 'WWR = '+fN(num(v.Aw)/num(v.Af))+'  ('+fN(100*num(v.Aw)/num(v.Af))+' %)';}},
+{key:'rise_run',title:'Merdiven Eğim Açısı',desc:'θ = arctan(R/A)',
+ inputs:[{key:'R',label:'R',def:'0.17'},{key:'A',label:'A',def:'0.28'}],
+ run:function(v){return 'θ = '+fN(Math.atan(num(v.R)/num(v.A))*180/Math.PI)+' °';}},
+{key:'span_depth',title:'Kiriş Açıklık / Yükseklik',desc:'L/h kabaca 10–20 (beton)',
+ inputs:[{key:'L',label:'L (m)',def:'6'},{key:'h',label:'h (m)',def:'0.45'}],
+ run:function(v){return 'L/h = '+fN(num(v.L)/num(v.h))+'\n(sadece ön boyut — hesap şart)';}},
+{key:'selfweight',title:'Eleman Öz Ağırlık',desc:'G = γ A L',
+ inputs:[{key:'gamma',label:'γ (kN/m³)',def:'25'},{key:'A',label:'A (m²)',def:'0.12'},{key:'L',label:'L (m)',def:'6'}],
+ run:function(v){return 'G = '+fN(num(v.gamma)*num(v.A)*num(v.L))+' kN';}}
+];
+function render(){var host=document.getElementById('arch50-grid');if(!host||host.dataset.built)return;host.dataset.built='1';var frag=document.createDocumentFragment();
+CARDS.forEach(function(c,idx){var card=document.createElement('div');card.className='bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+var inputsHtml=(c.inputs||[]).map(function(inp){return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">'+inp.label+'</label><input id="arch50-in-'+c.key+'-'+inp.key+'" type="text" value="'+(inp.def||'')+'" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';}).join('');
+card.innerHTML='<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-building text-amber-400"></i> '+(idx+1)+'. '+c.title+'</div><div class="text-[11px] text-zinc-500 mb-2">'+c.desc+'</div>'+inputsHtml+'<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-arch50-key="'+c.key+'">Hesapla</button><div id="arch50-out-'+c.key+'" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-amber-200 border border-zinc-800"></div>';
+frag.appendChild(card);});host.appendChild(frag);
+host.addEventListener('click',function(e){var btn=e.target.closest('[data-arch50-key]');if(!btn)return;run(btn.getAttribute('data-arch50-key'));});}
+function run(key){var c=CARDS.filter(function(x){return x.key===key;})[0];if(!c)return;var out=document.getElementById('arch50-out-'+key);try{var vals={};(c.inputs||[]).forEach(function(inp){var el=document.getElementById('arch50-in-'+key+'-'+inp.key);vals[inp.key]=el?el.value:'';});out.textContent=c.run(vals);out.classList.remove('hidden');}catch(e){out.textContent='⚠ Hata: '+(e&&e.message?e.message:String(e));out.classList.remove('hidden');}}
+window.arch50Render=render;window.arch50Run=run;
+function boot(){try{render();}catch(e){console.warn('ARCH50',e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,50);});else setTimeout(boot,50);
+})();
+</script>
+
+<script>
+/* FARM-50 · Tarım / çiftçi formülleri */
+(function(){
+'use strict';
+function fN(x,d){d=d||4;if(typeof x!=='number'||!isFinite(x))return String(x);if(Math.abs(x)>=1e6||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(4);return String(Math.round(x*Math.pow(10,d))/Math.pow(10,d));}
+function num(v,n,def){if(v===undefined||v===null||String(v).trim()===''){if(def!==undefined)return def;throw new Error((n||'P')+' boş');}var x=Number(v);if(!isFinite(x))throw new Error('sayı değil');return x;}
+var CARDS=[
+{key:'ha',title:'Dekar / Hektar',desc:'1 ha = 10 da = 10000 m²',
+ inputs:[{key:'m2',label:'alan (m²)',def:'25000'}],
+ run:function(v){var a=num(v.m2);return 'da = '+fN(a/1000)+'\nha = '+fN(a/10000)+'\ndönüm≈da (TR)';}},
+{key:'plot',title:'Tarla Alanı (dikdörtgen)',desc:'A = L · B',
+ inputs:[{key:'L',label:'L (m)',def:'200'},{key:'B',label:'B (m)',def:'50'}],
+ run:function(v){var A=num(v.L)*num(v.B);return 'A = '+fN(A)+' m²\n= '+fN(A/1000)+' da\n= '+fN(A/10000)+' ha';}},
+{key:'trap_field',title:'Tarla (trapez)',desc:'A=(a+b)h/2',
+ inputs:[{key:'a',label:'a (m)',def:'80'},{key:'b',label:'b (m)',def:'120'},{key:'h',label:'h (m)',def:'60'}],
+ run:function(v){var A=0.5*(num(v.a)+num(v.b))*num(v.h);return 'A = '+fN(A)+' m²  ('+fN(A/1000)+' da)';}},
+{key:'plant_n',title:'Bitki Sayısı',desc:'n = A / (sıra × sıra üzeri)',
+ inputs:[{key:'A',label:'A (m²)',def:'10000'},{key:'sr',label:'sıra arası (m)',def:'0.70'},{key:'su',label:'sıra üzeri (m)',def:'0.25'}],
+ run:function(v){var den=num(v.sr)*num(v.su);if(den<=0)throw new Error('>0');return 'n = '+fN(num(v.A)/den)+' bitki\n= '+fN(num(v.A)/den/10)+' bitki/da';}},
+{key:'seed_rate',title:'Tohumluk Miktarı',desc:'M = A · norm (kg/da)',
+ inputs:[{key:'da',label:'alan (da)',def:'20'},{key:'norm',label:'kg/da',def:'18'}],
+ run:function(v){return 'M = '+fN(num(v.da)*num(v.norm))+' kg';}},
+{key:'germ',title:'Çimlenme Düzeltmesi',desc:'norm_düz = norm / (çimlenme · saflık)',
+ inputs:[{key:'norm',label:'norm kg/da',def:'18'},{key:'g',label:'çimlenme',def:'0.90'},{key:'p',label:'saflık',def:'0.98'}],
+ run:function(v){var d=num(v.g)*num(v.p);if(d<=0)throw new Error('>0');return 'ekilecek = '+fN(num(v.norm)/d)+' kg/da';}},
+{key:'thou',title:'1000 Dane Ağırlığı → tohum',desc:'kg/da = (bitki/m² · 1000-dane g) / 100',
+ inputs:[{key:'pm2',label:'bitki/m²',def:'400'},{key:'tgw',label:'1000 dane (g)',def:'40'}],
+ run:function(v){return '≈ '+fN(num(v.pm2)*num(v.tgw)/100)+' kg/da';}},
+{key:'npk',title:'Gübre Saf Besin',desc:'kg ürün = ihtiyaç / tenör',
+ inputs:[{key:'need',label:'ihtiyaç N kg/da',def:'12'},{key:'ten',label:'tenör (örn 0.21)',def:'0.21'}],
+ run:function(v){var t=num(v.ten);if(t<=0)throw new Error('>0');return 'gübre = '+fN(num(v.need)/t)+' kg/da';}},
+{key:'comp_fert',title:'Kompoze NPK Payı',desc:'N kg = M · %N',
+ inputs:[{key:'M',label:'M kg/da',def:'25'},{key:'n',label:'%N',def:'15'},{key:'p',label:'%P2O5',def:'15'},{key:'k',label:'%K2O',def:'15'}],
+ run:function(v){var M=num(v.M);return 'N = '+fN(M*num(v.n)/100)+' kg/da\nP₂O₅ = '+fN(M*num(v.p)/100)+'\nK₂O = '+fN(M*num(v.k)/100);}},
+{key:'lime',title:'Kireç İhtiyacı (kabaca)',desc:'M = A · doz',
+ inputs:[{key:'da',label:'da',def:'10'},{key:'doz',label:'kg/da',def:'200'}],
+ run:function(v){return 'M = '+fN(num(v.da)*num(v.doz))+' kg  ('+fN(num(v.da)*num(v.doz)/1000)+' t)';}},
+{key:'et0',title:'ET₀ FAO-56 (Hargreaves kabaca)',desc:'ET₀ ≈ 0.0023 Ra (T+17.8) √(TD)',
+ inputs:[{key:'Ra',label:'Ra (mm/gün)',def:'15'},{key:'T',label:'Tort (°C)',def:'22'},{key:'TD',label:'Tmax-Tmin',def:'12'}],
+ run:function(v){var TD=num(v.TD);if(TD<0)throw new Error('TD≥0');var et=0.0023*num(v.Ra)*(num(v.T)+17.8)*Math.sqrt(TD);return 'ET₀ ≈ '+fN(et)+' mm/gün';}},
+{key:'etc',title:'ETc = Kc · ET₀',desc:'bitki su tüketimi',
+ inputs:[{key:'kc',label:'Kc',def:'1.05'},{key:'et0',label:'ET₀ mm/gün',def:'5'}],
+ run:function(v){return 'ETc = '+fN(num(v.kc)*num(v.et0))+' mm/gün';}},
+{key:'irrig',title:'Sulama Suyu',desc:'V = ETc · A / η',
+ inputs:[{key:'etc',label:'ETc mm',def:'5'},{key:'da',label:'alan da',def:'10'},{key:'eta',label:'η randıman',def:'0.75'}],
+ run:function(v){var e=num(v.eta);if(e<=0)throw new Error('η>0');var mm=num(v.etc)/e;var m3=mm*num(v.da);return 'brüt = '+fN(mm)+' mm\nV = '+fN(m3)+' m³  (1 mm·da = 1 m³)';}},
+{key:'aw',title:'Kullanılabilir Su AW',desc:'AW = (θ_tarla − θ_solma) · z · ρ',
+ inputs:[{key:'fc',label:'θ_tarla',def:'0.32'},{key:'wp',label:'θ_solma',def:'0.16'},{key:'z',label:'z kök (mm)',def:'400'},{key:'p',label:'p pay',def:'0.5'}],
+ run:function(v){var aw=(num(v.fc)-num(v.wp))*num(v.z);return 'AW ≈ '+fN(aw)+' mm\nRAW ≈ '+fN(aw*num(v.p))+' mm';}},
+{key:'interval',title:'Sulama Aralığı',desc:'t = RAW / ETc',
+ inputs:[{key:'raw',label:'RAW mm',def:'40'},{key:'etc',label:'ETc mm/gün',def:'5'}],
+ run:function(v){var e=num(v.etc);if(e<=0)throw new Error('>0');return 't ≈ '+fN(num(v.raw)/e)+' gün';}},
+{key:'drip',title:'Damla Debi',desc:'Q_tarla = n · q_damla',
+ inputs:[{key:'n',label:'damlatıcı sayısı',def:'2000'},{key:'q',label:'q (L/h)',def:'2'}],
+ run:function(v){var Q=num(v.n)*num(v.q);return 'Q = '+fN(Q)+' L/h  = '+fN(Q/1000)+' m³/h';}},
+{key:'sprinkler',title:'Yağmurlama Şiddeti',desc:'i = Q / A',
+ inputs:[{key:'Q',label:'Q (L/h)',def:'800'},{key:'A',label:'A (m²)',def:'400'}],
+ run:function(v){return 'i = '+fN(num(v.Q)/num(v.A))+' mm/h';}},
+{key:'yield',title:'Verim',desc:'Y = hasat / alan',
+ inputs:[{key:'kg',label:'hasat (kg)',def:'8500'},{key:'da',label:'da',def:'10'}],
+ run:function(v){return 'Y = '+fN(num(v.kg)/num(v.da))+' kg/da\n= '+fN(num(v.kg)/num(v.da)/100)+' t/ha';}},
+{key:'hi',title:'Hasat İndeksi HI',desc:'HI = dane / biyokütle',
+ inputs:[{key:'g',label:'dane (kg)',def:'5000'},{key:'b',label:'biyokütle (kg)',def:'12000'}],
+ run:function(v){return 'HI = '+fN(num(v.g)/num(v.b));}},
+{key:'gdd',title:'GDD (derece-gün)',desc:'GDD = (Tmax+Tmin)/2 − Tbase',
+ inputs:[{key:'tx',label:'Tmax',def:'28'},{key:'tn',label:'Tmin',def:'14'},{key:'tb',label:'Tbase',def:'10'}],
+ run:function(v){var t=0.5*(num(v.tx)+num(v.tn))-num(v.tb);if(t<0)t=0;return 'GDD = '+fN(t)+' °C·gün';}},
+{key:'gdd_sum',title:'Kümülatif GDD',desc:'Σ GDD',
+ inputs:[{key:'gdd',label:'ortalama GDD/gün',def:'12'},{key:'n',label:'gün',def:'90'}],
+ run:function(v){return 'Σ = '+fN(num(v.gdd)*num(v.n))+' °C·gün';}},
+{key:'lai',title:'LAI (kabaca)',desc:'LAI = yaprak alanı / toprak alanı',
+ inputs:[{key:'Al',label:'yaprak (m²)',def:'3.2'},{key:'Ag',label:'zemin (m²)',def:'1'}],
+ run:function(v){return 'LAI = '+fN(num(v.Al)/num(v.Ag));}},
+{key:'pest',title:'İlaçlama Miktarı',desc:'M = doz · A',
+ inputs:[{key:'doz',label:'L/da veya kg/da',def:'0.15'},{key:'da',label:'da',def:'12'}],
+ run:function(v){return 'M = '+fN(num(v.doz)*num(v.da))+' birim';}},
+{key:'spray_vol',title:'Püskürtme Hacmi',desc:'V = norm L/da · alan',
+ inputs:[{key:'norm',label:'L/da',def:'20'},{key:'da',label:'da',def:'8'}],
+ run:function(v){return 'V = '+fN(num(v.norm)*num(v.da))+' L';}},
+{key:'feed_dm',title:'Yem Kuru Madde',desc:'KM = yaş · %KM',
+ inputs:[{key:'yas',label:'yaş yem kg',def:'40'},{key:'km',label:'KM oranı',def:'0.35'}],
+ run:function(v){return 'KM = '+fN(num(v.yas)*num(v.km))+' kg';}},
+{key:'dmi',title:'Kuru Madde Alımı (kabaca)',desc:'DMI ≈ %BW · canlı ağırlık',
+ inputs:[{key:'bw',label:'canlı ağırlık kg',def:'550'},{key:'p',label:'%BW',def:'0.025'}],
+ run:function(v){return 'DMI ≈ '+fN(num(v.bw)*num(v.p))+' kg KM/gün';}},
+{key:'lu',title:'Büyükbaş Birimi (BBHB)',desc:'1 BBHB ≈ 500 kg',
+ inputs:[{key:'m',label:'toplam canlı kg',def:'3500'}],
+ run:function(v){return 'BBHB ≈ '+fN(num(v.m)/500);}},
+{key:'stocking',title:'Otlatma Yoğunluğu',desc:'hayvan / ha',
+ inputs:[{key:'n',label:'hayvan',def:'24'},{key:'ha',label:'ha',def:'8'}],
+ run:function(v){return 'yoğunluk = '+fN(num(v.n)/num(v.ha))+' hayvan/ha';}},
+{key:'milk',title:'Süt Verimi',desc:'ortalama = toplam / gün / inek',
+ inputs:[{key:'tot',label:'toplam L',def:'7200'},{key:'d',label:'gün',def:'30'},{key:'n',label:'inek',def:'12'}],
+ run:function(v){return 'L/inek/gün = '+fN(num(v.tot)/num(v.d)/num(v.n));}},
+{key:'fcr',title:'Yem Dönüşümü FCR',desc:'FCR = yem / canlı artış',
+ inputs:[{key:'feed',label:'yem kg',def:'250'},{key:'gain',label:'artış kg',def:'80'}],
+ run:function(v){var g=num(v.gain);if(g<=0)throw new Error('>0');return 'FCR = '+fN(num(v.feed)/g);}},
+{key:'adg',title:'Günlük Canlı Artış ADG',desc:'ADG = ΔW / gün',
+ inputs:[{key:'dw',label:'ΔW kg',def:'80'},{key:'d',label:'gün',def:'60'}],
+ run:function(v){return 'ADG = '+fN(num(v.dw)/num(v.d))+' kg/gün';}},
+{key:'silage',title:'Silaj Çukur Hacmi',desc:'V = L·B·H · doluluk · ρ',
+ inputs:[{key:'L',label:'L m',def:'20'},{key:'B',label:'B m',def:'8'},{key:'H',label:'H m',def:'2.5'},{key:'f',label:'doluluk',def:'0.85'},{key:'rho',label:'ρ kg/m³',def:'650'}],
+ run:function(v){var V=num(v.L)*num(v.B)*num(v.H)*num(v.f);return 'V = '+fN(V)+' m³\nm ≈ '+fN(V*num(v.rho)/1000)+' t';}},
+{key:'grain_store',title:'Dane Deposu',desc:'m = V · ρ · doluluk',
+ inputs:[{key:'V',label:'V m³',def:'40'},{key:'rho',label:'ρ kg/m³',def:'750'},{key:'f',label:'doluluk',def:'0.9'}],
+ run:function(v){return 'm ≈ '+fN(num(v.V)*num(v.rho)*num(v.f)/1000)+' t';}},
+{key:'mc_wb',title:'Rutubet (yaş baz)',desc:'M = (yaş−kuru)/yaş',
+ inputs:[{key:'w',label:'yaş kg',def:'1.2'},{key:'d',label:'kuru kg',def:'1.0'}],
+ run:function(v){var w=num(v.w);if(w<=0)throw new Error('>0');return 'M = '+fN((w-num(v.d))/w)+'  ('+fN(100*(w-num(v.d))/w)+' %)';}},
+{key:'dry_shrink',title:'Kurutma Fire',desc:'m_kuru = m_yas (1−M1)/(1−M2)',
+ inputs:[{key:'m',label:'m_yaş kg',def:'1000'},{key:'m1',label:'M1',def:'0.20'},{key:'m2',label:'M2',def:'0.14'}],
+ run:function(v){var d=1-num(v.m2);if(d<=0)throw new Error('M2<1');return 'm_son = '+fN(num(v.m)*(1-num(v.m1))/d)+' kg';}},
+{key:'tractor_p',title:'Traktör Çeki Gücü',desc:'P = F · v',
+ inputs:[{key:'F',label:'F (N)',def:'8000'},{key:'v',label:'v (m/s)',def:'1.8'}],
+ run:function(v){var P=num(v.F)*num(v.v);return 'P = '+fN(P/1000)+' kW  ('+fN(P/746)+' hp)';}},
+{key:'field_cap',title:'İş Kapasitesi',desc:'C = 0.1 · b · v · η  (ha/h)',
+ inputs:[{key:'b',label:'iş genişliği m',def:'2.5'},{key:'v',label:'v km/h',def:'6'},{key:'eta',label:'η',def:'0.8'}],
+ run:function(v){var C=0.1*num(v.b)*num(v.v)*num(v.eta);return 'C = '+fN(C)+' ha/saat\n= '+fN(C*10)+' da/saat';}},
+{key:'time_field',title:'İş Süresi',desc:'t = A / C',
+ inputs:[{key:'ha',label:'ha',def:'12'},{key:'C',label:'C ha/h',def:'1.2'}],
+ run:function(v){var C=num(v.C);if(C<=0)throw new Error('>0');return 't = '+fN(num(v.ha)/C)+' saat';}},
+{key:'fuel',title:'Yakıt',desc:'L = özgül · P · t',
+ inputs:[{key:'s',label:'L/kWh',def:'0.28'},{key:'P',label:'P kW',def:'50'},{key:'t',label:'t saat',def:'4'}],
+ run:function(v){return 'yakıt ≈ '+fN(num(v.s)*num(v.P)*num(v.t))+' L';}},
+{key:'cost_ha',title:'Dekar Maliyeti',desc:'c = toplam / alan',
+ inputs:[{key:'tot',label:'toplam TL',def:'48000'},{key:'da',label:'da',def:'20'}],
+ run:function(v){return 'c = '+fN(num(v.tot)/num(v.da))+' TL/da';}},
+{key:'gross_margin',title:'Brüt Marj',desc:'GM = gelir − değişken gider',
+ inputs:[{key:'rev',label:'gelir TL',def:'90000'},{key:'var',label:'değişken TL',def:'52000'}],
+ run:function(v){return 'GM = '+fN(num(v.rev)-num(v.var))+' TL';}},
+{key:'ph_water',title:'Sulama Suyu SAR (kabaca)',desc:'SAR = Na / √((Ca+Mg)/2)',
+ inputs:[{key:'Na',label:'Na meq/L',def:'4'},{key:'Ca',label:'Ca',def:'3'},{key:'Mg',label:'Mg',def:'2'}],
+ run:function(v){var d=num(v.Ca)+num(v.Mg);if(d<=0)throw new Error('>0');return 'SAR = '+fN(num(v.Na)/Math.sqrt(d/2));}},
+{key:'ec',title:'ECe tuzluluk etkisi (kabaca)',desc:'yüksek EC → verim düşer',
+ inputs:[{key:'ec',label:'ECe dS/m',def:'2.5'},{key:'th',label:'eşik',def:'1.7'},{key:'s',label:'eğim % per dS',def:'5.5'}],
+ run:function(v){var x=num(v.ec)-num(v.th);var loss=x>0?num(v.s)*x:0;if(loss>100)loss=100;return 'tahmini kayıp ≈ '+fN(loss)+' %\nkalan verim ≈ '+fN(100-loss)+' %';}},
+{key:'compost',title:'Kompost C/N',desc:'C/N = Σ C / Σ N',
+ inputs:[{key:'c1',label:'C kg',def:'40'},{key:'n1',label:'N kg',def:'1'},{key:'c2',label:'C2',def:'8'},{key:'n2',label:'N2',def:'0.8'}],
+ run:function(v){var N=num(v.n1)+num(v.n2);if(N<=0)throw new Error('N>0');return 'C/N ≈ '+fN((num(v.c1)+num(v.c2))/N);}},
+{key:'manure',title:'Ahır Gübresi',desc:'M = doz · alan',
+ inputs:[{key:'doz',label:'t/da',def:'2'},{key:'da',label:'da',def:'15'}],
+ run:function(v){return 'M = '+fN(num(v.doz)*num(v.da))+' t';}},
+{key:'bee',title:'Kovan / Alan',desc:'n = A / a_kovan',
+ inputs:[{key:'da',label:'da',def:'20'},{key:'a',label:'da/kovan',def:'2'}],
+ run:function(v){return 'n ≈ '+fN(num(v.da)/num(v.a))+' kovan';}},
+{key:'tree_n',title:'Meyve Ağacı Sayısı',desc:'n = A / (sıra × sıra üzeri)',
+ inputs:[{key:'da',label:'da',def:'10'},{key:'sr',label:'sıra m',def:'5'},{key:'su',label:'üzeri m',def:'4'}],
+ run:function(v){var A=num(v.da)*1000;return 'n = '+fN(A/(num(v.sr)*num(v.su)))+' ağaç';}},
+{key:'pruning_wood',title:'Odun / Budama Tahmini',desc:'m ≈ n · m_ağaç',
+ inputs:[{key:'n',label:'ağaç',def:'200'},{key:'m',label:'kg/ağaç',def:'8'}],
+ run:function(v){return 'm ≈ '+fN(num(v.n)*num(v.m)/1000)+' t';}},
+{key:'water_ha',title:'mm → m³/da',desc:'1 mm = 1 m³/da = 10 m³/ha',
+ inputs:[{key:'mm',label:'mm',def:'30'},{key:'da',label:'da',def:'12'}],
+ run:function(v){return 'V = '+fN(num(v.mm)*num(v.da))+' m³';}}
+];
+function render(){var host=document.getElementById('farm50-grid');if(!host||host.dataset.built)return;host.dataset.built='1';var frag=document.createDocumentFragment();
+CARDS.forEach(function(c,idx){var card=document.createElement('div');card.className='bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+var inputsHtml=(c.inputs||[]).map(function(inp){return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">'+inp.label+'</label><input id="farm50-in-'+c.key+'-'+inp.key+'" type="text" value="'+(inp.def||'')+'" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';}).join('');
+card.innerHTML='<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-wheat-awn text-lime-400"></i> '+(idx+1)+'. '+c.title+'</div><div class="text-[11px] text-zinc-500 mb-2">'+c.desc+'</div>'+inputsHtml+'<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-farm50-key="'+c.key+'">Hesapla</button><div id="farm50-out-'+c.key+'" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-lime-200 border border-zinc-800"></div>';
+frag.appendChild(card);});host.appendChild(frag);
+host.addEventListener('click',function(e){var btn=e.target.closest('[data-farm50-key]');if(!btn)return;run(btn.getAttribute('data-farm50-key'));});}
+function run(key){var c=CARDS.filter(function(x){return x.key===key;})[0];if(!c)return;var out=document.getElementById('farm50-out-'+key);try{var vals={};(c.inputs||[]).forEach(function(inp){var el=document.getElementById('farm50-in-'+key+'-'+inp.key);vals[inp.key]=el?el.value:'';});out.textContent=c.run(vals);out.classList.remove('hidden');}catch(e){out.textContent='⚠ Hata: '+(e&&e.message?e.message:String(e));out.classList.remove('hidden');}}
+window.farm50Render=render;window.farm50Run=run;
+function boot(){try{render();}catch(e){console.warn('FARM50',e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,50);});else setTimeout(boot,50);
+})();
+</script>
+
+<script>
+/* MCH-50 · Profesyonel makine imalat / makine elemanları · SI */
+(function(){
+'use strict';
+var PI=Math.PI,G=9.80665;
+function fN(x,d){d=d||5;if(typeof x!=='number'||!isFinite(x))return String(x);if(Math.abs(x)>=1e6||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(4);return String(Math.round(x*Math.pow(10,d))/Math.pow(10,d));}
+function num(v,n,def){if(v===undefined||v===null||String(v).trim()===''){if(def!==undefined)return def;throw new Error((n||'P')+' boş');}var x=Number(v);if(!isFinite(x))throw new Error('sayı değil');return x;}
+var CARDS=[
+{key:'power_t',title:'Güç–Tork–Devir',desc:'P = T ω  ·  ω=2πn/60',
+ inputs:[{key:'T',label:'T (N·m)',def:'80'},{key:'n',label:'n (rpm)',def:'1450'}],
+ run:function(v){var w=2*PI*num(v.n)/60,P=num(v.T)*w;return 'ω = '+fN(w)+' rad/s\nP = '+fN(P)+' W  ('+fN(P/1000)+' kW)';}},
+{key:'t_from_p',title:'Tork (güçten)',desc:'T = P / ω',
+ inputs:[{key:'P',label:'P (kW)',def:'11'},{key:'n',label:'n (rpm)',def:'1450'}],
+ run:function(v){var w=2*PI*num(v.n)/60;if(w<=0)throw new Error('n>0');return 'T = '+fN(num(v.P)*1000/w)+' N·m';}},
+{key:'shaft_tau',title:'Mil Burulma τ',desc:'τ = T r / J  ·  J=πd⁴/32',
+ inputs:[{key:'T',label:'T (N·m)',def:'80'},{key:'d',label:'d (mm)',def:'30'}],
+ run:function(v){var d=num(v.d)/1000,J=PI*Math.pow(d,4)/32;var tau=num(v.T)*(d/2)/J;return 'J = '+fN(J)+' m⁴\nτ = '+fN(tau/1e6)+' MPa';}},
+{key:'shaft_d',title:'Mil Çapı (burulma)',desc:'d = ∛(16 T / (π τ))',
+ inputs:[{key:'T',label:'T (N·m)',def:'80'},{key:'tau',label:'τ_allow (MPa)',def:'40'}],
+ run:function(v){var t=num(v.tau)*1e6;if(t<=0)throw new Error('τ>0');var d=Math.cbrt(16*num(v.T)/(PI*t));return 'd ≈ '+fN(d*1000)+' mm';}},
+{key:'bend_shaft',title:'Mil Eğilme σ',desc:'σ = 32 M / (π d³)',
+ inputs:[{key:'M',label:'M (N·m)',def:'50'},{key:'d',label:'d (mm)',def:'30'}],
+ run:function(v){var d=num(v.d)/1000;return 'σ = '+fN(32*num(v.M)/(PI*Math.pow(d,3))/1e6)+' MPa';}},
+{key:'eq_stress',title:'Von Mises (mil)',desc:'σ\' = √(σ² + 3τ²)',
+ inputs:[{key:'s',label:'σ (MPa)',def:'40'},{key:'t',label:'τ (MPa)',def:'25'}],
+ run:function(v){return "σ' = "+fN(Math.sqrt(num(v.s)*num(v.s)+3*num(v.t)*num(v.t)))+' MPa';}},
+{key:'asme_shaft',title:'ASME Mil (kabaca)',desc:'d³ = (16/π) √((K_b M/σ)²+(K_t T/τ)²)',
+ inputs:[{key:'M',label:'M N·m',def:'50'},{key:'T',label:'T N·m',def:'80'},{key:'s',label:'σ_allow MPa',def:'80'},{key:'t',label:'τ_allow MPa',def:'45'},{key:'Kb',label:'Kb',def:'1.5'},{key:'Kt',label:'Kt',def:'1.0'}],
+ run:function(v){var s=num(v.s)*1e6,t=num(v.t)*1e6;var a=num(v.Kb)*num(v.M)/s,b=num(v.Kt)*num(v.T)/t;var d=Math.cbrt(16/PI*Math.sqrt(a*a+b*b));return 'd ≈ '+fN(d*1000)+' mm';}},
+{key:'key_shear',title:'Kama Kayma',desc:'τ = 2T / (d b L)',
+ inputs:[{key:'T',label:'T N·m',def:'80'},{key:'d',label:'d mm',def:'30'},{key:'b',label:'b mm',def:'8'},{key:'L',label:'L mm',def:'40'}],
+ run:function(v){var d=num(v.d)/1000,b=num(v.b)/1000,L=num(v.L)/1000;return 'τ = '+fN(2*num(v.T)/(d*b*L)/1e6)+' MPa';}},
+{key:'key_crush',title:'Kama Ezilme',desc:'σ_c = 4T / (d h L)',
+ inputs:[{key:'T',label:'T',def:'80'},{key:'d',label:'d mm',def:'30'},{key:'h',label:'h mm',def:'7'},{key:'L',label:'L mm',def:'40'}],
+ run:function(v){return 'σ_c = '+fN(4*num(v.T)/(num(v.d)*num(v.h)*num(v.L)/1e9)/1e6)+' MPa';}},
+{key:'gear_mod',title:'Dişli Modül / Çap',desc:'d = m z  ·  p = π m',
+ inputs:[{key:'m',label:'m (mm)',def:'3'},{key:'z',label:'z',def:'24'}],
+ run:function(v){var m=num(v.m),z=num(v.z);return 'd = '+fN(m*z)+' mm\np = '+fN(PI*m)+' mm\nda ≈ '+fN(m*(z+2))+' mm';}},
+{key:'gear_ratio',title:'Dişli Oranı',desc:'i = n1/n2 = z2/z1',
+ inputs:[{key:'z1',label:'z1',def:'20'},{key:'z2',label:'z2',def:'60'}],
+ run:function(v){return 'i = '+fN(num(v.z2)/num(v.z1))+'\nη kinematik 1 kademe';}},
+{key:'lewis',title:'Lewis Diş Eğilme',desc:'σ = F_t / (b π m y)',
+ inputs:[{key:'Ft',label:'F_t N',def:'1200'},{key:'b',label:'b mm',def:'30'},{key:'m',label:'m mm',def:'3'},{key:'y',label:'y Lewis',def:'0.1'}],
+ run:function(v){var den=num(v.b)/1000*PI*num(v.m)/1000*num(v.y);return 'σ ≈ '+fN(num(v.Ft)/den/1e6)+' MPa';}},
+{key:'ft_gear',title:'Teğetsel Kuvvet',desc:'F_t = 2T / d',
+ inputs:[{key:'T',label:'T N·m',def:'80'},{key:'d',label:'d mm',def:'72'}],
+ run:function(v){return 'F_t = '+fN(2*num(v.T)/(num(v.d)/1000))+' N';}},
+{key:'fr_gear',title:'Radyal Diş Kuvveti',desc:'F_r = F_t tan α',
+ inputs:[{key:'Ft',label:'F_t N',def:'2200'},{key:'a',label:'α (°)',def:'20'}],
+ run:function(v){return 'F_r = '+fN(num(v.Ft)*Math.tan(num(v.a)*PI/180))+' N';}},
+{key:'worm',title:'Sonsuz Vida Oranı',desc:'i = z2 / z1  (z1=ağız)',
+ inputs:[{key:'z1',label:'ağız',def:'2'},{key:'z2',label:'z çark',def:'40'}],
+ run:function(v){return 'i = '+fN(num(v.z2)/num(v.z1));}},
+{key:'lead',title:'Vida Hatvesi / Lead',desc:'L = n_start · p',
+ inputs:[{key:'p',label:'p mm',def:'2'},{key:'n',label:'ağız',def:'2'}],
+ run:function(v){return 'lead = '+fN(num(v.n)*num(v.p))+' mm/dev';}},
+{key:'screw_t',title:'Kaldırma Vidası Tork',desc:'T = F dm/2 · (l+πμdm)/(πdm−μl)',
+ inputs:[{key:'F',label:'F N',def:'5000'},{key:'dm',label:'dm mm',def:'20'},{key:'l',label:'lead mm',def:'4'},{key:'mu',label:'μ',def:'0.15'}],
+ run:function(v){var dm=num(v.dm)/1000,l=num(v.l)/1000,mu=num(v.mu),F=num(v.F);var den=PI*dm-mu*l;if(den<=0)throw new Error('kilitlenme/self-locking sınırı');var T=F*dm/2*(l+PI*mu*dm)/den;return 'T ≈ '+fN(T)+' N·m';}},
+{key:'belt_v',title:'Kayış Hızı',desc:'v = π d n / 60000  (d mm, n rpm → m/s)',
+ inputs:[{key:'d',label:'d mm',def:'200'},{key:'n',label:'n rpm',def:'1450'}],
+ run:function(v){return 'v = '+fN(PI*num(v.d)*num(v.n)/60000)+' m/s';}},
+{key:'belt_len',title:'Açık Kayış Boyu',desc:'L ≈ 2C + π(D+d)/2 + (D−d)²/(4C)',
+ inputs:[{key:'C',label:'C mm',def:'600'},{key:'D',label:'D mm',def:'300'},{key:'d',label:'d mm',def:'150'}],
+ run:function(v){var C=num(v.C),D=num(v.D),d=num(v.d);return 'L ≈ '+fN(2*C+PI*(D+d)/2+Math.pow(D-d,2)/(4*C))+' mm';}},
+{key:'belt_force',title:'Kayış Kuvvetleri',desc:'F1/F2 = e^{μθ}  ·  P=(F1−F2)v',
+ inputs:[{key:'P',label:'P kW',def:'5'},{key:'v',label:'v m/s',def:'15'},{key:'mu',label:'μ',def:'0.3'},{key:'th',label:'θ (°)',def:'165'}],
+ run:function(v){var k=Math.exp(num(v.mu)*num(v.th)*PI/180);var dF=num(v.P)*1000/num(v.v);var F2=dF/(k-1),F1=F2*k;return 'F1 = '+fN(F1)+' N\nF2 = '+fN(F2)+' N\nF1/F2 = '+fN(k);}},
+{key:'chain',title:'Zincir Hız / Güç',desc:'v = p z n / 60000',
+ inputs:[{key:'p',label:'p mm',def:'12.7'},{key:'z',label:'z',def:'17'},{key:'n',label:'n rpm',def:'200'}],
+ run:function(v){return 'v = '+fN(num(v.p)*num(v.z)*num(v.n)/60000)+' m/s';}},
+{key:'bearing_c',title:'Rulman Ömür',desc:'L10 = (C/P)^p  ·  p=3 bilya, 10/3 makaralı',
+ inputs:[{key:'C',label:'C kN',def:'25'},{key:'P',label:'P kN',def:'8'},{key:'p',label:'p',def:'3'}],
+ run:function(v){var L=Math.pow(num(v.C)/num(v.P),num(v.p));return 'L10 = '+fN(L)+' milyon devir';}},
+{key:'bearing_h',title:'Rulman Saat',desc:'L_h = 10^6 L10 / (60 n)',
+ inputs:[{key:'L10',label:'L10 milyon dev',def:'15'},{key:'n',label:'n rpm',def:'1450'}],
+ run:function(v){return 'L_h = '+fN(1e6*num(v.L10)/(60*num(v.n)))+' saat';}},
+{key:'spring_k',title:'Helis Yay k',desc:'k = G d⁴ / (8 D³ N)',
+ inputs:[{key:'G',label:'G GPa',def:'80'},{key:'d',label:'d mm',def:'3'},{key:'D',label:'D mm',def:'20'},{key:'N',label:'N aktif',def:'10'}],
+ run:function(v){var G=num(v.G)*1e9,d=num(v.d)/1000,D=num(v.D)/1000;var k=G*Math.pow(d,4)/(8*Math.pow(D,3)*num(v.N));return 'k = '+fN(k)+' N/m  ('+fN(k/1000)+' N/mm)';}},
+{key:'spring_tau',title:'Yay Burulma τ',desc:'τ = 8 F D / (π d³) · K_w',
+ inputs:[{key:'F',label:'F N',def:'150'},{key:'D',label:'D mm',def:'20'},{key:'d',label:'d mm',def:'3'},{key:'Kw',label:'K_w',def:'1.2'}],
+ run:function(v){var tau=8*num(v.F)*(num(v.D)/1000)/(PI*Math.pow(num(v.d)/1000,3))*num(v.Kw);return 'τ = '+fN(tau/1e6)+' MPa';}},
+{key:'wahl',title:'Wahl Faktörü',desc:'K_w = (4C−1)/(4C−4)+0.615/C',
+ inputs:[{key:'C',label:'C=D/d',def:'6.5'}],
+ run:function(v){var C=num(v.C);if(C<=1)throw new Error('C>1');return 'K_w = '+fN((4*C-1)/(4*C-4)+0.615/C);}},
+{key:'bolt_pre',title:'Cıvata Ön Gerilme',desc:'F_i ≈ 0.75 A_t σ_y',
+ inputs:[{key:'At',label:'A_t mm²',def:'58'},{key:'sy',label:'σ_y MPa',def:'640'}],
+ run:function(v){return 'F_i ≈ '+fN(0.75*(num(v.At)*1e-6)*num(v.sy)*1e6)+' N';}},
+{key:'bolt_t',title:'Sıkma Torku',desc:'T ≈ K F d',
+ inputs:[{key:'K',label:'K',def:'0.2'},{key:'F',label:'F N',def:'28000'},{key:'d',label:'d mm',def:'10'}],
+ run:function(v){return 'T ≈ '+fN(num(v.K)*num(v.F)*num(v.d)/1000)+' N·m';}},
+{key:'weld_throat',title:'Kaynak Boğaz',desc:'t = 0.707 z',
+ inputs:[{key:'z',label:'z mm',def:'6'}],
+ run:function(v){return 't = '+fN(0.707*num(v.z))+' mm';}},
+{key:'weld_stress',title:'Kaynak Kayma',desc:'τ = F / (t L)',
+ inputs:[{key:'F',label:'F N',def:'20000'},{key:'t',label:'t mm',def:'4.2'},{key:'L',label:'L mm',def:'80'}],
+ run:function(v){return 'τ = '+fN(num(v.F)/(num(v.t)*num(v.L)/1e6)/1e6)+' MPa';}},
+{key:'press_fit',title:'Sıkı Geçme Basınç (kabaca)',desc:'δ = p d (C_i+C_o)',
+ inputs:[{key:'p',label:'p MPa',def:'40'},{key:'d',label:'d mm',def:'50'},{key:'C',label:'C_i+C_o 1/MPa',def:'1.4e-5'}],
+ run:function(v){return 'δ ≈ '+fN(num(v.p)*num(v.d)*num(v.C)*1000)+' μm';}},
+{key:'tol_it',title:'IT Tolerans (kabaca)',desc:'i = 0.45∛D + 0.001D  (μm, D mm)',
+ inputs:[{key:'D',label:'D mm',def:'50'},{key:'IT',label:'IT derece',def:'7'}],
+ run:function(v){var D=num(v.D);var i=0.45*Math.cbrt(D)+0.001*D;var k={5:7,6:10,7:16,8:25,9:40,10:64,11:100};var f=k[num(v.IT)|0]||16;return 'i ≈ '+fN(i)+' μm\nIT'+((num(v.IT)|0))+' ≈ '+fN(f*i)+' μm';}},
+{key:'mr_chip',title:'Talaş Kaldırma Oranı',desc:'MRR = a_p · f · v_c  (mm³/min birim uyumu)',
+ inputs:[{key:'ap',label:'a_p mm',def:'2'},{key:'f',label:'f mm/dev',def:'0.2'},{key:'vc',label:'v_c m/min',def:'120'}],
+ run:function(v){var mrr=num(v.ap)*num(v.f)*num(v.vc)*1000;return 'MRR ≈ '+fN(mrr)+' mm³/min\n= '+fN(mrr/1e6)+' L/min';}},
+{key:'vc_cut',title:'Kesme Hızı',desc:'v_c = π d n / 1000  (m/min)',
+ inputs:[{key:'d',label:'d mm',def:'40'},{key:'n',label:'n rpm',def:'800'}],
+ run:function(v){return 'v_c = '+fN(PI*num(v.d)*num(v.n)/1000)+' m/min';}},
+{key:'feed_mmmin',title:'İlerleme',desc:'v_f = f · n',
+ inputs:[{key:'f',label:'f mm/dev',def:'0.2'},{key:'n',label:'n rpm',def:'800'}],
+ run:function(v){return 'v_f = '+fN(num(v.f)*num(v.n))+' mm/min';}},
+{key:'taylor',title:'Taylor Takım Ömrü',desc:'v T^n = C',
+ inputs:[{key:'v',label:'v m/min',def:'120'},{key:'n',label:'n',def:'0.25'},{key:'C',label:'C',def:'400'}],
+ run:function(v){var n=num(v.n);if(n<=0)throw new Error('n>0');var T=Math.pow(num(v.C)/num(v.v),1/n);return 'T ≈ '+fN(T)+' min';}},
+{key:'cut_power',title:'Kesme Gücü',desc:'P = F_c v_c',
+ inputs:[{key:'Fc',label:'F_c N',def:'1800'},{key:'vc',label:'v_c m/min',def:'120'}],
+ run:function(v){var P=num(v.Fc)*num(v.vc)/60;return 'P = '+fN(P)+' W  ('+fN(P/1000)+' kW)';}},
+{key:'kc_force',title:'Kesme Kuvveti (kc)',desc:'F_c = k_c · a_p · f',
+ inputs:[{key:'kc',label:'k_c N/mm²',def:'1800'},{key:'ap',label:'a_p mm',def:'2'},{key:'f',label:'f mm',def:'0.2'}],
+ run:function(v){return 'F_c = '+fN(num(v.kc)*num(v.ap)*num(v.f))+' N';}},
+{key:'inertia_cyl',title:'Silindir J (kütle)',desc:'J = ½ m r²',
+ inputs:[{key:'m',label:'m kg',def:'12'},{key:'r',label:'r mm',def:'80'}],
+ run:function(v){return 'J = '+fN(0.5*num(v.m)*Math.pow(num(v.r)/1000,2))+' kg·m²';}},
+{key:'alpha_t',title:'Açısal İvme',desc:'α = T / J',
+ inputs:[{key:'T',label:'T N·m',def:'20'},{key:'J',label:'J kg·m²',def:'0.04'}],
+ run:function(v){var J=num(v.J);if(J<=0)throw new Error('J>0');return 'α = '+fN(num(v.T)/J)+' rad/s²';}},
+{key:'flywheel',title:'Volan Enerji',desc:'ΔE = ½ J ω² C_s  (C_s=dalga)',
+ inputs:[{key:'J',label:'J',def:'2.5'},{key:'n',label:'n rpm',def:'300'},{key:'Cs',label:'C_s',def:'0.05'}],
+ run:function(v){var w=2*PI*num(v.n)/60;return 'ΔE ≈ '+fN(0.5*num(v.J)*w*w*num(v.Cs))+' J';}},
+{key:'crit_speed',title:'Kritik Devir (basit mil)',desc:'n_cr ≈ 30/π · √(g/δ)',
+ inputs:[{key:'delta',label:'δ statik m',def:'0.0008'}],
+ run:function(v){var d=num(v.delta);if(d<=0)throw new Error('δ>0');var n=30/PI*Math.sqrt(G/d);return 'n_cr ≈ '+fN(n)+' rpm';}},
+{key:'nat_freq',title:'Doğal Frekans',desc:'ω_n = √(k/m)',
+ inputs:[{key:'k',label:'k N/m',def:'20000'},{key:'m',label:'m kg',def:'8'}],
+ run:function(v){var wn=Math.sqrt(num(v.k)/num(v.m));return 'ω_n = '+fN(wn)+' rad/s\nf_n = '+fN(wn/(2*PI))+' Hz';}},
+{key:'friction_p',title:'Sürtünme Gücü',desc:'P = μ N v',
+ inputs:[{key:'mu',label:'μ',def:'0.12'},{key:'N',label:'N N',def:'2000'},{key:'v',label:'v m/s',def:'0.8'}],
+ run:function(v){return 'P = '+fN(num(v.mu)*num(v.N)*num(v.v))+' W';}},
+{key:'pv_bearing',title:'Kaymalı Yatak pV',desc:'p = F/(d L)  ·  pV',
+ inputs:[{key:'F',label:'F N',def:'3000'},{key:'d',label:'d mm',def:'40'},{key:'L',label:'L mm',def:'40'},{key:'v',label:'v m/s',def:'2'}],
+ run:function(v){var p=num(v.F)/(num(v.d)*num(v.L)/1e6);return 'p = '+fN(p/1e6)+' MPa\npV = '+fN(p/1e6*num(v.v))+' MPa·m/s';}},
+{key:'heat_gen',title:'Sürtünme Isısı',desc:'Q = P = μ N v',
+ inputs:[{key:'P',label:'P W',def:'192'}],
+ run:function(v){return 'Q = '+fN(num(v.P))+' W  ('+fN(num(v.P)/1000)+' kJ/s)';}},
+{key:'thermal_exp',title:'Isıl Genleşme',desc:'ΔL = α L ΔT',
+ inputs:[{key:'a',label:'α 1/K',def:'1.2e-5'},{key:'L',label:'L m',def:'0.5'},{key:'dT',label:'ΔT K',def:'40'}],
+ run:function(v){return 'ΔL = '+fN(num(v.a)*num(v.L)*num(v.dT)*1000)+' mm';}},
+{key:'cond',title:'İletim Isı',desc:'Q = k A ΔT / L',
+ inputs:[{key:'k',label:'k W/mK',def:'45'},{key:'A',label:'A m²',def:'0.002'},{key:'dT',label:'ΔT',def:'80'},{key:'L',label:'L m',def:'0.05'}],
+ run:function(v){return 'Q = '+fN(num(v.k)*num(v.A)*num(v.dT)/num(v.L))+' W';}},
+{key:'helix',title:'Helis Uzunluk',desc:'L = n √((π d)² + p²)',
+ inputs:[{key:'n',label:'tur',def:'8'},{key:'d',label:'d mm',def:'20'},{key:'p',label:'p mm',def:'4'}],
+ run:function(v){return 'L = '+fN(num(v.n)*Math.hypot(PI*num(v.d),num(v.p)))+' mm';}},
+{key:'triangle',title:'Üçgen Çözüm (SAS yok, 2 kenar+açı arası)',desc:'c²=a²+b²−2ab cosC',
+ inputs:[{key:'a',label:'a mm',def:'80'},{key:'b',label:'b mm',def:'50'},{key:'C',label:'C °',def:'60'}],
+ run:function(v){var a=num(v.a),b=num(v.b),C=num(v.C)*PI/180;var c=Math.sqrt(a*a+b*b-2*a*b*Math.cos(C));return 'c = '+fN(c)+' mm';}},
+{key:'section_I',title:'Dikdörtgen I / W',desc:'I=bh³/12  W=bh²/6',
+ inputs:[{key:'b',label:'b mm',def:'20'},{key:'h',label:'h mm',def:'40'}],
+ run:function(v){var b=num(v.b)/1000,h=num(v.h)/1000;return 'I = '+fN(b*h*h*h/12)+' m⁴\nW = '+fN(b*h*h/6)+' m³';}},
+{key:'thick_cyl',title:'Kalın Silindir (Lame iç)',desc:'σ_t = p (r_o²+r_i²)/(r_o²−r_i²)',
+ inputs:[{key:'p',label:'p MPa',def:'20'},{key:'ri',label:'r_i mm',def:'20'},{key:'ro',label:'r_o mm',def:'30'}],
+ run:function(v){var ri=num(v.ri),ro=num(v.ro);var den=ro*ro-ri*ri;if(den<=0)throw new Error('r_o>r_i');return 'σ_t,iç ≈ '+fN(num(v.p)*(ro*ro+ri*ri)/den)+' MPa';}},
+{key:'safety',title:'Güvenlik Katsayısı',desc:'n = σ_allow / σ',
+ inputs:[{key:'sa',label:'σ_allow MPa',def:'180'},{key:'s',label:'σ MPa',def:'75'}],
+ run:function(v){var s=num(v.s);if(s<=0)throw new Error('σ>0');return 'n = '+fN(num(v.sa)/s);}}
+];
+function render(){var host=document.getElementById('mch50-grid');if(!host||host.dataset.built)return;host.dataset.built='1';var frag=document.createDocumentFragment();
+CARDS.forEach(function(c,idx){var card=document.createElement('div');card.className='bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+var inputsHtml=(c.inputs||[]).map(function(inp){return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">'+inp.label+'</label><input id="mch50-in-'+c.key+'-'+inp.key+'" type="text" value="'+(inp.def||'')+'" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';}).join('');
+card.innerHTML='<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-gears text-orange-400"></i> '+(idx+1)+'. '+c.title+'</div><div class="text-[11px] text-zinc-500 mb-2">'+c.desc+'</div>'+inputsHtml+'<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-mch50-key="'+c.key+'">Hesapla</button><div id="mch50-out-'+c.key+'" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-orange-200 border border-zinc-800"></div>';
+frag.appendChild(card);});host.appendChild(frag);
+host.addEventListener('click',function(e){var btn=e.target.closest('[data-mch50-key]');if(!btn)return;run(btn.getAttribute('data-mch50-key'));});}
+function run(key){var c=CARDS.filter(function(x){return x.key===key;})[0];if(!c)return;var out=document.getElementById('mch50-out-'+key);try{var vals={};(c.inputs||[]).forEach(function(inp){var el=document.getElementById('mch50-in-'+key+'-'+inp.key);vals[inp.key]=el?el.value:'';});out.textContent=c.run(vals);out.classList.remove('hidden');}catch(e){out.textContent='⚠ Hata: '+(e&&e.message?e.message:String(e));out.classList.remove('hidden');}}
+window.mch50Render=render;window.mch50Run=run;
+function boot(){try{render();}catch(e){console.warn('MCH50',e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,50);});else setTimeout(boot,50);
+})();
+</script>
+
+
+<script id="mx-pro-core">
+/* MühendisX PRO layer — arama, Enter, kopyala, güvenli hesap */
+(function(){
+  'use strict';
+  function toast(msg){
+    var t=document.getElementById('mxpro-toast');
+    if(!t){t=document.createElement('div');t.id='mxpro-toast';t.className='mxpro-toast';document.body.appendChild(t);}
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(toast._h);toast._h=setTimeout(function(){t.classList.remove('show');},1800);
+  }
+  window.mxProToast=toast;
+
+  var GRIDS=[
+    ['ac50-grid','Uçak İnşa'],
+    ['arch50-grid','Mimari İnşaat'],
+    ['farm50-grid','Tarım / Çiftçi'],
+    ['mch50-grid','Makine İmalat'],
+    ['acc50-grid','Muhasebe'],
+    ['compass-grid','Uzay Pusulası'],
+    ['spacenav-grid','Uzay Navigasyon'],
+    ['chem100-grid','Kimya'],
+    ['universe50-grid','Evren'],
+    ['ship50-grid','Gemi'],
+    ['fusion50-grid','Füzyon'],
+    ['space50-grid','İleri Uzay']
+  ];
+
+  function enhanceGrid(id,label){
+    var grid=document.getElementById(id);
+    if(!grid || grid.dataset.mxpro==='1') return;
+    if(!grid.children.length) return;
+    grid.dataset.mxpro='1';
+    var bar=document.createElement('div');
+    bar.className='mxpro-toolbar';
+    bar.innerHTML='<input class="mxpro-search" type="search" placeholder="Bu panelde ara… ('+label+')" aria-label="Kart ara">'+
+      '<span class="mxpro-chip">'+(grid.children.length)+' kart</span>';
+    grid.parentNode.insertBefore(bar,grid);
+    var q=bar.querySelector('input');
+    q.addEventListener('input',function(){
+      var s=q.value.toLowerCase().trim();
+      var n=0;
+      Array.prototype.forEach.call(grid.children,function(card){
+        var ok=!s || (card.textContent||'').toLowerCase().indexOf(s)>=0;
+        card.style.display=ok?'':'none';
+        if(ok) n++;
+      });
+      var chip=bar.querySelector('.mxpro-chip');
+      if(chip) chip.textContent=n+' / '+grid.children.length;
+    });
+    grid.addEventListener('keydown',function(e){
+      if(e.key!=='Enter') return;
+      var card=e.target.closest('.bg-zinc-900');
+      if(!card) return;
+      var btn=card.querySelector('button[data-ac50-key],button[data-arch50-key],button[data-farm50-key],button[data-mch50-key],button[data-cmp-key],button[data-snav-key],button[data-ch100-key],button[data-uni50-key],button[data-ship50-key],button[data-fus50-key],button[data-sp50-key]');
+      if(!btn) btn=card.querySelector('button');
+      if(btn) btn.click();
+    });
+  }
+
+  function addCopyButtons(){
+    document.addEventListener('click',function(e){
+      var pre=e.target.closest('[id$="-out-"] , [id*="-out-"]');
+      /* handled below via mutation on compute */
+    },true);
+  }
+
+  function hookResults(){
+    var mo=new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        var el=m.target;
+        if(!el || !el.id || el.id.indexOf('-out-')<0) return;
+        if(el.dataset.copyReady==='1') return;
+        if(el.classList.contains('hidden')) return;
+        if(!el.textContent) return;
+        el.dataset.copyReady='1';
+        if(!el.nextSibling || !el.nextSibling.classList || !el.nextSibling.classList.contains('mxpro-copy')){
+          var b=document.createElement('button');
+          b.type='button';b.className='mxpro-copy';b.textContent='Sonucu kopyala';
+          b.addEventListener('click',function(){
+            var txt=el.textContent||'';
+            if(navigator.clipboard&&navigator.clipboard.writeText){
+              navigator.clipboard.writeText(txt).then(function(){toast('Kopyalandı');}).catch(function(){toast('Kopyalanamadı');});
+            } else toast('Kopyalama desteklenmiyor');
+          });
+          el.parentNode.insertBefore(b, el.nextSibling);
+        }
+      });
+    });
+    mo.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  }
+
+  function scan(){
+    GRIDS.forEach(function(g){ try{ enhanceGrid(g[0],g[1]); }catch(e){} });
+  }
+
+  window.addEventListener('error',function(ev){
+    if(window.__mxproLastErr===ev.message) return;
+    window.__mxproLastErr=ev.message;
+    console.warn('MXPRO', ev.message);
+  });
+
+  var _sp=window.switchPanel;
+  if(typeof _sp==='function'){
+    window.switchPanel=function(id){
+      var r=_sp.apply(this,arguments);
+      setTimeout(scan,80);
+      return r;
+    };
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(scan,200);hookResults();});
+  else { setTimeout(scan,200); hookResults(); }
+})();
+</script>
+
+<script>
+/* ACC-50 · Muhasebe matematiği */
+(function(){
+'use strict';
+function fN(x,d){d=d||4;if(typeof x!=='number'||!isFinite(x))return String(x);if(Math.abs(x)>=1e6||(Math.abs(x)>0&&Math.abs(x)<1e-4))return x.toExponential(4);return String(Math.round(x*Math.pow(10,d))/Math.pow(10,d));}
+function num(v,n,def){if(v===undefined||v===null||String(v).trim()===''){if(def!==undefined)return def;throw new Error((n||'P')+' boş');}var x=Number(v);if(!isFinite(x))throw new Error('sayı değil');return x;}
+function money(x){return fN(x,2);}
+var CARDS=[
+{key:'kdv_add',title:'KDV Dahil',desc:'T = N (1+r)',
+ inputs:[{key:'n',label:'net',def:'1000'},{key:'r',label:'KDV oranı',def:'0.20'}],
+ run:function(v){var n=num(v.n),r=num(v.r);var k=n*r,t=n+k;return 'KDV = '+money(k)+'\nTutar = '+money(t);}},
+{key:'kdv_extract',title:'KDV Hariç (dahilden)',desc:'N = T / (1+r)',
+ inputs:[{key:'t',label:'brüt',def:'1200'},{key:'r',label:'oran',def:'0.20'}],
+ run:function(v){var r=num(v.r);if(r<=-1)throw new Error('oran');var t=num(v.t),n=t/(1+r);return 'Net = '+money(n)+'\nKDV = '+money(t-n);}},
+{key:'iskonto',title:'Ticari İskonto',desc:'Net = Brüt (1−i)',
+ inputs:[{key:'b',label:'brüt',def:'5000'},{key:'i',label:'iskonto',def:'0.10'}],
+ run:function(v){var b=num(v.b),i=num(v.i);return 'İskonto = '+money(b*i)+'\nNet = '+money(b*(1-i));}},
+{key:'iskonto2',title:'Zincir İskonto',desc:'Net = B (1−i1)(1−i2)',
+ inputs:[{key:'b',label:'brüt',def:'5000'},{key:'i1',label:'i1',def:'0.10'},{key:'i2',label:'i2',def:'0.05'}],
+ run:function(v){var n=num(v.b)*(1-num(v.i1))*(1-num(v.i2));return 'Net = '+money(n)+'\nToplam iskonto = '+money(num(v.b)-n);}},
+{key:'simple_int',title:'Basit Faiz',desc:'I = A · r · t',
+ inputs:[{key:'A',label:'anapara',def:'10000'},{key:'r',label:'r yıllık',def:'0.12'},{key:'t',label:'t yıl',def:'1'}],
+ run:function(v){var I=num(v.A)*num(v.r)*num(v.t);return 'Faiz = '+money(I)+'\nToplam = '+money(num(v.A)+I);}},
+{key:'compound',title:'Bileşik Faiz',desc:'S = A (1+r/n)^{n t}',
+ inputs:[{key:'A',label:'A',def:'10000'},{key:'r',label:'r yıllık',def:'0.12'},{key:'n',label:'n dönem/yıl',def:'12'},{key:'t',label:'t yıl',def:'2'}],
+ run:function(v){var n=num(v.n);if(n<=0)throw new Error('n>0');var S=num(v.A)*Math.pow(1+num(v.r)/n,n*num(v.t));return 'S = '+money(S)+'\nFaiz = '+money(S-num(v.A));}},
+{key:'eff_rate',title:'Efektif Faiz',desc:'r_e = (1+r/n)^n − 1',
+ inputs:[{key:'r',label:'r nominal',def:'0.12'},{key:'n',label:'n',def:'12'}],
+ run:function(v){var n=num(v.n);return 'r_e = '+fN(Math.pow(1+num(v.r)/n,n)-1);}},
+{key:'pv',title:'Bugünkü Değer PV',desc:'PV = FV / (1+r)^t',
+ inputs:[{key:'FV',label:'FV',def:'12100'},{key:'r',label:'r',def:'0.10'},{key:'t',label:'t',def:'2'}],
+ run:function(v){return 'PV = '+money(num(v.FV)/Math.pow(1+num(v.r),num(v.t)));}},
+{key:'annuity',title:'Anüite Taksit',desc:'A = P r(1+r)^n / ((1+r)^n−1)',
+ inputs:[{key:'P',label:'kredi',def:'100000'},{key:'r',label:'dönem r',def:'0.02'},{key:'n',label:'dönem n',def:'24'}],
+ run:function(v){var r=num(v.r),n=num(v.n),P=num(v.P);if(r===0)return 'A = '+money(P/n);var a=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);return 'Taksit = '+money(a)+'\nToplam ödeme = '+money(a*n);}},
+{key:'straight',title:'Normal Amortisman',desc:'D = (M−H) / n',
+ inputs:[{key:'M',label:'maliyet',def:'50000'},{key:'H',label:'hurda',def:'5000'},{key:'n',label:'ömür yıl',def:'5'}],
+ run:function(v){var n=num(v.n);if(n<=0)throw new Error('n>0');var D=(num(v.M)-num(v.H))/n;return 'Yıllık D = '+money(D);}},
+{key:'declining',title:'Azalan Bakiye',desc:'D = defter · (k/n)',
+ inputs:[{key:'B',label:'defter',def:'50000'},{key:'k',label:'katsayı',def:'2'},{key:'n',label:'ömür',def:'5'}],
+ run:function(v){var n=num(v.n);if(n<=0)throw new Error('n>0');var or=num(v.k)/n;return 'oran = '+fN(or)+'\nD = '+money(num(v.B)*or)+'\nKalan ≈ '+money(num(v.B)*(1-or));}},
+{key:'sumofyears',title:'Yıl Sayıları Toplamı',desc:'D = (M−H) · (kalan yıl) / (n(n+1)/2)',
+ inputs:[{key:'M',label:'M',def:'50000'},{key:'H',label:'H',def:'5000'},{key:'n',label:'n',def:'5'},{key:'y',label:'yıl no (1=ilk)',def:'1'}],
+ run:function(v){var n=num(v.n),y=num(v.y);var s=n*(n+1)/2;var rem=n-y+1;return 'D = '+money((num(v.M)-num(v.H))*rem/s);}},
+{key:'cogs',title:'SMM',desc:'SMM = açılış + alış − kapanış',
+ inputs:[{key:'ac',label:'açılış stok',def:'20000'},{key:'al',label:'alış',def:'80000'},{key:'kp',label:'kapanış',def:'15000'}],
+ run:function(v){return 'SMM = '+money(num(v.ac)+num(v.al)-num(v.kp));}},
+{key:'gross',title:'Brüt Kâr',desc:'BK = satış − SMM',
+ inputs:[{key:'s',label:'satış',def:'150000'},{key:'c',label:'SMM',def:'85000'}],
+ run:function(v){var s=num(v.s),c=num(v.c);return 'Brüt kâr = '+money(s-c)+'\nMarj = '+fN((s-c)/s);}},
+{key:'netprofit',title:'Net Kâr',desc:'NK = gelir − gider',
+ inputs:[{key:'g',label:'gelir',def:'150000'},{key:'c',label:'gider',def:'120000'}],
+ run:function(v){return 'Net kâr = '+money(num(v.g)-num(v.c));}},
+{key:'markup',title:'Markup / Marj',desc:'fiyat = maliyet (1+m)',
+ inputs:[{key:'c',label:'maliyet',def:'80'},{key:'m',label:'markup',def:'0.25'}],
+ run:function(v){var p=num(v.c)*(1+num(v.m));return 'Fiyat = '+money(p)+'\nKâr = '+money(p-num(v.c));}},
+{key:'margin',title:'Satış Marjı → fiyat',desc:'P = C / (1−m)',
+ inputs:[{key:'c',label:'maliyet',def:'80'},{key:'m',label:'marj',def:'0.20'}],
+ run:function(v){var m=num(v.m);if(m>=1)throw new Error('m<1');return 'P = '+money(num(v.c)/(1-m));}},
+{key:'be',title:'Başa Baş Noktası',desc:'Q = F / (P−V)',
+ inputs:[{key:'F',label:'sabit F',def:'30000'},{key:'P',label:'birim fiyat',def:'50'},{key:'V',label:'birim değişken',def:'30'}],
+ run:function(v){var den=num(v.P)-num(v.V);if(den<=0)throw new Error('P>V');return 'Q = '+fN(num(v.F)/den)+' adet\nCiro = '+money(num(v.F)/den*num(v.P));}},
+{key:'cm',title:'Katkı Payı',desc:'KP = P − V',
+ inputs:[{key:'P',label:'P',def:'50'},{key:'V',label:'V',def:'30'}],
+ run:function(v){return 'KP = '+money(num(v.P)-num(v.V))+'\nOran = '+fN((num(v.P)-num(v.V))/num(v.P));}},
+{key:'current',title:'Cari Oran',desc:'CO = dönen / KVYK',
+ inputs:[{key:'da',label:'dönen varlık',def:'80000'},{key:'k',label:'KVYK',def:'40000'}],
+ run:function(v){return 'Cari oran = '+fN(num(v.da)/num(v.k));}},
+{key:'quick',title:'Asit-Test',desc:'(dönen−stok)/KVYK',
+ inputs:[{key:'da',label:'dönen',def:'80000'},{key:'st',label:'stok',def:'25000'},{key:'k',label:'KVYK',def:'40000'}],
+ run:function(v){return 'Asit-test = '+fN((num(v.da)-num(v.st))/num(v.k));}},
+{key:'debt',title:'Borç / Özkaynak',desc:'D/E',
+ inputs:[{key:'d',label:'borç',def:'60000'},{key:'e',label:'özkaynak',def:'90000'}],
+ run:function(v){return 'D/E = '+fN(num(v.d)/num(v.e));}},
+{key:'roa',title:'ROA',desc:'Net kâr / aktif',
+ inputs:[{key:'nk',label:'net kâr',def:'18000'},{key:'a',label:'aktif',def:'200000'}],
+ run:function(v){return 'ROA = '+fN(num(v.nk)/num(v.a));}},
+{key:'roe',title:'ROE',desc:'Net kâr / özkaynak',
+ inputs:[{key:'nk',label:'net kâr',def:'18000'},{key:'e',label:'özkaynak',def:'90000'}],
+ run:function(v){return 'ROE = '+fN(num(v.nk)/num(v.e));}},
+{key:'asset_to',title:'Aktif Devir',desc:'Satış / aktif',
+ inputs:[{key:'s',label:'satış',def:'300000'},{key:'a',label:'aktif',def:'200000'}],
+ run:function(v){return 'Devir = '+fN(num(v.s)/num(v.a));}},
+{key:'inv_days',title:'Stok Devir / Gün',desc:'SMM/stok  ·  365/devir',
+ inputs:[{key:'smm',label:'SMM',def:'85000'},{key:'st',label:'ort. stok',def:'15000'}],
+ run:function(v){var d=num(v.smm)/num(v.st);return 'Devir = '+fN(d)+'\nGün ≈ '+fN(365/d);}},
+{key:'rec_days',title:'Alacak Tahsil Gün',desc:'365 · alacak / satış',
+ inputs:[{key:'al',label:'alacak',def:'25000'},{key:'s',label:'satış',def:'300000'}],
+ run:function(v){return 'Gün ≈ '+fN(365*num(v.al)/num(v.s));}},
+{key:'wc',title:'İşletme Sermayesi',desc:'WS = dönen − KVYK',
+ inputs:[{key:'da',label:'dönen',def:'80000'},{key:'k',label:'KVYK',def:'40000'}],
+ run:function(v){return 'WS = '+money(num(v.da)-num(v.k));}},
+{key:'fifo_unit',title:'Birim Maliyet (ortalama)',desc:'c = toplam maliyet / miktar',
+ inputs:[{key:'m',label:'maliyet',def:'48000'},{key:'q',label:'miktar',def:'1200'}],
+ run:function(v){return 'c = '+money(num(v.m)/num(v.q));}},
+{key:'payroll_sgk',title:'SGK İşçi Payı (kabaca)',desc:'işçi = matrah · oran',
+ inputs:[{key:'m',label:'matrah',def:'25000'},{key:'r',label:'oran',def:'0.14'}],
+ run:function(v){return 'İşçi payı ≈ '+money(num(v.m)*num(v.r))+'\n(oranlar döneme göre değişir)';}},
+{key:'net_wage',title:'Net Ücret (basit)',desc:'Net ≈ brüt − SGK − gelir vergisi',
+ inputs:[{key:'b',label:'brüt',def:'30000'},{key:'sgk',label:'SGK',def:'4200'},{key:'gv',label:'GV+damga',def:'3500'}],
+ run:function(v){return 'Net ≈ '+money(num(v.b)-num(v.sgk)-num(v.gv));}},
+{key:'kdv_period',title:'Ödenecek KDV',desc:'KDV_out − KDV_in',
+ inputs:[{key:'o',label:'hesaplanan KDV',def:'18000'},{key:'i',label:'indirilecek KDV',def:'11000'}],
+ run:function(v){var x=num(v.o)-num(v.i);return x>=0?'Ödenecek = '+money(x):'Devreden / iade yönü = '+money(-x);}},
+{key:'stopaj',title:'Stopaj',desc:'S = matrah · oran',
+ inputs:[{key:'m',label:'matrah',def:'10000'},{key:'r',label:'oran',def:'0.20'}],
+ run:function(v){return 'Stopaj = '+money(num(v.m)*num(v.r))+'\nNet ödeme = '+money(num(v.m)*(1-num(v.r)));}},
+{key:'fx',title:'Kur Çevrimi',desc:'TL = döviz · kur',
+ inputs:[{key:'x',label:'döviz',def:'1000'},{key:'k',label:'kur',def:'42.5'}],
+ run:function(v){return 'TL = '+money(num(v.x)*num(v.k));}},
+{key:'avg_cost',title:'Ağırlıklı Ortalama',desc:'c = Σ(q c) / Σq',
+ inputs:[{key:'q1',label:'q1',def:'100'},{key:'c1',label:'c1',def:'10'},{key:'q2',label:'q2',def:'50'},{key:'c2',label:'c2',def:'14'}],
+ run:function(v){var q=num(v.q1)+num(v.q2);return 'c = '+money((num(v.q1)*num(v.c1)+num(v.q2)*num(v.c2))/q);}},
+{key:'variance',title:'Maliyet Sapması',desc:'(fiili − standart) · miktar',
+ inputs:[{key:'fi',label:'fiili birim',def:'12.4'},{key:'st',label:'standart',def:'12'},{key:'q',label:'miktar',def:'800'}],
+ run:function(v){var x=(num(v.fi)-num(v.st))*num(v.q);return 'Sapma = '+money(x)+(x>0?' (olumsuz)':x<0?' (olumlu)':'');}},
+{key:'roi',title:'ROI',desc:'(kazanç−maliyet)/maliyet',
+ inputs:[{key:'g',label:'kazanç',def:'130000'},{key:'c',label:'maliyet',def:'100000'}],
+ run:function(v){return 'ROI = '+fN((num(v.g)-num(v.c))/num(v.c));}},
+{key:'payback',title:'Geri Ödeme',desc:'t = yatırım / yıllık net nakit',
+ inputs:[{key:'inv',label:'yatırım',def:'200000'},{key:'cf',label:'yıllık CF',def:'50000'}],
+ run:function(v){return 't ≈ '+fN(num(v.inv)/num(v.cf))+' yıl';}},
+{key:'npv2',title:'NPV (2 nakit)',desc:'NPV = −I + CF1/(1+r) + CF2/(1+r)²',
+ inputs:[{key:'I',label:'yatırım',def:'100000'},{key:'c1',label:'CF1',def:'60000'},{key:'c2',label:'CF2',def:'70000'},{key:'r',label:'r',def:'0.10'}],
+ run:function(v){var r=num(v.r);var npv=-num(v.I)+num(v.c1)/(1+r)+num(v.c2)/((1+r)*(1+r));return 'NPV = '+money(npv);}},
+{key:'eq',title:'Temel Denklem',desc:'Varlık = borç + özkaynak',
+ inputs:[{key:'v',label:'varlık',def:'200000'},{key:'b',label:'borç',def:'80000'}],
+ run:function(v){return 'Özkaynak = '+money(num(v.v)-num(v.b));}},
+{key:'trial',title:'Mizan Farkı',desc:'borç toplam − alacak toplam',
+ inputs:[{key:'db',label:'borç top.',def:'150000'},{key:'cr',label:'alacak top.',def:'150000'}],
+ run:function(v){var d=num(v.db)-num(v.cr);return d===0?'Mizan denk':'Fark = '+money(d);}},
+{key:'percent',title:'Yüzde Değişim',desc:'(yeni−eski)/eski',
+ inputs:[{key:'e',label:'eski',def:'80000'},{key:'n',label:'yeni',def:'92000'}],
+ run:function(v){return '% Δ = '+fN((num(v.n)-num(v.e))/num(v.e)*100)+' %';}},
+{key:'alloc',title:'Gider Dağıtımı',desc:'pay = toplam · (anahtar/Σ)',
+ inputs:[{key:'T',label:'toplam gider',def:'24000'},{key:'a',label:'anahtar A',def:'30'},{key:'b',label:'anahtar B',def:'50'}],
+ run:function(v){var s=num(v.a)+num(v.b);return 'A = '+money(num(v.T)*num(v.a)/s)+'\nB = '+money(num(v.T)*num(v.b)/s);}},
+{key:'prorata',title:'Kıst Amortisman',desc:'D · ay/12',
+ inputs:[{key:'D',label:'yıllık D',def:'9000'},{key:'ay',label:'ay',def:'4'}],
+ run:function(v){return 'Kıst = '+money(num(v.D)*num(v.ay)/12);}},
+{key:'cheque',title:'Vade Farkı (basit)',desc:'I = A · r · gün/360',
+ inputs:[{key:'A',label:'tutar',def:'20000'},{key:'r',label:'r yıllık',def:'0.36'},{key:'g',label:'gün',def:'45'}],
+ run:function(v){return 'Vade farkı ≈ '+money(num(v.A)*num(v.r)*num(v.g)/360);}}
+];
+function render(){var host=document.getElementById('acc50-grid');if(!host||host.dataset.built)return;host.dataset.built='1';var frag=document.createDocumentFragment();
+CARDS.forEach(function(c,idx){var card=document.createElement('div');card.className='bg-zinc-900 border border-zinc-800 p-4 rounded-2xl';
+var inputsHtml=(c.inputs||[]).map(function(inp){return '<div class="mb-2"><label class="text-[11px] text-zinc-500 block mb-1">'+inp.label+'</label><input id="acc50-in-'+c.key+'-'+inp.key+'" type="text" value="'+(inp.def||'')+'" class="modern-input w-full px-2 py-1.5 rounded-xl text-xs font-mono"></div>';}).join('');
+card.innerHTML='<div class="font-semibold mb-1 text-sm flex items-center gap-x-2"><i class="fa-solid fa-calculator text-emerald-400"></i> '+(idx+1)+'. '+c.title+'</div><div class="text-[11px] text-zinc-500 mb-2">'+c.desc+'</div>'+inputsHtml+'<button type="button" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl text-xs font-semibold" data-acc50-key="'+c.key+'">Hesapla</button><div id="acc50-out-'+c.key+'" class="hidden mt-2 text-xs bg-zinc-950 p-2.5 rounded-xl overflow-x-auto whitespace-pre font-mono text-emerald-200 border border-zinc-800"></div>';
+frag.appendChild(card);});host.appendChild(frag);
+host.addEventListener('click',function(e){var btn=e.target.closest('[data-acc50-key]');if(!btn)return;run(btn.getAttribute('data-acc50-key'));});}
+function run(key){var c=CARDS.filter(function(x){return x.key===key;})[0];if(!c)return;var out=document.getElementById('acc50-out-'+key);try{var vals={};(c.inputs||[]).forEach(function(inp){var el=document.getElementById('acc50-in-'+key+'-'+inp.key);vals[inp.key]=el?el.value:'';});out.textContent=c.run(vals);out.classList.remove('hidden');}catch(e){out.textContent='⚠ Hata: '+(e&&e.message?e.message:String(e));out.classList.remove('hidden');}}
+window.acc50Render=render;window.acc50Run=run;
+function boot(){try{render();}catch(e){console.warn('ACC50',e);}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,50);});else setTimeout(boot,50);
 })();
 </script>
