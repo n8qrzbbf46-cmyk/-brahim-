@@ -97,6 +97,7 @@
       <div class="label">Roketler — yüksek skor / uzak gezegen</div>
       <div class="rockets" id="rocketBox"></div>
       <button class="go" id="startBtn">BAŞLA</button>
+      <button class="go" id="sndBtn" style="margin-top:10px;background:linear-gradient(180deg,#4cc9f0,#0077b6);box-shadow:0 6px 0 #023e8a;color:#fff;">SESİ AÇ / DENE</button>
     </div>
     <div id="controls">
       <div class="pad" id="leftBtn">◀</div>
@@ -273,122 +274,181 @@
     let powerCd=0, powerLeft=0, shieldOn=false, frozen=0, nitro=0, armorOn=false;
     let powersUsed=0, menuSpin=0, waveMode="fall";
 
-    let actx=null, master=null, muted=false, engine=null, ambience=null;
+    let actx=null, master=null, muted=false, engine=null, ambience=null, engineTag=null;
+
+    function wavUri(maker, seconds) {
+      const sr = 22050, n = Math.max(2, Math.floor(sr * seconds));
+      const pcm = new Int16Array(n);
+      for (let i = 0; i < n; i++) {
+        let v = maker(i, n, sr);
+        if (v > 1) v = 1; if (v < -1) v = -1;
+        pcm[i] = (v * 32767) | 0;
+      }
+      const bytes = pcm.byteLength;
+      const buf = new ArrayBuffer(44 + bytes);
+      const v = new DataView(buf);
+      const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+      w(0, "RIFF"); v.setUint32(4, 36 + bytes, true); w(8, "WAVE"); w(12, "fmt ");
+      v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+      v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+      w(36, "data"); v.setUint32(40, bytes, true);
+      new Uint8Array(buf, 44).set(new Uint8Array(pcm.buffer));
+      let bin = ""; const u8 = new Uint8Array(buf);
+      for (let i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
+      return "data:audio/wav;base64," + btoa(bin);
+    }
+    function playWav(uri, vol) {
+      if (muted) return;
+      try {
+        const a = new Audio(uri);
+        a.volume = Math.max(0, Math.min(1, vol == null ? 1 : vol));
+        const p = a.play();
+        if (p && p.catch) p.catch(function () {});
+      } catch (e) {}
+    }
+    const SFX = {
+      start: wavUri(function (i, n, sr) { return Math.sin(2*Math.PI*220*i/sr) * (1-i/n) * 0.9 + Math.sin(2*Math.PI*330*i/sr) * (1-i/n) * 0.5; }, 0.35),
+      boom: wavUri(function (i, n) { return (Math.random()*2-1) * Math.pow(1-i/n, 1.3) * 0.95; }, 0.32),
+      hit: wavUri(function (i, n, sr) { return Math.sin(2*Math.PI*(180-i*0.4)*i/sr) * Math.pow(1-i/n, 1.1) * 0.9; }, 0.22),
+      pow: wavUri(function (i, n, sr) { return Math.sin(2*Math.PI*(420+i*1.2)*i/sr) * (1-i/n) * 0.85; }, 0.22),
+      up: wavUri(function (i, n, sr) { return Math.sin(2*Math.PI*(392+i*0.8)*i/sr) * (1-i/n) * 0.8; }, 0.28),
+      whoosh: wavUri(function (i, n) { return (Math.random()*2-1) * Math.pow(1-i/n, 0.7) * 0.55; }, 0.18),
+      ding: wavUri(function (i, n, sr) { return Math.sin(2*Math.PI*660*i/sr)*(1-i/n)*0.7 + Math.sin(2*Math.PI*990*i/sr)*(1-i/n)*0.4; }, 0.3)
+    };
+    const ENG_LOOP = wavUri(function (i, n, sr) {
+      const t = i / sr;
+      return (Math.sin(2*Math.PI*70*t) + 0.45*Math.sin(2*Math.PI*140*t) + 0.2*(Math.random()*2-1)) * 0.55;
+    }, 0.45);
 
     function audioOn(){
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return;
-        if (!actx) {
-          actx = new AC();
-          master = actx.createGain();
-          master.gain.value = muted ? 0 : 0.55;
-          master.connect(actx.destination);
+        if (AC) {
+          if (!actx) {
+            actx = new AC();
+            master = actx.createGain();
+            master.gain.value = muted ? 0 : 1;
+            master.connect(actx.destination);
+          }
+          if (actx.state === "suspended") actx.resume();
         }
-        if (actx.state === "suspended") actx.resume();
       } catch (e) {}
     }
     function setMute(m){
-      muted=m;
-      if (master) master.gain.value = muted ? 0 : 0.55;
+      muted = m;
+      if (master) master.gain.value = muted ? 0 : 1;
+      if (engineTag) engineTag.muted = muted;
       muteBtn.textContent = muted ? "Ses Kapalı" : "Ses Açık";
     }
-    muteBtn.onclick = () => { try { audioOn(); setMute(!muted); } catch (e) {} };
+    muteBtn.onclick = function () { audioOn(); setMute(!muted); if (!muted) playWav(SFX.ding, 1); };
 
     function tone(freq, dur, type, vol, slide) {
-      if (!actx || muted) return;
+      if (muted) return;
+      playWav(SFX.pow, 0.7);
+      if (!actx) return;
       try {
-      const o=actx.createOscillator(), g=actx.createGain();
-      o.type=type||"square"; o.frequency.value=freq;
-      if (slide) o.frequency.linearRampToValueAtTime(slide, actx.currentTime+dur);
-      g.gain.value=vol||0.08;
-      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+dur);
-      o.connect(g); g.connect(master); o.start(); o.stop(actx.currentTime+dur+0.02);
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.type = type || "square";
+        o.frequency.value = freq;
+        if (slide) o.frequency.linearRampToValueAtTime(slide, actx.currentTime + dur);
+        g.gain.setValueAtTime(Math.max(0.0001, vol || 0.25), actx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+        o.connect(g); g.connect(master || actx.destination);
+        o.start(); o.stop(actx.currentTime + dur + 0.02);
       } catch (e) {}
     }
     function noiseBurst(dur, vol, freq) {
-      if (!actx || muted) return;
+      if (muted) return;
+      playWav(SFX.boom, 1);
+      if (!actx) return;
       try {
-      const n=actx.createBuffer(1, actx.sampleRate*dur, actx.sampleRate);
-      const d=n.getChannelData(0);
-      for (let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.4);
-      const s=actx.createBufferSource(); s.buffer=n;
-      const f=actx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=freq||900;
-      const g=actx.createGain(); g.gain.value=vol||0.2;
-      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+dur);
-      s.connect(f); f.connect(g); g.connect(master); s.start();
+        const n = actx.createBuffer(1, actx.sampleRate * dur, actx.sampleRate);
+        const d = n.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/d.length, 1.2);
+        const s = actx.createBufferSource(); s.buffer = n;
+        const f = actx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = freq || 900;
+        const g = actx.createGain();
+        g.gain.setValueAtTime(Math.max(0.0001, vol || 0.55), actx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+        s.connect(f); f.connect(g); g.connect(master || actx.destination); s.start();
       } catch (e) {}
     }
     function makeNoise(seconds) {
-      const n=actx.createBuffer(1, Math.floor(actx.sampleRate*seconds), actx.sampleRate);
-      const d=n.getChannelData(0);
-      for (let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+      const n = actx.createBuffer(1, Math.floor(actx.sampleRate * seconds), actx.sampleRate);
+      const d = n.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random()*2-1;
       return n;
     }
     function startAmbience(){
       stopAmbience(); if (!actx || muted) return;
       try {
-        const o1=actx.createOscillator(); o1.type="sine"; o1.frequency.value=48;
-        const o2=actx.createOscillator(); o2.type="sine"; o2.frequency.value=52;
-        const g=actx.createGain(); g.gain.value=0.03;
-        const f=actx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=180;
-        o1.connect(f); o2.connect(f); f.connect(g); g.connect(master);
+        const o1 = actx.createOscillator(); o1.type = "sine"; o1.frequency.value = 55;
+        const o2 = actx.createOscillator(); o2.type = "sine"; o2.frequency.value = 82;
+        const g = actx.createGain(); g.gain.value = 0.12;
+        o1.connect(g); o2.connect(g); g.connect(master);
         o1.start(); o2.start();
-        ambience={o1,o2,g};
-      } catch(e){}
+        ambience = {o1,o2,g};
+      } catch (e) {}
     }
     function stopAmbience(){
       if (!ambience) return;
-      try { ambience.o1.stop(); ambience.o2.stop(); } catch(e){}
-      ambience=null;
+      try { ambience.o1.stop(); ambience.o2.stop(); } catch (e) {}
+      ambience = null;
     }
     function whoosh(){
-      if (!actx || muted) return;
-      try {
-        const s=actx.createBufferSource(); s.buffer=makeNoise(0.25);
-        const f=actx.createBiquadFilter(); f.type="bandpass"; f.frequency.value=900;
-        f.frequency.linearRampToValueAtTime(300, actx.currentTime+0.25);
-        const g=actx.createGain(); g.gain.value=0.08;
-        g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+0.25);
-        s.connect(f); f.connect(g); g.connect(master); s.start();
-      } catch(e){}
+      if (muted) return;
+      playWav(SFX.whoosh, 0.8);
     }
     function chord(freqs){
-      freqs.forEach((f,i)=>setTimeout(()=>tone(f,0.16,"sine",0.07), i*70));
+      playWav(SFX.up, 1);
+      freqs.forEach(function (f, i) { setTimeout(function () { tone(f, 0.16, "sine", 0.22); }, i * 70); });
     }
     function startEngine(){
-      stopEngine(); if (!actx || muted) return;
+      stopEngine();
+      if (muted) return;
       try {
-        const o1=actx.createOscillator(); o1.type="sawtooth"; o1.frequency.value=62;
-        const o2=actx.createOscillator(); o2.type="triangle"; o2.frequency.value=124;
-        const o3=actx.createOscillator(); o3.type="sine"; o3.frequency.value=31;
-        const f=actx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=380;
-        const g=actx.createGain(); g.gain.value=0.045;
-        const ns=actx.createBufferSource(); ns.buffer=makeNoise(2); ns.loop=true;
-        const nf=actx.createBiquadFilter(); nf.type="lowpass"; nf.frequency.value=500;
-        const ng=actx.createGain(); ng.gain.value=0.02;
+        engineTag = new Audio(ENG_LOOP);
+        engineTag.loop = true;
+        engineTag.volume = 0.85;
+        engineTag.play().catch(function () {});
+      } catch (e) {}
+      if (!actx) return;
+      try {
+        const o1 = actx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = 70;
+        const o2 = actx.createOscillator(); o2.type = "square"; o2.frequency.value = 140;
+        const o3 = actx.createOscillator(); o3.type = "sine"; o3.frequency.value = 35;
+        const f = actx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 700;
+        const g = actx.createGain(); g.gain.value = 0.22;
+        const ns = actx.createBufferSource(); ns.buffer = makeNoise(1.2); ns.loop = true;
+        const nf = actx.createBiquadFilter(); nf.type = "lowpass"; nf.frequency.value = 800;
+        const ng = actx.createGain(); ng.gain.value = 0.1;
         o1.connect(f); o2.connect(f); o3.connect(f); f.connect(g); g.connect(master);
         ns.connect(nf); nf.connect(ng); ng.connect(master);
         o1.start(); o2.start(); o3.start(); ns.start();
-        engine={o1,o2,o3,f,g,ns,ng};
+        engine = {o1,o2,o3,f,g,ns,ng};
         startAmbience();
-      } catch(e){}
+      } catch (e) {}
     }
     function updateEngine(){
+      if (engineTag) {
+        const extra = (nitro > 0 ? 0.15 : 0) + Math.min(0.15, Math.abs(rocket.vx) * 0.02);
+        engineTag.playbackRate = burned ? 0.6 : 0.9 + extra + speedMul * 0.08;
+        engineTag.volume = muted || burned ? 0 : 0.85;
+      }
       if (!engine || !actx) return;
       try {
-        const extra = (nitro>0?70:0) + Math.abs(rocket.vx)*7 + speedMul*14;
-        engine.o1.frequency.setTargetAtTime(62+extra, actx.currentTime, 0.08);
-        engine.o2.frequency.setTargetAtTime(124+extra*1.35, actx.currentTime, 0.08);
-        engine.o3.frequency.setTargetAtTime(31+extra*0.4, actx.currentTime, 0.08);
-        engine.g.gain.setTargetAtTime(burned?0.001:(nitro>0?0.07:0.045), actx.currentTime, 0.05);
-        if (engine.ng) engine.ng.gain.setTargetAtTime(burned?0.001:0.018+speedMul*0.006, actx.currentTime, 0.1);
-      } catch(e){}
+        const extra = (nitro > 0 ? 80 : 0) + Math.abs(rocket.vx) * 8 + speedMul * 16;
+        engine.o1.frequency.setTargetAtTime(70 + extra, actx.currentTime, 0.08);
+        engine.o2.frequency.setTargetAtTime(140 + extra * 1.3, actx.currentTime, 0.08);
+        engine.o3.frequency.setTargetAtTime(35 + extra * 0.4, actx.currentTime, 0.08);
+        engine.g.gain.setTargetAtTime(burned ? 0.0001 : (nitro > 0 ? 0.32 : 0.22), actx.currentTime, 0.05);
+      } catch (e) {}
     }
     function stopEngine(){
-      if (!engine) return;
-      try{ engine.o1.stop(); engine.o2.stop(); engine.o3.stop(); engine.ns.stop(); }catch(e){}
-      engine=null;
+      if (engineTag) { try { engineTag.pause(); engineTag.src = ""; } catch (e) {} engineTag = null; }
+      if (!engine) { stopAmbience(); return; }
+      try { engine.o1.stop(); engine.o2.stop(); engine.o3.stop(); engine.ns.stop(); } catch (e) {}
+      engine = null;
       stopAmbience();
     }
 
@@ -819,7 +879,7 @@
         overlay.classList.add("hidden");
         resetGame();
         running = true;
-        try { startEngine(); tone(220, 0.08, "triangle", 0.07, 440); } catch (e) {}
+        try { playWav(SFX.start, 1); startEngine(); } catch (e) {}
         showToast(ship().name + " · " + ship().power);
         requestAnimationFrame(step);
       } catch (e) {
@@ -830,8 +890,22 @@
       }
     }
 
-    startBtn.addEventListener("click", function (ev) { ev.preventDefault(); ev.stopPropagation(); start(); });
-    startBtn.addEventListener("touchend", function (ev) { ev.preventDefault(); start(); });
+    function unlockSound() {
+      audioOn();
+      playWav(SFX.ding, 1);
+    }
+    document.addEventListener("pointerdown", function () { audioOn(); }, true);
+    document.addEventListener("touchstart", function () { audioOn(); }, { capture: true, passive: true });
+    const sndBtn = document.getElementById("sndBtn");
+    if (sndBtn) {
+      sndBtn.addEventListener("click", function (ev) {
+        ev.preventDefault(); ev.stopPropagation();
+        setMute(false); audioOn(); playWav(SFX.start, 1); playWav(SFX.ding, 1);
+        showToast("SES AÇIK");
+      });
+    }
+    startBtn.addEventListener("click", function (ev) { ev.preventDefault(); ev.stopPropagation(); audioOn(); start(); });
+    startBtn.addEventListener("touchend", function (ev) { ev.preventDefault(); audioOn(); start(); });
     document.querySelectorAll(".diff").forEach(btn=>{
       btn.addEventListener("click",()=>{
         document.querySelectorAll(".diff").forEach(b=>b.classList.remove("on"));
