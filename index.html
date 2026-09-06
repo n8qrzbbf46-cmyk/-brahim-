@@ -13,9 +13,9 @@
     #wrap { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
     canvas { display: block; max-width: 100%; max-height: 100%; background: #000; }
     #hud {
-      position: absolute; top: 10px; left: 10px; right: 10px;
+      position: absolute; top: 36px; left: 10px; right: 10px;
       display: flex; justify-content: space-between; align-items: flex-start;
-      color: #fff; font-weight: 700; font-size: 14px; text-shadow: 0 2px 6px #000;
+      color: #fff; font-weight: 700; font-size: 13px; text-shadow: 0 2px 6px #000;
       pointer-events: none; gap: 8px;
     }
     #hud .left, #hud .right { display: flex; flex-direction: column; gap: 3px; }
@@ -126,10 +126,13 @@
       <div class="left">
         <span id="score">Skor: 0</span>
         <span id="lives">Can: ❤❤❤</span>
+        <span id="distHud">Yol: 0 km</span>
+        <span id="fuelHud">Yakıt: 80.0 t</span>
         <span id="powHud">Güç hazır</span>
       </div>
       <div class="right">
         <span id="planet">1. Dünya</span>
+        <span id="etaHud">Sonraki: 3:00</span>
         <span id="shipLabel">Gümüş Ok</span>
       </div>
     </div>
@@ -336,6 +339,8 @@
     let best = 0;
     let history = [];
     let flightT0 = 0;
+    let km=0, fuel=80, fuelMax=80, fuelUsed=0, stations=[];
+    const LEG_KM = 14400; // ~3 dk, 80 km/sn
 
     function normName(s){
       return String(s||"").trim().replace(/\s+/g," ").slice(0,16);
@@ -379,7 +384,7 @@
       if (!box) return;
       if (!history.length){ box.textContent = "Henüz uçuş yok."; return; }
       box.innerHTML = history.map(function(h,i){
-        return "<div>"+(i+1)+". "+h.date+" · "+h.ship+" · "+h.diff+"<br>Skor <b>"+h.score+"</b> · "+h.planet+" · "+h.dur+"s</div>";
+        return "<div>"+(i+1)+". "+h.date+" · "+h.ship+" · "+h.diff+"<br>Skor <b>"+h.score+"</b> · "+(h.km?h.km.toLocaleString("tr-TR")+" km · ":"")+h.planet+" · "+h.dur+"s"+(h.fuelUsed?" · "+h.fuelUsed+" t yakıt":"")+"</div>";
       }).join("");
     }
     function saveFlight(){
@@ -393,7 +398,9 @@
         diff: DIFFS[chosenDiff].label,
         lives: lives,
         powers: powersUsed,
-        dur: dur
+        dur: dur,
+        km: Math.floor(km),
+        fuelUsed: Math.round(fuelUsed*10)/10
       });
       history = history.slice(0,40);
       best = Math.max(best, Math.floor(score));
@@ -750,8 +757,9 @@
       speedMul=DIFFS[chosenDiff].speed;
       planetIndex=0; burned=false; invuln=0;
       powerCd=0; powerLeft=0; shieldOn=false; frozen=0; nitro=0; armorOn=false;
-      powersUsed=0; sparks=[]; meteors=[]; exhaust=[];
-      rocket={x:W/2,y:H-110,vx:0,tilt:0};
+      powersUsed=0; sparks=[]; meteors=[]; exhaust=[]; stations=[];
+      km=0; fuel=fuelMax; fuelUsed=0;
+      rocket={x:W/2,y:H-96,vx:0,tilt:0};
       stars=Array.from({length:160},()=>({
         x:rand(0,W), y:rand(0,H), s:rand(0.5,2.8), v:rand(0.15,1.4),
         tw:rand(0,Math.PI*2), layer: Math.random()<0.3?2:Math.random()<0.5?1:0
@@ -776,6 +784,17 @@
     function updateHud(){
       setTxt(scoreEl, "score", "Skor: "+Math.floor(score));
       setTxt(livesEl, "lives", "Can: "+"❤".repeat(lives)+"♡".repeat(Math.max(0,3-lives)));
+      const distEl = document.getElementById("distHud");
+      const fuelEl = document.getElementById("fuelHud");
+      const etaEl = document.getElementById("etaHud");
+      if (distEl) setTxt(distEl, "dist", "Yol: "+Math.floor(km).toLocaleString("tr-TR")+" km");
+      if (fuelEl) setTxt(fuelEl, "fuel", "Yakıt: "+fuel.toFixed(1)+" / "+fuelMax.toFixed(0)+" t");
+      const into = km - planetIndex*LEG_KM;
+      const remainKm = planetIndex>=PLANET_N-1 ? 0 : Math.max(0, LEG_KM-into);
+      const kmps = Math.max(0.2, 80*speedMul*(fuel>0?1:0.35)*(nitro>0?1.7:1));
+      const eta = remainKm/kmps;
+      const mm = Math.floor(eta/60), ss = Math.floor(eta%60);
+      if (etaEl) setTxt(etaEl, "eta", planetIndex>=PLANET_N-1 ? "Son uç" : ("Sonraki: "+mm+":"+(ss<10?"0":"")+ss));
       setTxt(planetEl, "planet", (planetIndex+1)+"/"+PLANET_N+"  "+PLANETS[planetIndex].name);
       setTxt(shipLabel, "ship", ship().name+" · "+DIFFS[chosenDiff].label);
       let powT;
@@ -789,6 +808,14 @@
       if (hudCache.cd !== cdOn) { hudCache.cd = cdOn; powBtn.classList.toggle("cd", cdOn); }
     }
 
+    function spawnStation(){
+      stations.push({
+        x: rndRange(70, W-70), y: -36, r: 20,
+        vy: rndRange(1.05,1.55)*speedMul,
+        fuel: rndRange(16, 34), spin: 0, dead: false
+      });
+      showToast("YAKIT İSTASYONU GÖRÜLDÜ");
+    }
     function spawnMeteor(){
       if (rnd()<0.18) pickWave();
       const r=rndRange(10, 24+planetIndex*0.35);
@@ -846,7 +873,7 @@
 
     function hitTest(){
       if (invuln>0||burned||(ship().kind==="ghost"&&powerLeft>0)||shieldOn) return null;
-      for (const m of meteors) if (Math.hypot(rocket.x-m.x,(rocket.y-6)-m.y)<m.r+12) return m;
+      for (const m of meteors) if (Math.hypot(rocket.x-m.x,(rocket.y-2)-m.y)<m.r+14) return m;
       return null;
     }
 
@@ -897,22 +924,28 @@
     }
 
     function rocketFaces(spec){
-      const N=[0,-26,0],w=9,d=8,y1=-8,y2=14;
+      const N=[0,-46,0],w=8,d=7,y1=-18,y2=8,y3=28;
       const T=[[-w,y1,d],[w,y1,d],[w,y1,-d],[-w,y1,-d]];
-      const B=[[-8,y2,7],[8,y2,7],[8,y2,-7],[-8,y2,-7]];
+      const M=[[-9,y2,8],[9,y2,8],[9,y2,-8],[-9,y2,-8]];
+      const B=[[-7,y3,6],[7,y3,6],[7,y3,-6],[-7,y3,-6]];
       const faces=[]; const add=(pts,color)=>faces.push({pts,color});
       add([N,T[0],T[1]],spec.body); add([N,T[1],T[2]],spec.body);
       add([N,T[2],T[3]],spec.body); add([N,T[3],T[0]],spec.body);
-      add([T[0],B[0],B[1]],spec.body); add([T[0],B[1],T[1]],spec.body);
-      add([T[1],B[1],B[2]],spec.body); add([T[1],B[2],T[2]],spec.body);
-      add([T[2],B[2],B[3]],spec.body); add([T[2],B[3],T[3]],spec.body);
-      add([T[3],B[3],B[0]],spec.body); add([T[3],B[0],T[0]],spec.body);
-      add([B[0],B[1],B[2]],"#222222"); add([B[0],B[2],B[3]],"#222222");
-      add([[-6,4,d],[-22,16,2],[-5,14,6]],spec.fin);
-      add([[6,4,d],[22,16,2],[5,14,6]],spec.fin);
-      add([[-6,4,-d],[-22,16,-2],[-5,14,-6]],spec.fin);
-      add([[6,4,-d],[22,16,-2],[5,14,-6]],spec.fin);
-      add([[-4,-6,d+0.5],[4,-6,d+0.5],[0,-1,d+1]],spec.win);
+      add([T[0],M[0],M[1]],spec.body); add([T[0],M[1],T[1]],spec.body);
+      add([T[1],M[1],M[2]],spec.body); add([T[1],M[2],T[2]],spec.body);
+      add([T[2],M[2],M[3]],spec.body); add([T[2],M[3],T[3]],spec.body);
+      add([T[3],M[3],M[0]],spec.body); add([T[3],M[0],T[0]],spec.body);
+      add([M[0],B[0],B[1]],spec.body); add([M[0],B[1],M[1]],spec.body);
+      add([M[1],B[1],B[2]],spec.body); add([M[1],B[2],M[2]],spec.body);
+      add([M[2],B[2],B[3]],spec.body); add([M[2],B[3],M[3]],spec.body);
+      add([M[3],B[3],B[0]],spec.body); add([M[3],B[0],M[0]],spec.body);
+      add([B[0],B[1],B[2]],"#1a1a1a"); add([B[0],B[2],B[3]],"#1a1a1a");
+      add([[-7,10,d],[-26,30,2],[-6,26,6]],spec.fin);
+      add([[7,10,d],[26,30,2],[6,26,6]],spec.fin);
+      add([[-7,10,-d],[-26,30,-2],[-6,26,-6]],spec.fin);
+      add([[7,10,-d],[26,30,-2],[6,26,-6]],spec.fin);
+      add([[-4.2,-10,d+0.6],[4.2,-10,d+0.6],[0,-2,d+1.2]],spec.win);
+      add([[-3.2,-22,d+0.4],[3.2,-22,d+0.4],[0,-16,d+0.8]],spec.win);
       return faces;
     }
     function drawMesh(g,faces,R,scale){
@@ -934,7 +967,17 @@
     function paintRocket3D(g,x,y,spec,tilt,yaw,scale,flameOn){
       g.save(); g.translate(x,y);
       const R=matMul(rotZ(tilt||0), matMul(rotX(0.42), rotY(yaw||0)));
-      if(flameOn){ g.fillStyle=spec.flame; const flick=18+Math.sin(time/3)*4; g.beginPath(); g.moveTo(-5,16); g.lineTo(0,16+flick); g.lineTo(5,16); g.fill(); }
+      if(flameOn){
+        const flick=42+Math.sin(time/2.2)*10+(nitro>0?16:0);
+        const glow=g.createRadialGradient(0,36,2,0,48,34);
+        glow.addColorStop(0,"rgba(255,255,220,0.85)");
+        glow.addColorStop(0.35, spec.flame);
+        glow.addColorStop(1,"rgba(255,80,0,0)");
+        g.fillStyle=glow; g.beginPath(); g.arc(0,40,28,0,Math.PI*2); g.fill();
+        g.fillStyle="#fff3b0"; g.beginPath(); g.moveTo(-4,26); g.lineTo(0,26+flick*0.55); g.lineTo(4,26); g.fill();
+        g.fillStyle=spec.flame; g.beginPath(); g.moveTo(-8,26); g.lineTo(0,26+flick); g.lineTo(8,26); g.fill();
+        g.globalAlpha=0.55; g.fillStyle="#ff6b00"; g.beginPath(); g.moveTo(-11,26); g.lineTo(0,26+flick*1.15); g.lineTo(11,26); g.fill(); g.globalAlpha=1;
+      }
       const fi = SHIPS.indexOf(spec);
       drawMesh(g, fi >= 0 ? SHIP_FACES[fi] : rocketFaces(spec), R, scale||1); g.restore();
     }
@@ -950,14 +993,23 @@
       updateEngine();
 
       if(!burned){
-        score += 0.10*speedMul*(1+planetIndex*0.04);
+        const dry = fuel<=0;
+        const fly = (dry?0.35:1) * (nitro>0?1.7:1);
+        const kmps = 80 * speedMul * fly;
+        km += kmps / 60;
+        const burn = ((dry?0:0.078) + (nitro>0?0.14:0) + Math.abs(rocket.vx)*0.01) * speedMul / 60;
+        if (burn>0){ fuel=Math.max(0, fuel-burn); fuelUsed+=burn; }
+        if (dry && time%120===0) showToast("YAKIT BİTTİ — İSTASYON ARA");
+        score += 0.10*speedMul*(1+planetIndex*0.04)*fly;
         if(time%360===0) speedMul += 0.06;
-        const nextPlanet=Math.min(PLANET_N-1, Math.floor(score/75));
+        const nextPlanet=Math.min(PLANET_N-1, Math.floor(km/LEG_KM));
         if(nextPlanet!==planetIndex){
           planetIndex=nextPlanet; seedPlanets();
-          showToast(PLANETS[planetIndex].name.toUpperCase());
+          showToast("YÖRÜNGE: "+PLANETS[planetIndex].name.toUpperCase());
           chord([330,392,494]); checkUnlocks();
         }
+        if (time%90===0 && stations.length<2 && rnd()<0.35) spawnStation();
+        if (km>0 && Math.floor(km)%7200<kmps/50 && stations.length<1) spawnStation();
         spawnTimer--;
         if(spawnTimer<=0){
           spawnMeteor();
@@ -994,11 +1046,29 @@
         if (!m.woosh && m.y>H*0.45 && m.y<H*0.7) { m.woosh=true; if (Math.random()<0.12) whoosh(); }
       }
       meteors=meteors.filter(m=>m.y-m.r<H+40 && m.x>-90 && m.x<W+90);
-      if (!burned && exhaust.length < 40 && (time & 1) === 0) {
-        exhaust.push({x:rocket.x+rand(-3,3), y:rocket.y+18, vx:rand(-0.3,0.3), vy:rand(1.5,3.2), life:14, c:ship().flame});
+      if (!burned) {
+        const boost = nitro>0?1.4:1;
+        if (exhaust.length < 70) {
+          exhaust.push({x:rocket.x+rand(-5,5), y:rocket.y+30, vx:rand(-0.45,0.45), vy:rand(2.2,4.6)*boost, life:rand(16,28), r:rand(3.5,7.5)*boost, kind:"fire", c:ship().flame});
+          exhaust.push({x:rocket.x+rand(-7,7), y:rocket.y+38, vx:rand(-0.55,0.55), vy:rand(1.6,3.4), life:rand(22,40), r:rand(5,11), kind:"smoke", c:"#6c757d"});
+        }
       }
-      for (const e of exhaust){ e.x+=e.vx; e.y+=e.vy; e.life--; }
+      for (const e of exhaust){ e.x+=e.vx; e.y+=e.vy; e.life--; e.r*=0.985; }
       exhaust=exhaust.filter(e=>e.life>0);
+      for (const st of stations){ st.y += st.vy; st.spin=(st.spin||0)+0.03; }
+      if (!burned) {
+        for (const st of stations){
+          if (Math.hypot(rocket.x-st.x, rocket.y-st.y) < st.r+26){
+            const add = Math.min(st.fuel, fuelMax-fuel);
+            fuel = Math.min(fuelMax, fuel+st.fuel);
+            st.dead = true;
+            score += 15;
+            showToast("YAKIT İSTASYONU  +"+add.toFixed(1)+" t");
+            chord([392,523,659]);
+          }
+        }
+      }
+      stations=stations.filter(st=>!st.dead && st.y<H+50);
       for(const sp of sparks){sp.x+=sp.vx;sp.y+=sp.vy;sp.vy+=0.08;sp.life--;}
       sparks=sparks.filter(sp=>sp.life>0);
 
@@ -1059,11 +1129,23 @@
       if(burned) return;
       if(invuln>0 && Math.floor(invuln/6)%2===0) return;
       if(shieldOn||(ship().kind==="ghost"&&powerLeft>0)){
-        ctx.beginPath(); ctx.arc(rocket.x,rocket.y,32,0,Math.PI*2);
+        ctx.beginPath(); ctx.arc(rocket.x,rocket.y,38,0,Math.PI*2);
         ctx.strokeStyle=shieldOn?"rgba(76,201,240,0.85)":"rgba(157,78,221,0.8)"; ctx.lineWidth=3; ctx.stroke();
       }
       ctx.globalAlpha=(ship().kind==="ghost"&&powerLeft>0)?0.45:1;
       paintRocket3D(ctx,rocket.x,rocket.y,ship(),rocket.tilt,0.25,1,true); ctx.globalAlpha=1;
+    }
+    function drawStation(st){
+      ctx.save(); ctx.translate(st.x,st.y); ctx.rotate(st.spin||0);
+      ctx.fillStyle="rgba(255,209,102,0.18)";
+      ctx.beginPath(); ctx.arc(0,0,st.r*1.6,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#adb5bd";
+      ctx.fillRect(-16,-8,32,16);
+      ctx.fillStyle="#ffd166";
+      ctx.fillRect(-20,-6,8,12); ctx.fillRect(12,-6,8,12);
+      ctx.fillStyle="#4cc9f0";
+      ctx.beginPath(); ctx.arc(0,-2,3.5,0,Math.PI*2); ctx.fill();
+      ctx.restore();
     }
     function drawMeteor(m){
       ctx.save(); const M=rotZ(m.rot); ctx.translate(m.x,m.y);
@@ -1086,10 +1168,12 @@
       ctx.globalAlpha=1;
       for(const p of bgPlanets) drawPlanet3D(p);
       for(const e of exhaust){
-        ctx.globalAlpha=Math.max(0,e.life/14);
-        ctx.fillStyle=e.c; ctx.beginPath(); ctx.arc(e.x,e.y,2.2,0,Math.PI*2); ctx.fill();
+        const a = Math.max(0, e.life/ (e.kind==="smoke"?40:28));
+        ctx.globalAlpha = e.kind==="smoke" ? a*0.35 : a*0.8;
+        ctx.fillStyle=e.c; ctx.beginPath(); ctx.arc(e.x,e.y,e.r||4,0,Math.PI*2); ctx.fill();
       }
       ctx.globalAlpha=1;
+      for (const st of stations) drawStation(st);
       for(const m of meteors) drawMeteor(m);
       drawRocket();
       for(const sp of sparks){ctx.globalAlpha=Math.max(0,sp.life/40);ctx.fillStyle=sp.c;ctx.beginPath();ctx.arc(sp.x,sp.y,2.2,0,Math.PI*2);ctx.fill();}
@@ -1104,7 +1188,7 @@
         const btn=document.createElement("button");
         btn.className="rk"+(i===shipIndex?" on":"")+(isOpen(i)?"":" locked");
         const mini=document.createElement("canvas"); mini.width=72; mini.height=72; mini.className="mini"; mini.dataset.i=String(i);
-        paintRocket3D(mini.getContext("2d"),36,38,spec,0,menuSpin,0.95,false);
+        paintRocket3D(mini.getContext("2d"),36,40,spec,0,menuSpin,0.68,false);
         const name=document.createElement("span"); name.textContent=isOpen(i)?spec.name:"🔒 "+spec.name;
         const sm=document.createElement("small"); sm.textContent=isOpen(i)?spec.power:spec.need.text;
         btn.appendChild(mini); btn.appendChild(name); btn.appendChild(sm);
@@ -1119,7 +1203,7 @@
       if(running) return; menuSpin+=0.035;
       document.querySelectorAll("canvas.mini").forEach(mini=>{
         const i=Number(mini.dataset.i); const g=mini.getContext("2d"); g.clearRect(0,0,72,72);
-        paintRocket3D(g,36,38,SHIPS[i],0,menuSpin,0.95,false);
+        paintRocket3D(g,36,40,SHIPS[i],0,menuSpin,0.68,false);
       });
       requestAnimationFrame(spinMinis);
     }
@@ -1140,7 +1224,7 @@
       overlay.classList.remove("hidden");
       overlay.querySelector("h1").textContent="ROKET YANDI!";
       menuText.innerHTML="Pilot <b>"+(currentUser||"—")+"</b><br>"+ship().name+" yandı.<br>Gezegen: <b>"+PLANETS[planetIndex].name+
-        "</b><br>Skor: <b>"+Math.floor(score)+"</b> · En iyi: <b>"+best+"</b>";
+        "</b><br>Yol: <b>"+Math.floor(km).toLocaleString("tr-TR")+" km</b> · Yakıt: <b>"+fuelUsed.toFixed(1)+" t</b><br>Skor: <b>"+Math.floor(score)+"</b> · En iyi: <b>"+best+"</b>";
       startBtn.textContent="TEKRAR UÇ";
       buildRocketPicker(); updateQuest(); renderHist(); requestAnimationFrame(spinMinis);
     }
