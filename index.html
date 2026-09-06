@@ -65,12 +65,63 @@
     .label { font-size: 11px; opacity: 0.75; margin: 2px 0 5px; width: 100%; }
     #quest { font-size: 12px; color: #ffd166; margin: 0 0 8px; min-height: 16px; }
     #muteBtn { position: absolute; top: 8px; right: 8px; pointer-events: auto; z-index: 5; }
+
+    #authGate {
+      position: absolute; inset: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: center;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(76,201,240,0.18), transparent 28%),
+        radial-gradient(circle at 80% 90%, rgba(255,209,102,0.12), transparent 30%),
+        rgba(2,2,16,0.96);
+      color: #fff; padding: 16px; overflow-y: auto;
+    }
+    #authCard {
+      width: min(420px, 100%); text-align: left;
+      background: rgba(10,14,36,0.92);
+      border: 1px solid rgba(255,209,102,0.28);
+      border-radius: 18px; padding: 18px 18px 16px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.45);
+    }
+    #authCard h2 { color: #ffd166; letter-spacing: 1.5px; font-size: 20px; margin: 0 0 4px; }
+    #authCard .sub { opacity: 0.8; font-size: 12px; margin-bottom: 12px; line-height: 1.35; }
+    #authCard label { display: block; font-size: 11px; opacity: 0.75; margin: 8px 0 4px; font-weight: 700; }
+    #authCard input {
+      width: 100%; background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.2); color: #fff;
+      border-radius: 10px; padding: 10px 12px; font-size: 15px; outline: none;
+    }
+    #authCard input:focus { border-color: #ffd166; }
+    #authErr { color: #ff6b6b; font-size: 12px; min-height: 16px; margin: 8px 0 4px; font-weight: 700; }
+    .authRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .authRow .go { flex: 1; margin-top: 0; font-size: 15px; padding: 10px 12px; }
+    #guestBtn { background: linear-gradient(180deg,#4cc9f0,#0077b6); box-shadow: 0 6px 0 #023e8a; color: #fff; }
+    #histPanel {
+      display: none; width: 100%; max-width: 500px; margin: 8px auto 0;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px; padding: 8px 10px; text-align: left; max-height: 180px; overflow-y: auto;
+    }
+    #histPanel.show { display: block; }
+    #histPanel h3 { font-size: 12px; color: #ffd166; margin: 0 0 6px; }
+    #histList { font-size: 11px; line-height: 1.45; opacity: 0.95; }
+    #histList div { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 4px 0; }
+    #userBar { position: absolute; top: 8px; left: 8px; z-index: 6; display: flex; gap: 6px; pointer-events: auto; }
+    #userBar button, #histBtn {
+      background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.22);
+      color: #fff; font-weight: 800; font-size: 11px; padding: 6px 8px; border-radius: 12px; cursor: pointer;
+    }
+    #pilotChip { color: #ffd166; font-size: 12px; font-weight: 800; text-shadow: 0 2px 6px #000; align-self: center; }
+
   </style>
 </head>
 <body>
   <div id="wrap">
     <canvas id="c"></canvas>
     <button id="muteBtn">Ses Açık</button>
+    <div id="userBar">
+      <span id="pilotChip">Pilot: —</span>
+      <button id="histBtn">Geçmiş</button>
+      <button id="logoutBtn">Çıkış</button>
+    </div>
     <div id="hud">
       <div class="left">
         <span id="score">Skor: 0</span>
@@ -98,6 +149,28 @@
       <div class="rockets" id="rocketBox"></div>
       <button class="go" id="startBtn">BAŞLA</button>
       <button class="go" id="sndBtn" style="margin-top:10px;background:linear-gradient(180deg,#4cc9f0,#0077b6);box-shadow:0 6px 0 #023e8a;color:#fff;">SESİ AÇ / DENE</button>
+      <div id="histPanel">
+        <h3>UÇUŞ KAYITLARI</h3>
+        <div id="histList">Henüz uçuş yok.</div>
+      </div>
+    </div>
+    <div id="authGate">
+      <div id="authCard">
+        <h2>UZAY KOMUTA</h2>
+        <div class="sub">Pilot girişi. Çağrı kodu ve şifre bu cihazda saklanır. Her uçuş geçmişe yazılır.</div>
+        <label for="authUser">Çağrı kodu</label>
+        <input id="authUser" maxlength="16" autocomplete="username" placeholder="ör. GumusOk07" />
+        <label for="authPass">Şifre</label>
+        <input id="authPass" type="password" maxlength="24" autocomplete="current-password" placeholder="en az 4 karakter" />
+        <div id="authErr"></div>
+        <div class="authRow">
+          <button class="go" id="loginBtn">GİRİŞ</button>
+          <button class="go" id="regBtn" style="background:linear-gradient(180deg,#80ed99,#2d6a4f);box-shadow:0 6px 0 #1b4332;color:#06210f;">KAYIT</button>
+        </div>
+        <div class="authRow">
+          <button class="go" id="guestBtn">MİSAFİR PİLOT</button>
+        </div>
+      </div>
     </div>
     <div id="controls">
       <div class="pad" id="leftBtn">◀</div>
@@ -123,7 +196,7 @@
     const muteBtn = document.getElementById("muteBtn");
 
     const W = 480, H = 720;
-    const DPR = Math.min(2.5, window.devicePixelRatio || 1);
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.floor(W * DPR);
     canvas.height = Math.floor(H * DPR);
     canvas.style.width = W + "px";
@@ -258,15 +331,137 @@
     function lsSet(k, v) {
       try { localStorage.setItem(k, v); } catch (e) {}
     }
-    let unlocked;
-    try {
-      unlocked = JSON.parse(lsGet("uzayUnlocks2", "[0]"));
-      if (!Array.isArray(unlocked)) unlocked = [0];
-    } catch (e) { unlocked = [0]; }
-    if (unlocked.indexOf(0) === -1) unlocked.push(0);
+    let currentUser = null;
+    let unlocked = [0];
+    let best = 0;
+    let history = [];
+    let flightT0 = 0;
+
+    function normName(s){
+      return String(s||"").trim().replace(/\s+/g," ").slice(0,16);
+    }
+    function hashPass(user, pass){
+      const str = user + "#" + pass + "#uzay-roket-2026";
+      let h = 2166136261;
+      for (let i=0;i<str.length;i++){
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h>>>0).toString(16);
+    }
+    function accounts(){
+      try {
+        const o = JSON.parse(lsGet("uzayAccounts", "{}"));
+        return o && typeof o === "object" ? o : {};
+      } catch (e) { return {}; }
+    }
+    function saveAccounts(a){ lsSet("uzayAccounts", JSON.stringify(a)); }
+    function userKey(base){ return base + "_" + (currentUser || "misafir"); }
+    function loadProfile(){
+      try {
+        unlocked = JSON.parse(lsGet(userKey("uzayUnlocks2"), lsGet("uzayUnlocks2","[0]")));
+        if (!Array.isArray(unlocked)) unlocked = [0];
+      } catch (e) { unlocked = [0]; }
+      if (unlocked.indexOf(0) === -1) unlocked.push(0);
+      best = Number(lsGet(userKey("uzayBest4"), lsGet("uzayBest4","0")) || 0);
+      try {
+        history = JSON.parse(lsGet(userKey("uzayHist"), "[]"));
+        if (!Array.isArray(history)) history = [];
+      } catch (e) { history = []; }
+    }
+    function persistProfile(){
+      saveUnlocks();
+      lsSet(userKey("uzayBest4"), String(best));
+      lsSet(userKey("uzayHist"), JSON.stringify(history.slice(0,40)));
+    }
+    function renderHist(){
+      const box = document.getElementById("histList");
+      if (!box) return;
+      if (!history.length){ box.textContent = "Henüz uçuş yok."; return; }
+      box.innerHTML = history.map(function(h,i){
+        return "<div>"+(i+1)+". "+h.date+" · "+h.ship+" · "+h.diff+"<br>Skor <b>"+h.score+"</b> · "+h.planet+" · "+h.dur+"s</div>";
+      }).join("");
+    }
+    function saveFlight(){
+      if (!currentUser) return;
+      const dur = Math.max(1, Math.round((Date.now()-flightT0)/1000));
+      history.unshift({
+        date: new Date().toLocaleString("tr-TR"),
+        score: Math.floor(score),
+        planet: PLANETS[planetIndex].name,
+        ship: ship().name,
+        diff: DIFFS[chosenDiff].label,
+        lives: lives,
+        powers: powersUsed,
+        dur: dur
+      });
+      history = history.slice(0,40);
+      best = Math.max(best, Math.floor(score));
+      persistProfile();
+      renderHist();
+    }
+    function setPilotChip(){
+      const el = document.getElementById("pilotChip");
+      if (el) el.textContent = currentUser ? ("Pilot: "+currentUser) : "Pilot: —";
+    }
+    function showAuth(msg){
+      const gate = document.getElementById("authGate");
+      gate.style.display = "flex";
+      const err = document.getElementById("authErr");
+      if (err) err.textContent = msg || "";
+    }
+    function hideAuth(){
+      document.getElementById("authGate").style.display = "none";
+    }
+    function loginAs(name){
+      currentUser = name;
+      lsSet("uzaySession", name);
+      loadProfile();
+      setPilotChip();
+      hideAuth();
+      showStart();
+    }
+    function doRegister(){
+      const user = normName(document.getElementById("authUser").value);
+      const pass = document.getElementById("authPass").value || "";
+      const err = document.getElementById("authErr");
+      if (user.length < 3){ err.textContent = "Çağrı kodu en az 3 karakter olmalı."; return; }
+      if (!/^[A-Za-z0-9_çğıöşüÇĞİÖŞÜ.-]+$/.test(user)){ err.textContent = "Sadece harf, sayı ve _ kullan."; return; }
+      if (pass.length < 4){ err.textContent = "Şifre en az 4 karakter olmalı."; return; }
+      const db = accounts();
+      if (db[user.toLowerCase()]){ err.textContent = "Bu çağrı kodu kayıtlı. Giriş yap."; return; }
+      db[user.toLowerCase()] = { name: user, hash: hashPass(user.toLowerCase(), pass), created: Date.now() };
+      saveAccounts(db);
+      err.textContent = "";
+      loginAs(user);
+    }
+    function doLogin(){
+      const user = normName(document.getElementById("authUser").value);
+      const pass = document.getElementById("authPass").value || "";
+      const err = document.getElementById("authErr");
+      const db = accounts();
+      const rec = db[user.toLowerCase()];
+      if (!rec){ err.textContent = "Kayıt bulunamadı. Önce KAYIT ol."; return; }
+      if (rec.hash !== hashPass(user.toLowerCase(), pass)){ err.textContent = "Şifre yanlış."; return; }
+      err.textContent = "";
+      loginAs(rec.name || user);
+    }
+    function doGuest(){
+      loginAs("Misafir");
+    }
+    function doLogout(){
+      running = false;
+      stopEngine();
+      currentUser = null;
+      lsSet("uzaySession", "");
+      unlocked = [0]; best = 0; history = [];
+      setPilotChip();
+      document.getElementById("histPanel").classList.remove("show");
+      overlay.classList.add("hidden");
+      showAuth("");
+    }
 
     let running=false, score=0, lives=3;
-    let best=Number(lsGet("uzayBest4", "0") || 0);
     let keys={left:false,right:false};
     let stars=[], meteors=[], sparks=[], bgPlanets=[], exhaust=[];
     let rocket, time, spawnTimer, speedMul, planetIndex, burned, invuln;
@@ -293,15 +488,50 @@
       v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
       w(36, "data"); v.setUint32(40, bytes, true);
       new Uint8Array(buf, 44).set(new Uint8Array(pcm.buffer));
-      let bin = ""; const u8 = new Uint8Array(buf);
-      for (let i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
+      const u8 = new Uint8Array(buf);
+      let bin = "";
+      const step = 0x8000;
+      for (let i = 0; i < u8.length; i += step) {
+        bin += String.fromCharCode.apply(null, u8.subarray(i, Math.min(i + step, u8.length)));
+      }
       return "data:audio/wav;base64," + btoa(bin);
     }
-    function playWav(uri, vol) {
-      if (muted) return;
+    const audioPool = [];
+    let boomPlayers = [];
+    let boomIdx = 0;
+    function ensureBoomPlayers() {
+      if (boomPlayers.length || !SFX || !SFX.boom) return;
       try {
-        const a = new Audio(uri);
+        for (let i = 0; i < 3; i++) {
+          const a = new Audio(SFX.boom);
+          a.preload = "auto";
+          a.volume = 1;
+          boomPlayers.push(a);
+        }
+      } catch (e) {}
+    }
+    function playBoom(vol) {
+      if (muted) return;
+      ensureBoomPlayers();
+      try {
+        const a = boomPlayers[boomIdx++ % boomPlayers.length];
+        if (!a) return;
         a.volume = Math.max(0, Math.min(1, vol == null ? 1 : vol));
+        try { a.currentTime = 0; } catch (e) {}
+        const p = a.play();
+        if (p && p.catch) p.catch(function () {});
+      } catch (e) {}
+    }
+    function playWav(uri, vol) {
+      if (muted || !uri) return;
+      if (SFX && uri === SFX.boom) { playBoom(vol); return; }
+      try {
+        let a = audioPool.pop();
+        if (!a) a = new Audio();
+        if (a.src !== uri) a.src = uri;
+        a.volume = Math.max(0, Math.min(1, vol == null ? 1 : vol));
+        try { a.currentTime = 0; } catch (e) {}
+        a.onended = function () { if (audioPool.length < 8) audioPool.push(a); };
         const p = a.play();
         if (p && p.catch) p.catch(function () {});
       } catch (e) {}
@@ -329,19 +559,28 @@
           }
           if (actx.state === "suspended") actx.resume();
         }
+        ensureBoomPlayers();
       } catch (e) {}
     }
     function setMute(m){
       muted = m;
       if (master) master.gain.value = muted ? 0 : 1;
-      if (engineTag) engineTag.muted = muted;
+      if (engineTag) {
+        engineTag.muted = muted;
+        engineTag.volume = muted ? 0 : 0.9;
+        if (!muted && engineWanted) {
+          engineTag.play().catch(function () { startEngineFallback(); });
+        } else if (muted) {
+          try { engineTag.pause(); } catch (e) {}
+        }
+      }
+      if (engine && engine.g) engine.g.gain.value = muted ? 0 : 0.08;
       muteBtn.textContent = muted ? "Ses Kapalı" : "Ses Açık";
     }
     muteBtn.onclick = function () { audioOn(); setMute(!muted); if (!muted) playWav(SFX.ding, 1); };
 
     function tone(freq, dur, type, vol, slide) {
       if (muted) return;
-      playWav(SFX.pow, 0.7);
       if (!actx) return;
       try {
         const o = actx.createOscillator(), g = actx.createGain();
@@ -356,7 +595,7 @@
     }
     function noiseBurst(dur, vol, freq) {
       if (muted) return;
-      playWav(SFX.boom, 1);
+      playBoom(1);
       if (!actx) return;
       try {
         const n = actx.createBuffer(1, actx.sampleRate * dur, actx.sampleRate);
@@ -400,40 +639,70 @@
       playWav(SFX.up, 1);
       freqs.forEach(function (f, i) { setTimeout(function () { tone(f, 0.16, "sine", 0.22); }, i * 70); });
     }
-    function startEngine(){
-      if (muted) return;
+    let engineWanted = false;
+    function startEngineFallback(){
+      if (engine || !actx || muted) return;
       try {
-        if (!engineTag) {
-          engineTag = new Audio(ENG_LOOP);
-          engineTag.loop = true;
-          engineTag.volume = 1;
-          engineTag.playbackRate = 1.25;
-          engineTag.onended = function () {
-            try { engineTag.currentTime = 0; engineTag.play(); } catch (e) {}
-          };
-        }
-        engineTag.muted = false;
-        engineTag.volume = 1;
-        engineTag.play().catch(function () {});
+        const o1 = actx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = 56;
+        const o2 = actx.createOscillator(); o2.type = "triangle"; o2.frequency.value = 84;
+        const ns = actx.createBufferSource();
+        ns.buffer = makeNoise(1.2); ns.loop = true;
+        const filt = actx.createBiquadFilter(); filt.type = "lowpass"; filt.frequency.value = 420;
+        const g = actx.createGain(); g.gain.value = 0.08;
+        o1.connect(g); o2.connect(g); ns.connect(filt); filt.connect(g); g.connect(master);
+        o1.start(); o2.start(); ns.start();
+        engine = {o1:o1, o2:o2, o3:o1, ns:ns, g:g, filt:filt};
       } catch (e) {}
     }
-    function updateEngine(){
-      if (!engineTag) return;
+    function startEngine(){
+      engineWanted = true;
+      audioOn();
+      if (muted) return;
       try {
-        const vx = rocket && rocket.vx ? Math.abs(rocket.vx) : 0;
-        const n = nitro > 0 ? 1 : 0;
-        const p = planetIndex || 0;
-        const s = speedMul || 1;
-        const rate = 1.25 + 0.32 * s + 0.07 * vx + 0.015 * p + 0.50 * n;
-        engineTag.playbackRate = Math.max(0.95, Math.min(2.6, rate));
-        engineTag.volume = muted ? 0 : 1;
-        engineTag.muted = !!muted;
-        if (engineTag.paused) engineTag.play().catch(function () {});
+        if (!engineTag && ENG_LOOP) {
+          engineTag = new Audio(ENG_LOOP);
+          engineTag.preload = "auto";
+          engineTag.loop = true;
+          engineTag.volume = 0.9;
+          engineTag.playbackRate = 1;
+          engineTag.onended = function () {
+            if (!engineWanted || muted) return;
+            try { engineTag.currentTime = 0; engineTag.play(); } catch (e) {}
+          };
+          engineTag.onerror = function () { startEngineFallback(); };
+        }
+        if (engineTag) {
+          engineTag.muted = false;
+          engineTag.volume = 0.9;
+          const pr = engineTag.play();
+          if (pr && pr.catch) pr.catch(function () { startEngineFallback(); });
+        } else {
+          startEngineFallback();
+        }
+      } catch (e) { startEngineFallback(); }
+    }
+    function updateEngine(){
+      if (!engineWanted || muted) return;
+      try {
+        if (engineTag) {
+          engineTag.muted = false;
+          engineTag.volume = 0.9;
+          if (engineTag.paused || engineTag.ended) {
+            engineTag.play().catch(function () { startEngineFallback(); });
+          }
+        } else if (!engine) {
+          startEngineFallback();
+        }
       } catch (e) {}
     }
     function stopEngine(){
+      engineWanted = false;
+      if (engineTag) {
+        try { engineTag.pause(); } catch (e) {}
+      }
       if (engine) {
-        try { engine.o1.stop(); engine.o2.stop(); engine.o3.stop(); engine.ns.stop(); } catch (e) {}
+        try { engine.o1.stop(); engine.o2.stop(); engine.ns.stop(); } catch (e) {}
+        try { if (engine.g) engine.g.disconnect(); } catch (e) {}
         engine = null;
       }
       stopAmbience();
@@ -442,7 +711,7 @@
     function ship(){ return SHIPS[shipIndex]; }
     function isOpen(i){ return unlocked.indexOf(i)!==-1; }
     function showToast(t){ toastEl.textContent=t; toastEl.classList.add("show"); toastTimer=100; }
-    function saveUnlocks(){ lsSet("uzayUnlocks2", JSON.stringify(unlocked)); }
+    function saveUnlocks(){ lsSet(userKey("uzayUnlocks2"), JSON.stringify(unlocked)); }
 
     function checkUnlocks(){
       let got=[];
@@ -458,7 +727,8 @@
         saveUnlocks();
         chord([523,659,784,1046]);
         showToast("YENİ ROKET: "+got.join(", "));
-        buildRocketPicker(); updateQuest();
+        updateQuest();
+        if (!running) buildRocketPicker();
       }
     }
     function nextQuest(){
@@ -497,16 +767,26 @@
       ];
     }
 
+    let hudCache = {};
+    function setTxt(el, key, val){
+      if (hudCache[key] === val) return;
+      hudCache[key] = val;
+      el.textContent = val;
+    }
     function updateHud(){
-      scoreEl.textContent="Skor: "+Math.floor(score);
-      livesEl.textContent="Can: "+"❤".repeat(lives)+"♡".repeat(Math.max(0,3-lives));
-      planetEl.textContent=(planetIndex+1)+"/"+PLANET_N+"  "+PLANETS[planetIndex].name;
-      shipLabel.textContent=ship().name+" · "+DIFFS[chosenDiff].label;
-      if (powerLeft>0) powHud.textContent=ship().power+" açık";
-      else if (powerCd>0) powHud.textContent="Güç: "+Math.ceil(powerCd/60)+" sn";
-      else powHud.textContent="Güç hazır (boşluk)";
-      powBtn.textContent=powerLeft>0?"AÇIK":(powerCd>0?Math.ceil(powerCd/60)+"s":"GÜÇ");
-      powBtn.classList.toggle("cd", powerCd>0 && powerLeft<=0);
+      setTxt(scoreEl, "score", "Skor: "+Math.floor(score));
+      setTxt(livesEl, "lives", "Can: "+"❤".repeat(lives)+"♡".repeat(Math.max(0,3-lives)));
+      setTxt(planetEl, "planet", (planetIndex+1)+"/"+PLANET_N+"  "+PLANETS[planetIndex].name);
+      setTxt(shipLabel, "ship", ship().name+" · "+DIFFS[chosenDiff].label);
+      let powT;
+      if (powerLeft>0) powT=ship().power+" açık";
+      else if (powerCd>0) powT="Güç: "+Math.ceil(powerCd/60)+" sn";
+      else powT="Güç hazır (boşluk)";
+      setTxt(powHud, "pow", powT);
+      const btnT = powerLeft>0?"AÇIK":(powerCd>0?Math.ceil(powerCd/60)+"s":"GÜÇ");
+      setTxt(powBtn, "btn", btnT);
+      const cdOn = powerCd>0 && powerLeft<=0;
+      if (hudCache.cd !== cdOn) { hudCache.cd = cdOn; powBtn.classList.toggle("cd", cdOn); }
     }
 
     function spawnMeteor(){
@@ -555,12 +835,13 @@
     }
 
     function explode(x,y,big,color){
-      const n=big?56:26;
+      if (sparks.length > 140) sparks.splice(0, sparks.length - 90);
+      const n=big?36:18;
       for(let i=0;i<n;i++){
         const a=rand(0,Math.PI*2),sp=rand(1,big?7:4.5);
         sparks.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:rand(16,40),c:color||(Math.random()<0.5?ship().flame:"#ff4d00")});
       }
-      noiseBurst(big?0.35:0.18, big?0.28:0.16, big?700:1100);
+      noiseBurst(big?0.28:0.16, big?0.28:0.16, big?700:1100);
     }
 
     function hitTest(){
@@ -583,7 +864,7 @@
       checkUnlocks();
       if (lives<=0){
         burned=true; explode(rocket.x,rocket.y,true); stopEngine();
-        best=Math.max(best,Math.floor(score)); lsSet("uzayBest4", String(best));
+        best=Math.max(best,Math.floor(score)); lsSet(userKey("uzayBest4"), String(best));
         showToast("ROKET YANDI!"); setTimeout(showGameOver,850);
       } else showToast("-1 CAN   -"+penalty+" SKOR");
       updateHud();
@@ -649,11 +930,13 @@
         g.closePath(); g.fillStyle=f.color; g.fill();
       }
     }
+    const SHIP_FACES = SHIPS.map(function (spec) { return rocketFaces(spec); });
     function paintRocket3D(g,x,y,spec,tilt,yaw,scale,flameOn){
       g.save(); g.translate(x,y);
       const R=matMul(rotZ(tilt||0), matMul(rotX(0.42), rotY(yaw||0)));
       if(flameOn){ g.fillStyle=spec.flame; const flick=18+Math.sin(time/3)*4; g.beginPath(); g.moveTo(-5,16); g.lineTo(0,16+flick); g.lineTo(5,16); g.fill(); }
-      drawMesh(g, rocketFaces(spec), R, scale||1); g.restore();
+      const fi = SHIPS.indexOf(spec);
+      drawMesh(g, fi >= 0 ? SHIP_FACES[fi] : rocketFaces(spec), R, scale||1); g.restore();
     }
 
     function step(){
@@ -708,10 +991,10 @@
       for(const p of bgPlanets){p.y+=p.drift;p.ay+=p.spin; if(p.y-p.r>H+20){p.y=-p.r-30;p.x=rand(50,W-50);p.pIndex=(p.pIndex+3)%PLANET_N;}}
       for(const m of meteors){
         stepMeteor(m,ice);
-        if (!m.woosh && m.y>H*0.45 && m.y<H*0.7) { m.woosh=true; if (Math.random()<0.35) whoosh(); }
+        if (!m.woosh && m.y>H*0.45 && m.y<H*0.7) { m.woosh=true; if (Math.random()<0.12) whoosh(); }
       }
       meteors=meteors.filter(m=>m.y-m.r<H+40 && m.x>-90 && m.x<W+90);
-      if (!burned) {
+      if (!burned && exhaust.length < 40 && (time & 1) === 0) {
         exhaust.push({x:rocket.x+rand(-3,3), y:rocket.y+18, vx:rand(-0.3,0.3), vy:rand(1.5,3.2), life:14, c:ship().flame});
       }
       for (const e of exhaust){ e.x+=e.vx; e.y+=e.vy; e.life--; }
@@ -801,7 +1084,7 @@
         ctx.beginPath(); ctx.arc(s.x,s.y,s.s*0.55,0,Math.PI*2); ctx.fill();
       }
       ctx.globalAlpha=1;
-      for(const p of bgPlanets.slice().sort((a,b)=>a.r-b.r)) drawPlanet3D(p);
+      for(const p of bgPlanets) drawPlanet3D(p);
       for(const e of exhaust){
         ctx.globalAlpha=Math.max(0,e.life/14);
         ctx.fillStyle=e.c; ctx.beginPath(); ctx.arc(e.x,e.y,2.2,0,Math.PI*2); ctx.fill();
@@ -844,7 +1127,8 @@
       running=false; stopEngine();
       overlay.classList.remove("hidden");
       overlay.querySelector("h1").textContent="UZAY ROKET";
-      menuText.innerHTML="Motor sesi açık. Her uçuşta meteor yolu değişir."+(best?"<br>En iyi skor: "+best:"");
+      menuText.innerHTML="Pilot <b>"+(currentUser||"—")+"</b><br>Motor sesi açık. Her uçuşta meteor yolu değişir."+(best?"<br>En iyi skor: "+best:"");
+      renderHist();
       startBtn.textContent="BAŞLA";
       if(!isOpen(shipIndex)) shipIndex=0;
       resetGame(); drawSky(); draw(); buildRocketPicker(); updateQuest();
@@ -852,12 +1136,13 @@
     }
     function showGameOver(){
       running=false; stopEngine(); checkUnlocks();
+      saveFlight();
       overlay.classList.remove("hidden");
       overlay.querySelector("h1").textContent="ROKET YANDI!";
-      menuText.innerHTML=ship().name+" yandı.<br>Gezegen: <b>"+PLANETS[planetIndex].name+
+      menuText.innerHTML="Pilot <b>"+(currentUser||"—")+"</b><br>"+ship().name+" yandı.<br>Gezegen: <b>"+PLANETS[planetIndex].name+
         "</b><br>Skor: <b>"+Math.floor(score)+"</b> · En iyi: <b>"+best+"</b>";
       startBtn.textContent="TEKRAR UÇ";
-      buildRocketPicker(); updateQuest(); requestAnimationFrame(spinMinis);
+      buildRocketPicker(); updateQuest(); renderHist(); requestAnimationFrame(spinMinis);
     }
     function start(){
       try {
@@ -865,6 +1150,7 @@
         if (!isOpen(shipIndex)) shipIndex = 0;
         overlay.classList.add("hidden");
         resetGame();
+        flightT0 = Date.now();
         running = true;
         try { playWav(SFX.start, 1); startEngine(); } catch (e) {}
         showToast(ship().name + " · " + ship().power);
@@ -919,7 +1205,22 @@
     bindPad(document.getElementById("leftBtn"),"left");
     bindPad(document.getElementById("rightBtn"),"right");
 
-    buildRocketPicker(); resetGame(); showStart();
+    document.getElementById("loginBtn").addEventListener("click", function(ev){ ev.preventDefault(); audioOn(); doLogin(); });
+    document.getElementById("regBtn").addEventListener("click", function(ev){ ev.preventDefault(); audioOn(); doRegister(); });
+    document.getElementById("guestBtn").addEventListener("click", function(ev){ ev.preventDefault(); audioOn(); doGuest(); });
+    document.getElementById("logoutBtn").addEventListener("click", function(ev){ ev.preventDefault(); doLogout(); });
+    document.getElementById("histBtn").addEventListener("click", function(ev){
+      ev.preventDefault();
+      document.getElementById("histPanel").classList.toggle("show");
+      renderHist();
+    });
+    document.getElementById("authPass").addEventListener("keydown", function(ev){
+      if (ev.key === "Enter") { ev.preventDefault(); doLogin(); }
+    });
+    buildRocketPicker(); resetGame();
+    const sess = lsGet("uzaySession", "");
+    if (sess) { currentUser = sess; loadProfile(); setPilotChip(); hideAuth(); showStart(); }
+    else { showAuth(""); overlay.classList.add("hidden"); }
   </script>
 </body>
 </html>
