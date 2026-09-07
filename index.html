@@ -66,6 +66,32 @@
     #toast.show { opacity: 1; }
     .label { font-size: 11px; opacity: 0.75; margin: 2px 0 5px; width: 100%; }
     #quest { font-size: 12px; color: #ffd166; margin: 0 0 8px; min-height: 16px; }
+
+    #fireBtn {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(180deg,#ff4d6d,#c1121f);
+      border: 2px solid rgba(255,255,255,0.35); color: #fff; font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; pointer-events: auto;
+      box-shadow: 0 4px 0 #7f1d1d;
+    }
+    #zRow { display:flex; gap:6px; margin-top:6px; }
+    #zRow .pad { width:52px; height:40px; border-radius:14px; font-size:12px; font-weight:800; }
+    #marketPanel, #histPanel {
+      display: none; width: 100%; max-width: 500px; margin: 8px auto 0;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px; padding: 8px 10px; text-align: left; max-height: 200px; overflow-y: auto;
+    }
+    #marketPanel.show, #histPanel.show { display: block; }
+    #marketPanel h3, #histPanel h3 { font-size: 12px; color: #ffd166; margin: 0 0 6px; }
+    .partRow { display:flex; justify-content:space-between; align-items:center; gap:8px;
+      border-bottom:1px solid rgba(255,255,255,0.08); padding:5px 0; font-size:12px; }
+    .partRow button { background:#ffd166; color:#111; border:0; border-radius:8px; font-weight:800; padding:4px 8px; cursor:pointer; }
+    .partRow button:disabled { opacity:0.45; }
+    .modes { display:flex; gap:8px; justify-content:center; margin:8px 0; }
+    .modeBtn { background:rgba(255,255,255,0.08); border:2px solid rgba(255,255,255,0.2); color:#fff;
+      font-weight:800; border-radius:10px; padding:6px 10px; cursor:pointer; font-size:12px; }
+    .modeBtn.on { border-color:#ffd166; color:#ffd166; }
+
     #muteBtn { position: absolute; top: 8px; right: 8px; pointer-events: auto; z-index: 5; }
 
     #authGate {
@@ -131,6 +157,8 @@
         <span id="distHud">Yol: 0 km</span>
         <span id="fuelHud">Yakıt: 80.0 t</span>
         <span id="powHud">Güç hazır</span>
+        <span id="credHud">Kredi: 0</span>
+        <span id="creditLine">Kredi: 0</span>
       </div>
       <div class="right">
         <span id="planet">1. Dünya</span>
@@ -150,10 +178,21 @@
         <button class="diff" data-d="hard">Zor</button>
         <button class="diff" data-d="crazy">Çılgın</button>
       </div>
+      <div class="label">Mod</div>
+      <div class="modes">
+        <button class="modeBtn on" id="modeFly">UÇUŞ</button>
+        <button class="modeBtn" id="modeWar">SAVAŞ</button>
+      </div>
       <div class="label">Roketler — yüksek skor / uzak gezegen</div>
       <div class="rockets" id="rocketBox"></div>
       <button class="go" id="startBtn">BAŞLA</button>
       <button class="go" id="sndBtn" style="margin-top:10px;background:linear-gradient(180deg,#4cc9f0,#0077b6);box-shadow:0 6px 0 #023e8a;color:#fff;">SESİ AÇ / DENE</button>
+      <button class="go" id="marketBtn" style="margin-top:10px;background:linear-gradient(180deg,#ffd166,#f77f00);box-shadow:0 6px 0 #9a3412;color:#1b1b1b;">MARKET</button>
+      <div id="marketPanel">
+        <h3>YEDEK PARÇA MARKETİ</h3>
+        <div id="creditHud">Kredi: 0</div>
+        <div id="partList"></div>
+      </div>
       <div id="histPanel">
         <h3>UÇUŞ KAYITLARI</h3>
         <div id="histList">Henüz uçuş yok.</div>
@@ -185,8 +224,15 @@
           <div class="pad" id="downBtn">▼</div>
           <div class="pad" id="rightBtn">▶</div>
         </div>
+        <div id="zRow">
+          <div class="pad" id="backBtn">GERİ</div>
+          <div class="pad" id="fwdBtn">İLERİ</div>
+        </div>
       </div>
-      <div id="powBtn">GÜÇ</div>
+      <div style="display:flex;flex-direction:column;gap:8px;pointer-events:auto;align-items:center;">
+        <div id="fireBtn">LAZER</div>
+        <div id="powBtn">GÜÇ</div>
+      </div>
     </div>
   </div>
   <script>
@@ -380,6 +426,9 @@
       } catch (e) { unlocked = [0]; }
       if (unlocked.indexOf(0) === -1) unlocked.push(0);
       best = Number(lsGet(userKey("uzayBest4"), lsGet("uzayBest4","0")) || 0);
+      fuelMax = 80 + partBonus("fuelMax");
+      credits = Number(lsGet(userKey("uzayCredits"), "0") || 0);
+      try { ownedParts = JSON.parse(lsGet(userKey("uzayParts"), "[]")); if (!Array.isArray(ownedParts)) ownedParts=[]; } catch(e){ ownedParts=[]; }
       try {
         history = JSON.parse(lsGet(userKey("uzayHist"), "[]"));
         if (!Array.isArray(history)) history = [];
@@ -389,6 +438,8 @@
       saveUnlocks();
       lsSet(userKey("uzayBest4"), String(best));
       lsSet(userKey("uzayHist"), JSON.stringify(history.slice(0,40)));
+      lsSet(userKey("uzayCredits"), String(Math.floor(credits)));
+      lsSet(userKey("uzayParts"), JSON.stringify(ownedParts));
     }
     function renderHist(){
       const box = document.getElementById("histList");
@@ -480,8 +531,9 @@
     }
 
     let running=false, score=0, lives=3;
-    let keys={left:false,right:false,up:false,down:false};
-    let stars=[], meteors=[], sparks=[], bgPlanets=[], exhaust=[], nebula=[];
+    let keys={left:false,right:false,up:false,down:false,fwd:false,back:false};
+    let stars=[], meteors=[], sparks=[], bgPlanets=[], exhaust=[], nebula=[], dust=[], shoots=[], lasers=[], aliens=[];
+    let credits=0, ownedParts=[], laserCdLeft=0, orbitT=0;
     let rocket, time, spawnTimer, speedMul, planetIndex, burned, invuln;
     let chosenDiff="normal", shipIndex=0, toastTimer=0;
     let powerCd=0, powerLeft=0, shieldOn=false, frozen=0, nitro=0, armorOn=false;
@@ -731,6 +783,102 @@
     function showToast(t){ toastEl.textContent=t; toastEl.classList.add("show"); toastTimer=100; }
     function saveUnlocks(){ lsSet(userKey("uzayUnlocks2"), JSON.stringify(unlocked)); }
 
+    const PARTS = [
+      {id:"nose", name:"Burun Konisi", cost:40, bonus:"acc", val:0.04},
+      {id:"nozzle", name:"Ana Nozul", cost:55, bonus:"acc", val:0.06},
+      {id:"booster", name:"Yan Booster", cost:70, bonus:"acc", val:0.08},
+      {id:"fin", name:"Stabilizatör Kanat", cost:35, bonus:"drag", val:0.02},
+      {id:"heat", name:"Isı Kalkanı", cost:45, bonus:"armor", val:1},
+      {id:"pump", name:"Yakıt Pompası", cost:50, bonus:"fuelMax", val:10},
+      {id:"o2", name:"Oksijen Tankı", cost:60, bonus:"fuelMax", val:15},
+      {id:"radar", name:"Radar Anteni", cost:40, bonus:"score", val:0.08},
+      {id:"solar", name:"Güneş Paneli", cost:48, bonus:"fuelMax", val:8},
+      {id:"glass", name:"Kokpit Camı", cost:30, bonus:"score", val:0.05},
+      {id:"gyro", name:"Jiroskop", cost:42, bonus:"drag", val:0.03},
+      {id:"coil", name:"İtki Bobini", cost:80, bonus:"acc", val:0.10},
+      {id:"cool", name:"Soğutma Halkası", cost:38, bonus:"laserCd", val:2},
+      {id:"chip", name:"Haberleşme Çipi", cost:33, bonus:"score", val:0.06},
+      {id:"plate", name:"Zırh Plakası", cost:65, bonus:"armor", val:1},
+      {id:"crystal", name:"Lazer Kristali", cost:90, bonus:"laserDmg", val:1},
+      {id:"cell", name:"Enerji Hücresi", cost:75, bonus:"laserCd", val:3},
+      {id:"nav", name:"Navigasyon Modülü", cost:52, bonus:"score", val:0.10},
+      {id:"grill", name:"Egzoz Izgarası", cost:28, bonus:"acc", val:0.03},
+      {id:"compass", name:"Yıldız Pusulası", cost:58, bonus:"score", val:0.12}
+    ];
+    function partOwned(id){ return ownedParts.indexOf(id) >= 0; }
+    function partBonus(type){
+      let n=0;
+      for (const id of ownedParts){
+        const p = PARTS.find(function(x){ return x.id===id; });
+        if (p && p.bonus===type) n += p.val;
+      }
+      return n;
+    }
+    function renderMarket(){
+      const box = document.getElementById("partList");
+      const cr = document.getElementById("creditHud");
+      if (cr) cr.textContent = "Kredi: "+Math.floor(credits);
+      if (!box) return;
+      box.innerHTML = PARTS.map(function(pt){
+        const own = partOwned(pt.id);
+        return '<div class="partRow"><span>'+pt.name+' · '+pt.cost+' kr</span><button data-part="'+pt.id+'" '+(own||credits<pt.cost?'disabled':'')+'>'+(own?'TAKILI':'AL')+'</button></div>';
+      }).join("");
+      box.querySelectorAll("button[data-part]").forEach(function(btn){
+        btn.onclick = function(){
+          const id = btn.getAttribute("data-part");
+          const pt = PARTS.find(function(x){ return x.id===id; });
+          if (!pt || partOwned(id) || credits<pt.cost) return;
+          credits -= pt.cost; ownedParts.push(id);
+          if (pt.bonus==="fuelMax") { fuelMax += pt.val; fuel = Math.min(fuelMax, fuel+pt.val); }
+          persistProfile(); renderMarket(); showToast(pt.name+" takıldı");
+        };
+      });
+    }
+    function playLaserShot(){
+      if (muted) return;
+      audioOn();
+      if (!actx) return;
+      try {
+        const t0 = actx.currentTime;
+        const o = actx.createOscillator(); o.type="square"; o.frequency.value=880;
+        const o2 = actx.createOscillator(); o2.type="sawtooth"; o2.frequency.value=240;
+        const g = actx.createGain();
+        g.gain.setValueAtTime(0.11, t0);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0+0.09);
+        o.frequency.exponentialRampToValueAtTime(420, t0+0.08);
+        o.connect(g); o2.connect(g); g.connect(master||actx.destination);
+        o.start(t0); o2.start(t0); o.stop(t0+0.1); o2.stop(t0+0.1);
+      } catch(e) {}
+    }
+    function fireLaser(){
+      if (!running || burned) return;
+      const wait = Math.max(8, 14 - partBonus("laserCd"));
+      if (laserCdLeft>0) return;
+      laserCdLeft = wait;
+      const dmg = 1 + partBonus("laserDmg");
+      const ang = (rocket.tilt||0) - Math.PI/2;
+      lasers.push({
+        x: rocket.x, y: rocket.y - 42,
+        vx: Math.cos(ang)*16, vy: Math.sin(ang)*16,
+        life: 26, dmg: dmg
+      });
+      playLaserShot();
+    }
+    function spawnHuman(){
+      humans.push({
+        x: rndRange(50,W-50), y: H-60, vx: rndRange(-0.8,0.8), vy: rndRange(-0.6,-0.15),
+        hp: 3, r: 14, rot: 0, dead: false
+      });
+    }
+    function spawnAlien(){
+      aliens.push({
+        x: rndRange(50,W-50), y: -30,
+        vx: rndRange(-1.1,1.1), vy: rndRange(0.7,1.6)*speedMul,
+        hp: 2 + Math.floor(planetIndex/3), r: 16, rot: 0, kind: Math.random()<0.5?"saucer":"scout"
+      });
+    }
+
+
     function checkUnlocks(){
       let got=[];
       SHIPS.forEach((s,i)=>{
@@ -768,27 +916,55 @@
       speedMul=DIFFS[chosenDiff].speed;
       planetIndex=0; burned=false; invuln=0;
       powerCd=0; powerLeft=0; shieldOn=false; frozen=0; nitro=0; armorOn=false;
-      powersUsed=0; sparks=[]; meteors=[]; exhaust=[]; stations=[];
+      powersUsed=0; sparks=[]; meteors=[]; exhaust=[]; stations=[]; lasers=[]; aliens=[]; humans=[]; laserCdLeft=0;
       km=0; fuel=fuelMax; fuelUsed=0;
-      rocket={x:W/2,y:H-96,vx:0,vy:0,tilt:0,pitch:0};
-      stars=Array.from({length:240},()=>({
-        x:rand(0,W), y:rand(0,H), s:rand(0.4,3.4), v:rand(0.12,2.1),
-        tw:rand(0,Math.PI*2), layer: Math.random()<0.22?3:Math.random()<0.45?2:Math.random()<0.7?1:0
+      rocket={x:W/2,y:H-96,vx:0,vy:0,z:1,tilt:0,pitch:0};
+      stars=Array.from({length:320},()=>({
+        x:rand(0,W), y:rand(0,H), s:rand(0.35,3.8), v:rand(0.10,2.4),
+        tw:rand(0,Math.PI*2), layer: Math.random()<0.18?3:Math.random()<0.4?2:Math.random()<0.68?1:0
       }));
-      nebula=Array.from({length:5},()=>({
-        x:rand(0,W), y:rand(40,H*0.7), r:rand(90,180),
-        vx:rand(-0.08,0.08), vy:rand(0.05,0.18),
-        c: Math.random()<0.5 ? "rgba(76,201,240,0.10)" : "rgba(157,78,221,0.10)"
+      nebula=Array.from({length:8},(_,i)=>({
+        x:rand(0,W), y:rand(20,H*0.75), r:rand(70,210),
+        vx:rand(-0.10,0.10), vy:rand(0.04,0.20),
+        c: i%3===0 ? "rgba(76,201,240,0.13)" : i%3===1 ? "rgba(157,78,221,0.12)" : "rgba(255,209,102,0.08)"
       }));
+      dust=Array.from({length:90},()=>({
+        x:rand(0,W), y:rand(0,H), s:rand(0.4,1.3), v:rand(0.8,3.2)
+      }));
+      shoots=[];
       seedPlanets(); updateHud();
     }
 
     function seedPlanets(){
+      const sunI = PLANETS.findIndex(function(p){ return p.name==="Güneş"; });
+      const earthI = PLANETS.findIndex(function(p){ return p.name==="Dünya"; });
+      const moonI = PLANETS.findIndex(function(p){ return p.name==="Ay"; });
       bgPlanets=[
-        {x:110,y:160,r:64,pIndex:planetIndex,drift:0.10,ax:0.35,ay:0,spin:0.008},
-        {x:370,y:90,r:26,pIndex:(planetIndex+1)%PLANET_N,drift:0.07,ax:0.2,ay:1,spin:0.012},
-        {x:300,y:260,r:18,pIndex:(planetIndex+2)%PLANET_N,drift:0.16,ax:0.5,ay:2,spin:0.02}
+        {kind:"sun", x:W*0.5, y:H*0.26, r:38, pIndex: sunI>=0?sunI:planetIndex, drift:0, ax:0.2, ay:0, spin:0.01, orbR:0, orbS:0, phase:0},
+        {kind:"earth", x:0, y:0, r:22, pIndex: earthI>=0?earthI:planetIndex, drift:0, ax:0.4, ay:0, spin:0.018, orbR:92, orbS:0.007, phase:0.2},
+        {kind:"moon", x:0, y:0, r:8, pIndex: moonI>=0?moonI:1, drift:0, ax:0.6, ay:1, spin:0.03, orbR:28, orbS:0.032, phase:1.1, parent:"earth"},
+        {kind:"planet", x:0, y:0, r:16, pIndex:(planetIndex+2)%PLANET_N, drift:0, ax:0.3, ay:1.2, spin:0.012, orbR:140, orbS:0.0045, phase:2.4},
+        {kind:"planet", x:0, y:0, r:12, pIndex:(planetIndex+4)%PLANET_N, drift:0, ax:0.5, ay:2, spin:0.02, orbR:188, orbS:0.0032, phase:4.1}
       ];
+    }
+    function updateOrbits(){
+      const sun = bgPlanets[0];
+      if (!sun) return;
+      sun.x = W*0.50; sun.y = H*0.24;
+      sun.ay += sun.spin;
+      const map = {};
+      for (const p of bgPlanets){
+        if (p.kind==="sun"){ map.sun=p; continue; }
+        const parent = p.parent==="earth" ? map.earth : sun;
+        const px = parent ? parent.x : sun.x;
+        const py = parent ? parent.y : sun.y;
+        p.phase += p.orbS;
+        p.x = px + Math.cos(p.phase)*p.orbR;
+        p.y = py + Math.sin(p.phase)*p.orbR*0.55;
+        p.ay += p.spin;
+        p.ax = 0.35 + Math.sin(p.phase)*0.15;
+        if (p.kind==="earth") map.earth=p;
+      }
     }
 
     let hudCache = {};
@@ -812,7 +988,11 @@
       const mm = Math.floor(eta/60), ss = Math.floor(eta%60);
       if (etaEl) setTxt(etaEl, "eta", planetIndex>=PLANET_N-1 ? "Son uç" : ("Sonraki: "+mm+":"+(ss<10?"0":"")+ss));
       setTxt(planetEl, "planet", (planetIndex+1)+"/"+PLANET_N+"  "+PLANETS[planetIndex].name);
-      setTxt(shipLabel, "ship", ship().name+" · "+DIFFS[chosenDiff].label);
+      setTxt(shipLabel, "ship", ship().name+" · "+DIFFS[chosenDiff].label+(playMode==="war"?" · SAVAŞ":""));
+      const credEl=document.getElementById("credHud");
+      if (credEl) setTxt(credEl, "cred", "Kredi: "+Math.floor(credits));
+      const cl=document.getElementById("creditLine");
+      if (cl) setTxt(cl, "cred", "Kredi: "+Math.floor(credits));
       let powT;
       if (powerLeft>0) powT=ship().power+" açık";
       else if (powerCd>0) powT="Güç: "+Math.ceil(powerCd/60)+" sn";
@@ -1014,7 +1194,7 @@
       if(!burned){
         const dry = fuel<=0;
         const fly = (dry?0.35:1) * (nitro>0?1.7:1);
-        const kmps = 80 * speedMul * fly;
+        const kmps = 80 * speedMul * fly * (rocket && rocket.z ? rocket.z : 1);
         km += kmps / 60;
         const burn = ((dry?0:0.078) + (nitro>0?0.14:0) + Math.abs(rocket.vx)*0.01) * speedMul / 60;
         if (burn>0){ fuel=Math.max(0, fuel-burn); fuelUsed+=burn; }
@@ -1039,17 +1219,62 @@
         if(time%40===0) checkUnlocks();
       }
 
-      const s=ship(); const acc=s.acc*1.65*(nitro>0?2.15:1);
+      const s=ship(); const acc=(s.acc+partBonus("acc"))*1.65*(nitro>0?2.15:1);
       if(keys.left) rocket.vx-=acc; if(keys.right) rocket.vx+=acc;
-      if(keys.up) rocket.vy-=acc; if(keys.down) rocket.vy+=acc;
+      if(keys.up) rocket.vy-=acc*1.25; if(keys.down) rocket.vy+=acc*1.25;
       const drag = Math.min(0.94, s.drag+0.04);
       rocket.vx*=drag; rocket.vy*=drag;
       rocket.x+=rocket.vx; rocket.y+=rocket.vy;
+      if(keys.fwd) rocket.z += 0.018; if(keys.back) rocket.z -= 0.018;
+      rocket.z = Math.max(0.70, Math.min(1.38, rocket.z||1));
       rocket.x=Math.max(22,Math.min(W-22,rocket.x));
-      rocket.y=Math.max(70,Math.min(H-78,rocket.y));
+      rocket.y=Math.max(36,Math.min(H-48,rocket.y));
       rocket.tilt+=(Math.max(-0.62,Math.min(0.62,rocket.vx*0.14))-rocket.tilt)*0.28;
       rocket.pitch+=((rocket.vy*0.09)-rocket.pitch)*0.24;
       if(invuln>0) invuln--;
+      if (laserCdLeft>0) laserCdLeft--;
+      orbitT += 0.004;
+      for (const L of lasers){ L.x+=L.vx; L.y+=L.vy; L.life--; }
+      for (const L of lasers){
+        for (const m of meteors){
+          if (m.dead) continue;
+          if (Math.hypot(L.x-m.x, L.y-m.y) < m.r+6){
+            L.life=0; m.hp=(m.hp||1)-L.dmg;
+            if (m.hp<=0){ m.dead=true; score+=8; credits+=2; explode(m.x,m.y,false,m.col||"#ffd166"); }
+          }
+        }
+        for (const a of aliens){
+          if (a.dead) continue;
+          if (Math.hypot(L.x-a.x, L.y-a.y) < a.r+6){
+            L.life=0; a.hp-=L.dmg;
+            if (a.hp<=0){ a.dead=true; score+=20; credits+=6; explode(a.x,a.y,false,"#80ed99"); showToast("UZAYLI DÜŞTÜ"); }
+          }
+        }
+      }
+      lasers=lasers.filter(L=>L.life>0 && L.y>-40 && L.y<H+40 && L.x>-40 && L.x<W+40);
+      if (running && !burned){
+        const cap = playMode==="war" ? 7 : 3;
+        const every = playMode==="war" ? 90 : 220;
+        if (time%every===0 && aliens.length<cap) spawnAlien();
+        if (playMode==="war" && time%160===0 && humans.length<3) spawnHuman();
+      }
+      for (const a of aliens){
+        a.x+=a.vx; a.y+=a.vy; a.rot+=0.04;
+        if (a.x<30||a.x>W-30) a.vx*=-1;
+        if (!burned && Math.hypot(a.x-rocket.x,a.y-rocket.y)<a.r+18 && invuln<=0 && !(shieldOn||armorOn||(ship().kind==="ghost"&&powerLeft>0))){
+          a.dead=true; loseLife(a);
+        }
+      }
+      aliens=aliens.filter(a=>!a.dead && a.y<H+40);
+      for (const h of humans){
+        h.x += h.vx; h.y += h.vy; h.rot += 0.03;
+        if (h.x<40||h.x>W-40) h.vx*=-1;
+        if (time%40===0 && aliens.length){
+          const t = aliens[0];
+          lasers.push({x:h.x,y:h.y,vx:(t.x-h.x)*0.04,vy:(t.y-h.y)*0.04,life:22,dmg:1,team:"human"});
+        }
+      }
+      humans=humans.filter(h=>!h.dead && h.y>-40 && h.y<H+50);
 
       if(s.kind==="push"&&powerLeft>0){
         for(const m of meteors){
@@ -1060,24 +1285,40 @@
 
       const ice=frozen>0?0.35:1;
       for(const st of stars){
-        st.y += st.v * Math.min(3.2,speedMul) * (0.4+st.layer*0.55) + Math.max(0, -rocket.vy*0.08*st.layer);
-        st.x += -rocket.vx * (0.04+st.layer*0.05);
+        st.y += st.v * Math.min(3.2,speedMul) * (0.4+st.layer*0.55) - rocket.vy*(0.06+st.layer*0.07);
+        st.x += -rocket.vx * (0.05+st.layer*0.06);
         st.tw += 0.04 + st.layer*0.01;
         if(st.y>H){st.y=-4;st.x=rand(0,W);}
         if(st.y<-8){st.y=H;st.x=rand(0,W);}
         if(st.x>W) st.x=0; if(st.x<0) st.x=W;
       }
       for(const n of nebula){
-        n.x += n.vx - rocket.vx*0.02; n.y += n.vy;
+        n.x += n.vx - rocket.vx*0.03; n.y += n.vy - rocket.vy*0.02;
         if(n.y-n.r>H){n.y=-n.r; n.x=rand(0,W);}
+        if(n.y+n.r<-40){n.y=H+n.r; n.x=rand(0,W);}
         if(n.x<-n.r) n.x=W+n.r; if(n.x>W+n.r) n.x=-n.r;
       }
-      for(const p of bgPlanets){p.y+=p.drift;p.ay+=p.spin; if(p.y-p.r>H+20){p.y=-p.r-30;p.x=rand(50,W-50);p.pIndex=(p.pIndex+3)%PLANET_N;}}
+      for(const d of dust){
+        d.y += d.v * speedMul - rocket.vy*0.18;
+        d.x += -rocket.vx*0.12;
+        if(d.y>H){d.y=0;d.x=rand(0,W);} if(d.y<0){d.y=H;d.x=rand(0,W);}
+        if(d.x<0) d.x=W; if(d.x>W) d.x=0;
+      }
+      if (running && !burned && Math.random()<0.018){
+        shoots.push({x:rand(0,W), y:-10, vx:rand(-1.2,1.2), vy:rand(7,13), life:28});
+      }
+      for(const sh of shoots){ sh.x+=sh.vx; sh.y+=sh.vy; sh.life--; }
+      shoots=shoots.filter(sh=>sh.life>0 && sh.y<H+20);
+      updateOrbits();
+      for(const p of bgPlanets){
+        p.x += -rocket.vx * 0.02 * (rocket.z||1);
+        p.y += -rocket.vy * 0.03 * (rocket.z||1);
+      }
       for(const m of meteors){
         stepMeteor(m,ice);
         if (!m.woosh && m.y>H*0.45 && m.y<H*0.7) { m.woosh=true; if (Math.random()<0.12) whoosh(); }
       }
-      meteors=meteors.filter(m=>m.y-m.r<H+40 && m.x>-90 && m.x<W+90);
+      meteors=meteors.filter(m=>!m.dead && m.y-m.r<H+40 && m.x>-90 && m.x<W+90);
       if (!burned) {
         const boost = nitro>0?1.4:1;
         if (exhaust.length < 70) {
@@ -1113,8 +1354,19 @@
     function drawSky(){
       const p=PLANETS[planetIndex];
       const g=ctx.createLinearGradient(0,0,0,H);
-      g.addColorStop(0,p.sky[0]); g.addColorStop(1,p.sky[1]);
+      g.addColorStop(0,p.sky[0]); g.addColorStop(0.55,p.sky[1]); g.addColorStop(1,"#000008");
       ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+      const glow=ctx.createRadialGradient(W*0.3,H*0.18,10,W*0.3,H*0.18,220);
+      glow.addColorStop(0,p.colors[0]+"22"); glow.addColorStop(1,"rgba(0,0,0,0)");
+      ctx.fillStyle=glow; ctx.fillRect(0,0,W,H);
+      ctx.save();
+      ctx.translate(W*0.62, H*0.38); ctx.rotate(-0.55);
+      const band=ctx.createLinearGradient(0,-40,0,40);
+      band.addColorStop(0,"rgba(255,255,255,0)");
+      band.addColorStop(0.5,"rgba(200,210,255,0.07)");
+      band.addColorStop(1,"rgba(255,255,255,0)");
+      ctx.fillStyle=band; ctx.fillRect(-360,-36,720,72);
+      ctx.restore();
     }
     function drawPlanet3D(bp){
       const info=PLANETS[bp.pIndex]; const R=rotXY(bp.ax,bp.ay);
@@ -1157,6 +1409,34 @@
       shade.addColorStop(0,"rgba(0,0,0,0)"); shade.addColorStop(1,"rgba(0,0,0,0.38)");
       ctx.fillStyle=shade; ctx.beginPath(); ctx.arc(0,0,bp.r,0,Math.PI*2); ctx.fill(); ctx.restore();
     }
+    function drawOrbits(){
+      const cx=W*0.28, cy=H*0.22;
+      const sunR=16;
+      ctx.save();
+      const sg=ctx.createRadialGradient(cx,cy,2,cx,cy,38);
+      sg.addColorStop(0,"#fff3b0"); sg.addColorStop(0.4,"#ffd166"); sg.addColorStop(1,"rgba(255,140,0,0)");
+      ctx.fillStyle=sg; ctx.beginPath(); ctx.arc(cx,cy,38,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#ffd166"; ctx.beginPath(); ctx.arc(cx,cy,sunR,0,Math.PI*2); ctx.fill();
+      const eAng=orbitT, eR=62;
+      const ex=cx+Math.cos(eAng)*eR, ey=cy+Math.sin(eAng)*eR*0.42;
+      ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.ellipse(cx,cy,eR,eR*0.42,0,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle="#4cc9f0"; ctx.beginPath(); ctx.arc(ex,ey,6,0,Math.PI*2); ctx.fill();
+      const mAng=orbitT*3.3, mR=16;
+      const mx=ex+Math.cos(mAng)*mR, my=ey+Math.sin(mAng)*mR*0.55;
+      ctx.strokeStyle="rgba(255,255,255,0.12)";
+      ctx.beginPath(); ctx.ellipse(ex,ey,mR,mR*0.55,0,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle="#ced4da"; ctx.beginPath(); ctx.arc(mx,my,2.4,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    function drawAlien(a){
+      ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.rot);
+      ctx.fillStyle=a.kind==="saucer"?"#80ed99":"#bdb2ff";
+      ctx.beginPath(); ctx.ellipse(0,0,16,8,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#222"; ctx.beginPath(); ctx.arc(0,-3,6,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#caf0f8"; ctx.beginPath(); ctx.arc(0,-3,3.2,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
     function drawAstraRocket(g,x,y,tilt,h){
       if (!ROCKET_IMG.complete || !ROCKET_IMG.naturalWidth) return false;
       const imgH = h || 124;
@@ -1176,10 +1456,37 @@
         ctx.strokeStyle=shieldOn?"rgba(76,201,240,0.85)":"rgba(157,78,221,0.8)"; ctx.lineWidth=3; ctx.stroke();
       }
       ctx.globalAlpha=(ship().kind==="ghost"&&powerLeft>0)?0.45:1;
-      if (!drawAstraRocket(ctx, rocket.x, rocket.y, rocket.tilt, 128)) {
+      if (!drawAstraRocket(ctx, rocket.x, rocket.y, rocket.tilt, 128*(rocket.z||1))) {
         paintRocket3D(ctx,rocket.x,rocket.y,ship(),rocket.tilt,0.25,1,true);
       }
       ctx.globalAlpha=1;
+    }
+    function drawLaserBeam(L){
+      ctx.save();
+      ctx.strokeStyle = L.team==="human" ? "#80ed99" : "#ff2d2d";
+      ctx.shadowColor = L.team==="human" ? "#80ed99" : "#ff0000";
+      ctx.shadowBlur = 14;
+      ctx.lineWidth = 3.2;
+      ctx.beginPath(); ctx.moveTo(L.x - L.vx*1.4, L.y - L.vy*1.4); ctx.lineTo(L.x, L.y); ctx.stroke();
+      ctx.strokeStyle = "#fff5f5"; ctx.lineWidth = 1.1; ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.moveTo(L.x - L.vx*0.6, L.y - L.vy*0.6); ctx.lineTo(L.x, L.y); ctx.stroke();
+      ctx.restore();
+    }
+    function drawAlien(a){
+      ctx.save(); ctx.translate(a.x,a.y); ctx.rotate(a.rot);
+      ctx.fillStyle="#3a0ca3";
+      ctx.beginPath(); ctx.ellipse(0,4,16,7,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#80ed99";
+      ctx.beginPath(); ctx.ellipse(0,-2,9,8,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(-3,-2,1.6,0,Math.PI*2); ctx.arc(3,-2,1.6,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    function drawHuman(h){
+      ctx.save(); ctx.translate(h.x,h.y); ctx.rotate(h.rot*0.2);
+      ctx.fillStyle="#4cc9f0";
+      ctx.beginPath(); ctx.moveTo(0,-14); ctx.lineTo(8,12); ctx.lineTo(0,6); ctx.lineTo(-8,12); ctx.closePath(); ctx.fill();
+      ctx.fillStyle="#ffd166"; ctx.fillRect(-2,-4,4,6);
+      ctx.restore();
     }
     function drawStation(st){
       ctx.save(); ctx.translate(st.x,st.y); ctx.rotate(st.spin||0);
@@ -1215,15 +1522,43 @@
         ctx.globalAlpha = (0.18 + s.s/4.5 + s.layer*0.08) * tw;
         ctx.fillStyle = s.layer>=3 ? "#caf0f8" : s.layer===2 ? "#fff3b0" : s.layer===1 ? "#e9ecef" : "#ffffff";
         if (s.layer>=2 && s.s>2.2){
-          ctx.beginPath(); ctx.arc(s.x,s.y,s.s*1.6,0,Math.PI*2);
-          ctx.fillStyle = s.layer>=3 ? "rgba(202,240,248,0.18)" : "rgba(255,243,176,0.16)";
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.s*1.8,0,Math.PI*2);
+          ctx.fillStyle = s.layer>=3 ? "rgba(202,240,248,0.20)" : "rgba(255,243,176,0.16)";
           ctx.fill();
           ctx.fillStyle = s.layer>=3 ? "#caf0f8" : "#fff3b0";
+          ctx.beginPath(); ctx.moveTo(s.x-s.s*2.2,s.y); ctx.lineTo(s.x+s.s*2.2,s.y);
+          ctx.moveTo(s.x,s.y-s.s*2.2); ctx.lineTo(s.x,s.y+s.s*2.2);
+          ctx.strokeStyle = "rgba(255,255,255,0.28)"; ctx.lineWidth=0.6; ctx.stroke();
         }
         ctx.beginPath(); ctx.arc(s.x,s.y,s.s*(s.layer>=2?0.7:0.5),0,Math.PI*2); ctx.fill();
       }
+      ctx.globalAlpha=0.55;
+      ctx.fillStyle="#dbe4ff";
+      for(const d of dust){ ctx.fillRect(d.x,d.y,d.s,d.s); }
       ctx.globalAlpha=1;
-      for(const p of bgPlanets) drawPlanet3D(p);
+      for(const sh of shoots){
+        ctx.strokeStyle="rgba(255,255,255,0.7)"; ctx.lineWidth=1.4;
+        ctx.beginPath(); ctx.moveTo(sh.x, sh.y); ctx.lineTo(sh.x-sh.vx*3, sh.y-sh.vy*3); ctx.stroke();
+      }
+      drawOrbits();
+      for(const p of bgPlanets){
+        if(p.kind==="sun"){
+          ctx.save(); ctx.translate(p.x,p.y);
+          const g=ctx.createRadialGradient(0,0,2,0,0,p.r*2.1);
+          g.addColorStop(0,"#fff3b0"); g.addColorStop(0.35,"#ffd166"); g.addColorStop(1,"rgba(255,140,0,0)");
+          ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,p.r*2.1,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle="#ffe066"; ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill();
+          ctx.restore();
+        } else drawPlanet3D(p);
+      }
+      for (const a of aliens) drawAlien(a);
+      for (const L of lasers){
+        ctx.save();
+        ctx.strokeStyle="#ff2d2d"; ctx.shadowColor="#ff4d6d"; ctx.shadowBlur=12;
+        ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(L.x-L.vx*1.2, L.y-L.vy*1.2); ctx.stroke();
+        ctx.strokeStyle="#fff5f5"; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(L.x-L.vx*0.7, L.y-L.vy*0.7); ctx.stroke();
+        ctx.restore();
+      }
       for(const e of exhaust){
         const a = Math.max(0, e.life/ (e.kind==="smoke"?40:28));
         ctx.globalAlpha = e.kind==="smoke" ? a*0.35 : a*0.8;
@@ -1232,6 +1567,9 @@
       ctx.globalAlpha=1;
       for (const st of stations) drawStation(st);
       for(const m of meteors) drawMeteor(m);
+      for (const a of aliens) drawAlien(a);
+      for (const h of humans) drawHuman(h);
+      for (const L of lasers) drawLaserBeam(L);
       drawRocket();
       for(const sp of sparks){ctx.globalAlpha=Math.max(0,sp.life/40);ctx.fillStyle=sp.c;ctx.beginPath();ctx.arc(sp.x,sp.y,2.2,0,Math.PI*2);ctx.fill();}
       const vig=ctx.createRadialGradient(W/2,H*0.45,H*0.2,W/2,H*0.5,H*0.78);
@@ -1272,7 +1610,7 @@
       overlay.classList.remove("hidden");
       overlay.querySelector("h1").textContent="UZAY ROKET";
       menuText.innerHTML="Pilot <b>"+(currentUser||"—")+"</b><br>Motor sesi açık. Her uçuşta meteor yolu değişir."+(best?"<br>En iyi skor: "+best:"");
-      renderHist();
+      renderHist(); renderMarket();
       startBtn.textContent="BAŞLA";
       if(!isOpen(shipIndex)) shipIndex=0;
       resetGame(); drawSky(); draw(); buildRocketPicker(); updateQuest();
@@ -1335,14 +1673,20 @@
       if(e.key==="ArrowRight"||e.key==="d"||e.key==="D") keys.right=true;
       if(e.key==="ArrowUp"||e.key==="w"||e.key==="W") { keys.up=true; e.preventDefault(); }
       if(e.key==="ArrowDown"||e.key==="s"||e.key==="S") { keys.down=true; e.preventDefault(); }
+      if(e.key==="q"||e.key==="Q") keys.back=true;
+      if(e.key==="e"||e.key==="E") keys.fwd=true;
+      if(e.key==="f"||e.key==="F"||e.key==="j"||e.key==="J"){ e.preventDefault(); fireLaser(); }
       if(e.key===" "||e.key==="Enter"){ e.preventDefault(); if(!running) start(); else usePower(); }
       if(e.key==="m"||e.key==="M"){ audioOn(); setMute(!muted); }
+      if(e.key==="f"||e.key==="F"||e.key==="j"||e.key==="J"){ e.preventDefault(); fireLaser(); }
     });
     window.addEventListener("keyup", e=>{
       if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A") keys.left=false;
       if(e.key==="ArrowRight"||e.key==="d"||e.key==="D") keys.right=false;
       if(e.key==="ArrowUp"||e.key==="w"||e.key==="W") keys.up=false;
       if(e.key==="ArrowDown"||e.key==="s"||e.key==="S") keys.down=false;
+      if(e.key==="q"||e.key==="Q") keys.back=false;
+      if(e.key==="e"||e.key==="E") keys.fwd=false;
     });
     function bindPad(el,dir){
       const on=ev=>{ev.preventDefault();keys[dir]=true;};
@@ -1354,11 +1698,38 @@
     bindPad(document.getElementById("rightBtn"),"right");
     bindPad(document.getElementById("upBtn"),"up");
     bindPad(document.getElementById("downBtn"),"down");
+    bindPad(document.getElementById("fwdBtn"),"fwd");
+    bindPad(document.getElementById("backBtn"),"back");
+    (function(){
+      const fb=document.getElementById("fireBtn");
+      if(!fb) return;
+      const go=function(ev){ ev.preventDefault(); fireLaser(); };
+      fb.addEventListener("pointerdown", go);
+      fb.addEventListener("click", go);
+    })();
+    document.getElementById("modeFly").onclick=function(){
+      playMode="fly"; this.classList.add("on"); document.getElementById("modeWar").classList.remove("on");
+    };
+    document.getElementById("modeWar").onclick=function(){
+      playMode="war"; this.classList.add("on"); document.getElementById("modeFly").classList.remove("on");
+    };
+    (function(){
+      const fb=document.getElementById("fireBtn");
+      if (!fb) return;
+      const go=ev=>{ ev.preventDefault(); fireLaser(); };
+      fb.addEventListener("pointerdown", go);
+      fb.addEventListener("click", go);
+    })();
 
     document.getElementById("loginBtn").addEventListener("click", function(ev){ ev.preventDefault(); audioOn(); doLogin(); });
     document.getElementById("regBtn").addEventListener("click", function(ev){ ev.preventDefault(); audioOn(); doRegister(); });
     document.getElementById("guestBtn").addEventListener("click", function(ev){ ev.preventDefault(); audioOn(); doGuest(); });
     document.getElementById("logoutBtn").addEventListener("click", function(ev){ ev.preventDefault(); doLogout(); });
+    document.getElementById("marketBtn").addEventListener("click", function(ev){
+      ev.preventDefault();
+      document.getElementById("marketPanel").classList.toggle("show");
+      renderMarket();
+    });
     document.getElementById("histBtn").addEventListener("click", function(ev){
       ev.preventDefault();
       document.getElementById("histPanel").classList.toggle("show");
